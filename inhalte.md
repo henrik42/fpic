@@ -85,7 +85,14 @@ Programm vorhanden sind und der äußeren **Form**, mit der wir diese Werte
 eingeben können und mit der diese Werte auch wieder ausgegeben werden.
 
 Übungen:
-* Welche Formen kennst du, mit denen du die Zahl 12 ausdrücken kannst?
+* Welche Formen (unabhängig von Clojure) kennst du, mit denen du die Zahl 12
+  ausdrücken kannst?
+
+> Denk nochmal über die REPL nach. Die REPL liest deine Eingabe ein (*read*).
+Deine Eingabe muss aus Formen bestehen. Nach dem Einlesen **wertet** die REPL
+deine Formen **aus** (*eval*). Das Ergebnis dieser Auswertung ergibt den
+**Wert** deiner Eingabe. Und dieser Wert wird von der REPL wiederum als Form
+**ausgegeben** (*print*).
 
 ## Werte und Datentypen
 
@@ -93,18 +100,96 @@ Bisher haben wir Zahlen und Zeichenfolgen kennen gelernt. Wir sprechen bei
 diesen verschiedenen *Arten von Daten* auch von **Datentypen**.
 
 Clojure kennt verschiedene Zahl-Datentypen (Ganzzahl, Rationale Zahlen,
-Fließkommazahlen) und auch verschiedene text-artige Datentypen: Zeichenfolgen
-(*strings*), Zeichen (*character*).
+Fließkommazahlen; dazu später mehr) und auch verschiedene text-artige
+Datentypen: Zeichenfolgen (*strings*), Zeichen (*character*).
 
 Durch den Datentyp wird festgelegt, welche Werte wir mit diesem Datentyp
-ausdrücken können. 
+ausdrücken können. Clojure erkennt an der äußeren Form, welches der zugehörige
+Datentyp des mit der Form beschriebenen Wertes ist.
 
-### Boolean
+* die Form `12` ist der Ganzzahl-Wert *12*.
+* die Form `"TOLL!"` ist der String-Wert *TOLL!*.
+* die Form `"12"` ist der String-Wert *12*.
+
+### Boolean / Wahrheitswerte
 
 Der Datentyp *Boolean* umfasst nur zwei mögliche Werte: *wahr* (`true`) und
   *falsch* (`false`).
 
 Übung:
-* Gibt den **Wert** *wahr* ein? Welche **Form** musst du nutzen?
+* Gibt den Boolean-**Wert** *wahr* ein? Welche **Form** musst du nutzen?
+* Welche Arten von Daten kennst du aus deinem Alltag? In welcher Form werden
+  diese dargestellt?
 
+## Funktionen
+
+Bisher haben wir verschiedene Arten von Daten(-typen) kennen gelernt (Zahlen,
+Strings, Boolean) und wie du diese über ihre Form beschreiben und ein- und
+ausgeben kannst.
+
+Nun wollen etwas mit den Werten dieser Datentypen tun. In Clojure nutzen wir
+dazu **Funktionen**
+
+Aus dem Mathematikunterricht kennst du schon Funktionen:
+
+```
+f(x) = x + 1
+```
+
+Die Funktion **f** liefert zu jedem Zahl-Wert **x** den um eins erhöhten
+Zahl-Wert. So liefert die Funktion **f** für den Wert **5** das Ergebnis **6**. 
+
+```
+f(5) = 6
+```
+
+Du kannst dir eine Funktion als eine Maschine vorstellen, in die du Werte hinein
+gibst und aus der das Ergebnis der Funktion als Rückgabewert heraus kommt.
+
+In Clojure gibt es die Funktion **inc**, die genau das gleiche tut wie die oben
+aufgeführte Funktion **f**. Allerdings wird in Clojure der **Funktionsaufruf**
+nicht `inc(5)` geschrieben, sondern `(inc 5)`. Wir schließen also den Namen der
+Funktion mit in die Klammern ein.
+
+> Diese Form ist an die [Polnische
+> Notation](https://de.wikipedia.org/wiki/Polnische_Notation) angelehnt.
+
+Übung:
+* Was liefert `(inc 8)`?
+
+## Funktionsaufruf als Form
+
+Bisher haben wir Formen für Zahlen, Zeichenketten und Wahrheitswerte kennen
+gelernt. Der Funktionsaufruf `(inc 5)` führt zwei neue Arten von Formen ein:
+
+### Symbole
+
+Die Funktion **inc** wird über das **Symbol** `inc` benannt. Die Funktion
+**inc** ist ein **Wert**, des Datentyps **Funktion**. Über die Form `inc` können
+wir diesen Wert (also diese Funktion) **nennen**, so dass wir sie verwenden
+können.
+
+> Denke nochmal darüber nach, was der Unterschied zwischen der Funktion und der
+> Benennung der Funktion ist. Bei Zahlen nutzen wir Zahl-Formen wie z.B. `42`,
+> um die Zahl **42** zu nennen. Bei Funktionen ist es fast genau so. Wie kommen
+> später nochmal auf den Unterschied zwischen Symbol und Funktion zu sprechen.
+
+Übung:
+* Was erhältst du, wenn du `inc` eingibst? Wie unterscheidet sich das von den
+  bisherigen Ein-Ausgaben?
+
+### Listen
+
+Bisher haben wir nur *einfache* Datentypen und die zugehörigen Werte und Formen
+kennen gelernt. Clojure kennt aber auch *zusammengesetzte* bzw. *strukturierte*
+Datentypen --- z.B. **Listen**.
+
+Eine Liste ist eine (geordnete) Folge von Werten. Die Liste mit den Werten
+**42** (Zahl), **TOLL!** (String) und **falsch** (Boolean) wird geschrieben als:
+
+```
+(42 "TOLL!" false)
+```
+
+> Die Liste an sich ist ebenfalls ein **Wert**.
 
