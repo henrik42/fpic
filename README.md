@@ -56,7 +56,7 @@ Programmiersprache.
 
 ## Wieso gerade Clojure?
 
-Das tollen an Clojure ist, dass die Sprache auf der Java Virtual Maschine läuft
+Das toll an Clojure ist, dass die Sprache auf der Java Virtual Maschine läuft
 (und auch im Browser und Node.js). Clojure integriert sich sehr gut mit dem
 gesamten Java-Ökosystem, so dass Clojure keine Nischensprache ist, sondern
 *überall* läuft. 
