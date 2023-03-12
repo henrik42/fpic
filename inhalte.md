@@ -20,13 +20,16 @@ Du gibst eine *Form* ein, die REPL *wertet* die Form *aus* und schreibt das
 *Ergebnis* in die Ausgabe.
 
 **REPL** steht für:
-* **Read**: eine Form **einlesen** (*to read*)
-* **Eval**: die eingelesene Form **auswerten** (*to evaluate*)
-* **Print**: das Ergebnis der Auswertung **ausgeben** (*to print something*)
+* **Read**: eine [Form](https://clojure.org/guides/learn/syntax) [**einlesen**](https://clojure.org/reference/reader) (*to read*)
+* **Eval**: die eingelesene Form
+  [**auswerten**](https://clojure.org/reference/evaluation) (*to evaluate*). Die
+  Auswertung ergibt einen **Wert**.
+* **Print**: das Ergebnis der Auswertung (den **Wert**) **ausgeben** (*to print
+  something*)
 * **Loop**: und das ganz **wiederholen** (*to loop*, *a loop*)
 
-Es gibt verschiedene Möglichkeiten, dies online im Browser auszuprobieren. Wir
-brauchen dafür keine lokale Installation, sondern nur einen Browser und einen
+Es gibt verschiedene Möglichkeiten, dies im Browser auszuprobieren. Wir brauchen
+dafür keine lokale Installation, sondern nur einen Browser und einen
 Internetzugang.
 
 * https://tryclojure.org/ : du bekommst eine laufende REPL und kannst sofort
@@ -39,12 +42,19 @@ Internetzugang.
 
 Was sind Clojure [Formen](https://clojure.org/guides/learn/syntax)? 
 
-Wir fangen mit den "einfachen" (d.h. unstrukturierten, den
+Wir fangen mit den *einfachen* (d.h. unstrukturierten, den
 nicht-zusammengesetzten) Formen an.
+
+> *Einfach* bedeutet in diesem Zusammenhang, dass wir die Formen nicht weiter in
+> ihre Bestandteile zergliedern können. Wir als Mensch können natürlich Zahlen
+> weiter in ihre Ziffern zergliedern, aber aus Sicht von Clojure geht dies in
+> diesem Fall nicht. In diesem Sinne sind z.B. Zahlen bzw. Numerale für Clojure
+> also atomar bzw.
+> [elementar](https://de.wikipedia.org/wiki/Datentyp#Elementare_Datentypen).
 
 ### Zahlen
 
-Zahlen: `1` `2` `42` `1.56` `4/2` `5/3`
+Zahlen: `-5`, `0`, `1`, `2`, `42`, `1.56`, `4/2`, `5/3`
 
 Übungen zu Zahlen:
 * Starte einen Browser, navigiere zu https://tryclojure.org/
@@ -60,7 +70,7 @@ Zahlen: `1` `2` `42` `1.56` `4/2` `5/3`
 
 ### Zeichenfolgen
 
-Zeichenfolgen: `"hallo"` `"TOLL!"` `" i j k "`
+Zeichenfolgen: `"hallo"`, `"TOLL!"`, `" i j k "`
 
 Zeichenfolgen werden inklusive der doppelten Anführungszeichen (`"`) am Anfang
 und am Ende eingegeben.
@@ -143,13 +153,15 @@ Zahl-Wert. So liefert die Funktion **f** für den Wert **5** das Ergebnis **6**.
 f(5) = 6
 ```
 
-Du kannst dir eine Funktion als eine Maschine vorstellen, in die du Werte hinein
-gibst und aus der das Ergebnis der Funktion als Rückgabewert heraus kommt.
+Du kannst dir eine Funktion als eine **Maschine** vorstellen, in die du Werte
+hinein gibst (*du **rufst** die **Funktion** mit einem **Wert** auf*) und aus
+der das **Ergebnis** der Funktion als **Rückgabewert** heraus kommt.
 
-In Clojure gibt es die Funktion **inc**, die genau das gleiche tut wie die oben
-aufgeführte Funktion **f**. Allerdings wird in Clojure der **Funktionsaufruf**
-nicht `inc(5)` geschrieben, sondern `(inc 5)`. Wir schließen also den Namen der
-Funktion mit in die Klammern ein.
+In Clojure gibt es die Funktion
+[**inc**](https://clojuredocs.org/clojure.core/inc), die genau das gleiche tut
+wie die oben aufgeführte Funktion **f**. Allerdings wird in Clojure der
+**Funktionsaufruf** nicht als `inc(5)` geschrieben, sondern als `(inc 5)`. Wir
+schließen also den Namen der Funktion mit in die Klammern ein.
 
 > Diese Form ist an die [Polnische
 > Notation](https://de.wikipedia.org/wiki/Polnische_Notation) angelehnt.
@@ -171,7 +183,7 @@ können.
 
 > Denke nochmal darüber nach, was der Unterschied zwischen der Funktion und der
 > Benennung der Funktion ist. Bei Zahlen nutzen wir Zahl-Formen wie z.B. `42`,
-> um die Zahl **42** zu nennen. Bei Funktionen ist es fast genau so. Wie kommen
+> um die Zahl **42** zu nennen. Bei Funktionen ist es fast genau so. Wir kommen
 > später nochmal auf den Unterschied zwischen Symbol und Funktion zu sprechen.
 
 Übung:
@@ -181,8 +193,12 @@ können.
 ### Listen
 
 Bisher haben wir nur *einfache* Datentypen und die zugehörigen Werte und Formen
-kennen gelernt. Clojure kennt aber auch *zusammengesetzte* bzw. *strukturierte*
-Datentypen --- z.B. **Listen**.
+kennen gelernt. Clojure kennt aber auch
+[*zusammengesetzte*](https://de.wikipedia.org/wiki/Datentyp#Zusammengesetzte_Datentypen)
+bzw. *strukturierte* Datentypen --- z.B. **Listen**.
+
+Ein zusammengesetzter Datentyp besitzt Werte, die als Bestandteil andere Werte
+enthalten. 
 
 Eine Liste ist eine (geordnete) Folge von Werten. Die Liste mit den Werten
 **42** (Zahl), **TOLL!** (String) und **falsch** (Boolean) wird geschrieben als:
@@ -191,5 +207,49 @@ Eine Liste ist eine (geordnete) Folge von Werten. Die Liste mit den Werten
 (42 "TOLL!" false)
 ```
 
-> Die Liste an sich ist ebenfalls ein **Wert**.
+> Die Liste an sich ist ebenfalls ein **Wert**. Ein Wert des Datentyps *Liste*.
+
+Listen werden von der REPL auf eine besondere Weise behandelt: 
+* Wenn die REPL beim *read* auf eine runde öffnende Klammer (`(`) stößt, erkennt
+  sie, dass hier eine **Listen-Form** **beginnt**.
+* Die REPL fährt damit fort, Formen einzulesen und **auszuwerten**. Die REPL
+  **merkt** sich die Werte zu den ausgewerteten Formen. Denn dies sind ja die
+  Elemente der Liste, die hier gerade eingelesen wird.
+* Sobald die REPL auf die runde schließende Klammer (`)`) stößt, erkennt sie,
+  dass hier die Listen-Form endet. Die REPL erzeugt eine Liste (einen
+  **Listen-Wert**), die als Elemente/Bestandteile jene Werte enthält, die seit
+  der öffnenden Klammer durch die Auswertung der Formen als Werte aufgesammelt
+  wurden.
+* Nun **wertet** die REPL die soeben erzeugte Liste **aus** (so wie jede andere
+  Form ja auch!). Dabei nimmt sie an, dass das erste Element der Liste eine
+  **Funktion** ist. Nun ruft die REPL diese Funktion mit den restlichen
+  Elementen als **Argument** auf.
+* Der Rückgabewert des Funktionsaufrufs (das **Funktionsergebnis**) ist der Wert
+  der Auswertung der Liste.
+
+> Don't Panic! Das schauen wir uns ganz in Ruhe nochmal an ;-)
+
+Übungen:
+* Erkläre deinem Tischnachbarn, wieso `(inc 5)` zu dem Wert **6** auswertet.
+* Zu was wertet `inc` aus?
+* Probier aus, zu was `()` auswerten.
+* Zu was wertet `(inc)` aus. Wieso?
+* Zu was wertet `(inc 5 8)` aus? Hast du eine Idee, wieso das so sein könnte?
+* Zu was wertet `(inc "12")` aus? Macht das Sinn?
+* Zu was wertet `(inc false)` aus? Und `(inc true)`? Macht das Sinn?
+
+### Geschachtelte Listen
+
+Die oben beschrieben Auswertungsregel für Listen lässt sich auch *geschachtelt*
+anwenden.
+
+Übungen:
+* Zu was wertet `(inc (inc 4))` aus?
+* Zu was wertet `(inc (inc (inc 4)))` aus?
+* Erkläre deiner Tischnachbarin, wieso die Form `((inc 4))` nicht ausgewertet
+  werden kann. Welchen Unterschied findest du zwischen den Klammern in Clojure
+  und den Klammern, die du im Mathematikunterricht benutzt?
+* Wieso lässt sich `(inc 4` nicht auswerten? 
+* Wieso lässt sich `(inc 4))` nicht auswerten?
+* Und `inc 4)`?
 
