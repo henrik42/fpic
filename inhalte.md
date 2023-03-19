@@ -3,6 +3,7 @@
 ## Einführung
 
 * Was macht ein [Computer](https://de.wikipedia.org/wiki/Computer)?
+* Was ist [Software](https://de.wikipedia.org/wiki/Software)?
 * Was sind [Daten](https://de.wikipedia.org/wiki/Daten#Informatik)? 
 * Welche Arten von Daten gibt es? Was ist ein [Datentyp](https://de.wikipedia.org/wiki/Datentyp#Elementare_Datentypen)?
 * Was ist [Information](https://de.wikipedia.org/wiki/Information)?
@@ -29,8 +30,8 @@ Du gibst eine *Form* ein, die REPL *wertet* die Form *aus* und schreibt das
 * **Loop**: und das ganz **wiederholen** (*to loop*, *a loop*)
 
 Es gibt verschiedene Möglichkeiten, dies im Browser auszuprobieren. Wir brauchen
-dafür keine lokale Installation, sondern nur einen Browser und einen
-Internetzugang.
+dafür keine lokal installierte Software auf unserem Computer, sondern nur einen
+Browser und einen Internetzugang.
 
 * https://tryclojure.org/ : du bekommst eine laufende REPL und kannst sofort
   Formen eingeben, die sofort ausgewertet werden. In der REPL kannst du ein
@@ -42,15 +43,22 @@ Internetzugang.
 
 Was sind Clojure [Formen](https://clojure.org/guides/learn/syntax)? 
 
+> Die Formen in Clojure entsprechen den Sätzen in der natürlichen Sprache (das
+> stimmt nicht wirklich, aber da wir hier nicht im Deutschunterricht sind, ist
+> das ok für uns). Ein Clojure-Programm besteht aus einer Folge von Formen, d.h.
+> Sätzen.
+
 Wir fangen mit den *einfachen* (d.h. unstrukturierten, den
-nicht-zusammengesetzten) Formen an.
+nicht-zusammengesetzten) Formen an. Diese entsprechen den Wörtern der
+natürlichen Sprache (aus denen wir anschließend Sätze bilden können).
 
 > *Einfach* bedeutet in diesem Zusammenhang, dass wir die Formen nicht weiter in
 > ihre Bestandteile zergliedern können. Wir als Mensch können natürlich Zahlen
 > weiter in ihre Ziffern zergliedern, aber aus Sicht von Clojure geht dies in
-> diesem Fall nicht. In diesem Sinne sind z.B. Zahlen bzw. Numerale für Clojure
-> also atomar bzw.
-> [elementar](https://de.wikipedia.org/wiki/Datentyp#Elementare_Datentypen).
+> diesem Fall nicht. In diesem Sinne sind z.B. Zahlen bzw.
+> [Literale](https://de.wikipedia.org/wiki/Literal) für Clojure also **atomar**
+> bzw.
+> [**elementar**](https://de.wikipedia.org/wiki/Datentyp#Elementare_Datentypen).
 
 ### Zahlen
 
@@ -70,16 +78,19 @@ Zahlen: `-5`, `0`, `1`, `2`, `42`, `1.56`, `4/2`, `5/3`
 
 ### Zeichenfolgen
 
-Zeichenfolgen: `"hallo"`, `"TOLL!"`, `" i j k "`
+Zeichenfolgen (englisch *string*/*strings*): `"hallo"`, `"TOLL!"`, `" i j k "`
 
 Zeichenfolgen werden inklusive der doppelten Anführungszeichen (`"`) am Anfang
 und am Ende eingegeben.
 
 Übungen zu Zeichenfolgen
-* Gib die Zeichenfolge `"hallo"` ein.
+* Gib die Zeichenfolge `"hallo"` ein. Wir sagen, dass diese Zeichenfolge aus 5
+  Zeichen besteht. Die Zeichenfolge `"hallo"` hat die Länge 5.
 * Gib die Zeichenfolgen `"TOLL!"`, `"A_B_$"`, `"a$b/c:_|<>#~'"` ein.
 * Gib eine Zeichenfolge mit nur einem Leerzeichen ein.
-* Gib eine leere Zeichenfolge ein.
+* Gib eine Zeichenfolge mit zwei Leerzeichen ein.
+* Gib eine leere Zeichenfolge ein (also eine, aus keinem Zeichen besteht). Diese
+  Zeichenfolge hat die Länge 0.
 * Was passiert, wenn du am Ende die Anführungszeichen nicht angibst?
 * Was passiert, wenn du zu Beginn die Anführungszeichen nicht angibst?
 
@@ -109,13 +120,18 @@ deine Formen **aus** (*eval*). Das Ergebnis dieser Auswertung ergibt den
 Bisher haben wir Zahlen und Zeichenfolgen kennen gelernt. Wir sprechen bei
 diesen verschiedenen *Arten von Daten* auch von **Datentypen**.
 
-Clojure kennt verschiedene Zahl-Datentypen (Ganzzahl, Rationale Zahlen,
-Fließkommazahlen; dazu später mehr) und auch verschiedene text-artige
-Datentypen: Zeichenfolgen (*strings*), Zeichen (*character*).
+Clojure kennt verschiedene Zahl-Datentypen
+([Ganzzahl](https://de.wikipedia.org/wiki/Ganze_Zahl), [Rationale
+Zahlen](https://de.wikipedia.org/wiki/Rationale_Zahl),
+[Gleitkommazahlen](https://de.wikipedia.org/wiki/Gleitkommazahl); dazu später
+mehr) und auch verschiedene text-artige Datentypen:
+[Zeichenfolgen](https://de.wikipedia.org/wiki/Zeichenkette) (*strings*),
+[Zeichen](https://de.wikipedia.org/wiki/Char_(Datentyp)) (*character*).
 
 Durch den Datentyp wird festgelegt, welche Werte wir mit diesem Datentyp
-ausdrücken können. Clojure erkennt an der äußeren Form, welches der zugehörige
-Datentyp des mit der Form beschriebenen Wertes ist.
+ausdrücken können. Clojure erkennt beim Einlesen (durch den
+[Reader](https://clojure.org/reference/reader)) an der äußeren Form, welches der
+zugehörige Datentyp des mit der Form beschriebenen Wertes ist.
 
 * die Form `12` ist der Ganzzahl-Wert *12*.
 * die Form `"TOLL!"` ist der String-Wert *TOLL!*.
@@ -123,13 +139,15 @@ Datentyp des mit der Form beschriebenen Wertes ist.
 
 ### Boolean / Wahrheitswerte
 
-Der Datentyp *Boolean* umfasst nur zwei mögliche Werte: *wahr* (`true`) und
-  *falsch* (`false`).
+Der Datentyp [**Boolean**](https://de.wikipedia.org/wiki/Boolean) (siehe auch
+  [Wahrheitswerte](https://de.wikipedia.org/wiki/Wahrheitswert)) umfasst nur
+  zwei mögliche Werte: *wahr* (`true`) und *falsch* (`false`).
 
 Übung:
 * Gibt den Boolean-**Wert** *wahr* ein? Welche **Form** musst du nutzen?
 * Welche Arten von Daten kennst du aus deinem Alltag? In welcher Form werden
-  diese dargestellt?
+  diese dargestellt? Tipp: schau mal in die Kontakte-App in deinem Smartphone -
+  welche Dinge kannst du dort eingeben?
 
 ## Funktionen
 
@@ -137,8 +155,8 @@ Bisher haben wir verschiedene Arten von Daten(-typen) kennen gelernt (Zahlen,
 Strings, Boolean) und wie du diese über ihre Form beschreiben und ein- und
 ausgeben kannst.
 
-Nun wollen etwas mit den Werten dieser Datentypen tun. In Clojure nutzen wir
-dazu **Funktionen**
+Nun wollen wir etwas mit den Werten dieser Datentypen **tun**. In Clojure nutzen
+wir dazu [**Funktionen**](https://de.wikipedia.org/wiki/Funktion_(Mathematik)).
 
 Aus dem Mathematikunterricht kennst du schon Funktionen:
 
@@ -157,6 +175,11 @@ Du kannst dir eine Funktion als eine **Maschine** vorstellen, in die du Werte
 hinein gibst (*du **rufst** die **Funktion** mit einem **Wert** auf*) und aus
 der das **Ergebnis** der Funktion als **Rückgabewert** heraus kommt.
 
+> Wir wollen Funktionen hier als etwas *aktives* (wie z.B. eine Maschine)
+> betrachten. In der Mathematik sind Funktionen eine *passive* Beziehung
+> zwischen Mengen. Wir werden unsere Funktionen **ausführen**, was auch
+> bedeutet, dass wir dafür **Zeit** benötigen werden.
+
 In Clojure gibt es die Funktion
 [**inc**](https://clojuredocs.org/clojure.core/inc), die genau das gleiche tut
 wie die oben aufgeführte Funktion **f**. Allerdings wird in Clojure der
@@ -164,7 +187,9 @@ wie die oben aufgeführte Funktion **f**. Allerdings wird in Clojure der
 schließen also den Namen der Funktion mit in die Klammern ein.
 
 > Diese Form ist an die [Polnische
-> Notation](https://de.wikipedia.org/wiki/Polnische_Notation) angelehnt.
+> Notation](https://de.wikipedia.org/wiki/Polnische_Notation) angelehnt. Die
+> Formen werden auch [S-Expressions](https://en.wikipedia.org/wiki/S-expression)
+> genannt.
 
 Übung:
 * Was liefert `(inc 8)`?
@@ -176,10 +201,17 @@ gelernt. Der Funktionsaufruf `(inc 5)` führt zwei neue Arten von Formen ein:
 
 ### Symbole
 
-Die Funktion **inc** wird über das **Symbol** `inc` benannt. Die Funktion
-**inc** ist ein **Wert**, des Datentyps **Funktion**. Über die Form `inc` können
-wir diesen Wert (also diese Funktion) **nennen**, so dass wir sie verwenden
-können.
+Die Funktion **inc** wird über das **Symbol** `inc` benannt. 
+
+> Die Symbol-Form `inc` sieht fast so aus, wie die String-Form `"inc"`, nur dass
+eben die Anführungszeichen (`"`) fehlen. Achte beim Lesen und Schreiben von
+Clojure-Programmen immer darauf, was da ganz genau steht.
+[Symbol-Formen](https://clojure.org/reference/reader#_symbols) dürfen nicht alle
+Zeichen enthalten, die in Strings verwendet werden dürfen.
+
+Die Funktion **inc** ist ein **Wert** des Datentyps **Funktion**. Über die Form
+`inc` können wir diesen Wert (also diese Funktion) **nennen**, so dass wir sie
+verwenden können.
 
 > Denke nochmal darüber nach, was der Unterschied zwischen der Funktion und der
 > Benennung der Funktion ist. Bei Zahlen nutzen wir Zahl-Formen wie z.B. `42`,
@@ -192,16 +224,17 @@ können.
 
 ### Listen
 
-Bisher haben wir nur *einfache* Datentypen und die zugehörigen Werte und Formen
-kennen gelernt. Clojure kennt aber auch
+Bisher haben wir nur *einfache* (unstrukturierte) **Datentypen** und die
+zugehörigen **Werte** und **Formen** kennen gelernt. Clojure kennt aber auch
 [*zusammengesetzte*](https://de.wikipedia.org/wiki/Datentyp#Zusammengesetzte_Datentypen)
-bzw. *strukturierte* Datentypen --- z.B. **Listen**.
+(*strukturierte*, *komplexe*) Datentypen --- z.B. **Listen**.
 
-Ein zusammengesetzter Datentyp besitzt Werte, die als Bestandteil andere Werte
-enthalten. 
+Ein zusammengesetzter Datentyp besitzt Werte, die als **Bestandteil** andere
+Werte enthalten. 
 
-Eine Liste ist eine (geordnete) Folge von Werten. Die Liste mit den Werten
-**42** (Zahl), **TOLL!** (String) und **falsch** (Boolean) wird geschrieben als:
+Eine Liste ist (bzw. enthält) eine (möglicherweise leere) **Folge von Werten**.
+Die Liste mit den Werten **42** (Zahl), **TOLL!** (String) und **falsch**
+(Boolean) wird geschrieben als:
 
 ```
 (42 "TOLL!" false)
@@ -213,8 +246,8 @@ Listen werden von der REPL auf eine besondere Weise behandelt:
 * Wenn die REPL beim *read* auf eine runde öffnende Klammer (`(`) stößt, erkennt
   sie, dass hier eine **Listen-Form** **beginnt**.
 * Die REPL fährt damit fort, Formen einzulesen und **auszuwerten**. Die REPL
-  **merkt** sich die Werte zu den ausgewerteten Formen. Denn dies sind ja die
-  Elemente der Liste, die hier gerade eingelesen wird.
+  **merkt** sich die **Werte** zu den ausgewerteten Formen. Denn dies sind ja
+  die Elemente (Bestandteile) der Liste, die hier gerade eingelesen wird.
 * Sobald die REPL auf die runde schließende Klammer (`)`) stößt, erkennt sie,
   dass hier die Listen-Form endet. Die REPL erzeugt eine Liste (einen
   **Listen-Wert**), die als Elemente/Bestandteile jene Werte enthält, die seit
@@ -223,7 +256,8 @@ Listen werden von der REPL auf eine besondere Weise behandelt:
 * Nun **wertet** die REPL die soeben erzeugte Liste **aus** (so wie jede andere
   Form ja auch!). Dabei nimmt sie an, dass das erste Element der Liste eine
   **Funktion** ist. Nun ruft die REPL diese Funktion mit den restlichen
-  Elementen als **Argument** auf.
+  Elementen als
+  [**Argument**](https://de.wikipedia.org/wiki/Parameter_(Informatik)) auf.
 * Der Rückgabewert des Funktionsaufrufs (das **Funktionsergebnis**) ist der Wert
   der Auswertung der Liste.
 
@@ -233,6 +267,7 @@ Listen werden von der REPL auf eine besondere Weise behandelt:
 * Erkläre deinem Tischnachbarn, wieso `(inc 5)` zu dem Wert **6** auswertet.
 * Zu was wertet `inc` aus?
 * Probier aus, zu was `()` auswerten.
+* Zu was wertet `(5 inc)` aus. Wieso?
 * Zu was wertet `(inc)` aus. Wieso?
 * Zu was wertet `(inc 5 8)` aus? Hast du eine Idee, wieso das so sein könnte?
 * Zu was wertet `(inc "12")` aus? Macht das Sinn?
@@ -244,7 +279,7 @@ Die oben beschrieben Auswertungsregel für Listen lässt sich auch *geschachtelt
 anwenden.
 
 Übungen:
-* Zu was wertet `(inc (inc 4))` aus?
+* Zu was wertet `(inc (inc 4))` aus? Wieso?
 * Zu was wertet `(inc (inc (inc 4)))` aus?
 * Erkläre deiner Tischnachbarin, wieso die Form `((inc 4))` nicht ausgewertet
   werden kann. Welchen Unterschied findest du zwischen den Klammern in Clojure
