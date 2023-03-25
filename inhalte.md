@@ -162,6 +162,10 @@ zugehörigen **Werte** und **Formen** kennen gelernt. Clojure kennt aber auch
 Ein zusammengesetzter Datentyp besitzt Werte, die als **Bestandteil** andere
 Werte enthalten. 
 
+> Zusammengesetzte Datentypen kannst du also nutzen, um z.B. Informationen zu
+> einer Person auszudrücken (das Geburtsdatum der Person, den Namen der Person,
+> den Wohnort der Person).
+
 Clojure kennt u.a. folgende zusammengesetzte Datentypen:
 
 * [Vektor]((https://de.wikipedia.org/wiki/Vektor)) : eine (ggf. leere) Folge von
@@ -186,10 +190,26 @@ bei den **einfachen** Datentypen werden wir auch im Falle der
 **zusammengesetzten** Datentypen zwischen deren **Form** und deren **Werten**
 unterscheiden. 
 
-### Vektor
+### Vektoren
 
 Ein Vektor besteht aus einer (ggf. leeren) Folge von Werten. In Clojure werden
 Vektoren mit eckigen Klammern (`[` ... `]`) geschrieben.
+
+Vektoren werden von der REPL auf eine **besondere Weise eingelesen**: 
+
+* Wenn die REPL beim *read* auf eine eckige öffnende Klammer (`[`) stößt,
+  erkennt sie, dass hier eine **Vektor-Form** **beginnt**.
+
+* Die REPL fährt damit fort, Formen einzulesen und **auszuwerten**. Die REPL
+  **merkt** sich die **Werte** zu den ausgewerteten Formen. Denn dies sind ja
+  die Elemente (Bestandteile) des Vektors, der hier gerade eingelesen wird.
+
+* Sobald die REPL auf die eckige schließende Klammer (`]`) stößt, erkennt sie,
+  dass hier die Vektor-Form endet. Die REPL erzeugt einen Vektor (einen
+  **Vektor-Wert**), der als Elemente/Bestandteile jene Werte enthält, die seit
+  der öffnenden Klammer durch die Auswertung der Formen als Werte aufgesammelt
+  wurden. Dieser Vektor-Wert ist jener Wert, **zu dem die Vektor-Form
+  auswertet**.
 
 Der Vektor mit den **Elementen** **42** (Ganzzahl), **TOLL!** (String) und
 **wahr** (Boolean) wird geschrieben als `[42 "TOLL!" true]`. Die Elemente werden
@@ -203,6 +223,9 @@ Weitere Beispiele für Vektoren:
 * `[1 1 0]` (Vektoren können Werte mehrfach enthalten)
 * `["A" ["x" "y"] 7]` (Vektoren können auch Vektoren enthalten)
 * `[[[]] []]` (**geschachtelte** Datenstrukturen; engl. *nested*)
+* Besprich mit deinem Tischnachbarn, an welcher Stelle (durch welche
+Formulierung) in der obigen Erläuterung die Entstehung der **geschachtelte**
+Datenstrukturen zu erkennen ist.
 
 > Das Komma (`,`) ist ein Clojure ein *white space*. D.h., es kann an Stelle
 > eines **Leerzeichens** (` `) verwendet werden. Es ist erlaubt (z.B. zur
@@ -216,19 +239,76 @@ Weitere Beispiele für Vektoren:
 * Zu was wertet die Form `[, ,1,,2, ,]` aus? Wieso?
 * Zu was wertet die Form `[1, 2, "x", true]` aus? Wieso?
 * Wie sieht der Vektor aus (also die Form), mit den Elementen 'dein Vorname',
-  'dein Nachname', 'dein Alter in Jahren', 'deine Körpergröße in cm', 'deine
+  'dein Nachname', 'dein Geburtsdatum', 'deine Körpergröße in cm' und 'deine
   Schuhgröße'? Welche Datentypen nutzt du? Wieso?
+* Überlege dir zusammen mit deiner Tischnachbarin, welche verschiedenen
+  Möglichkeiten ihr habt, ein Geburtsdatum als Clojure-Datentyp darzustellen.
 
-### Menge
+### Mengen
 
-### Zuordnungstabelle
+Eine Menge ist eine (ggf. leere) ungeordnete Sammlung von Werten, von denen
+jeweils maximal ein Exemplar enthalten ist (kein Wert darf mehrfach in der Menge
+enthalten sein).
 
+In Clojure werden Mengen mit geschweiften Klammern mit einem vorangestellten
+Lattenkreuz (engl. *hash*) (`#{` ... `}`) geschrieben.
+
+Die Menge mit den **Elementen** **42** (Ganzzahl), **TOLL!** (String) und
+**wahr** (Boolean) wird geschrieben als `#{42 "TOLL!" true}`. Die Elemente
+werden durch Leerzeichen (bzw. Kommata) getrennt (wie bei den Vektoren).
+
+Weitere Beispiele für Mengen:
+
+* `#{}` (die leere Menge)
+* `#{true}`
+* `#{"k" 2}` (Mengen können Werte unterschiedlicher Datentypen enthalten)
+* `#{"A" #{"x" "y"} 7}` (Mengen können auch Mengen enthalten)
+* `#{#{1} #{} #{2}}` (**geschachtelte** Datenstrukturen; engl. *nested*)
+
+> Mengen und Vektoren können Elemente beliebiger Datentypen enthalten. Somit
+> können Vektoren auch Mengen enthalten und Mengen können Vektoren enthalten:
+> `[[1 2 3] #{1 2 #{"a"} 3 [true #{"TOLL!"}]}]`.
+
+Übungen:
+
+* Zu was wertet die Form `#{,,,}` aus? 
+* Zu was wertet die Form `#{,"a",}` aus? 
+* Zu was wertet die Form `#{,"a","a",}` aus? Macht das Sinn?
+
+### Zuordnungstabellen
+
+Eine Zuordnungstabelle (engl. *map*) ist eine (ggf. leere) Sammlung von
+**Schlüssel-Wert-Paaren**. Durch eine Map drückst du einen Zusammenhang zwischen
+den jeweiligen **Schlüssel-Werten** und dem (einen) zugeordneten **Wert** aus.
+
+In Clojure werden Maps mit geschweiften Klammern (`{` ... `}`) geschrieben. Die
+**Schlüssel-Wert-Paare** werden als aufeinanderfolgende Elemente geschrieben.
+
+> Wichtig: wir sagen, dass es sich um Schlüssel-Wert-Paare handelt, aber die
+> Paare werden nicht gesondert *eingeklammert*. Du kannst die Paare zwar durch
+> Kommata trennen, so dass sie sich bei Lesen besser von einander abheben, aber
+> das ist kein Muss. Man hätte die Paare auch explizit durch z.B. spitze
+> Klammern (`<` ... `>`) einklammern können, aber das wird in Clojure nicht
+> gemacht.
+
+Beispiele für Maps:
+
+* `{}` (die leere Map)
+* `{"HSV" 2 "FCB" 1 "St. Pauli" 2}` 
+* Zu was wertet die Form `{"x" 1 "X" 1}` aus?
+* Zu was wertet die Form `{"x" 1, "X" 1}` aus?
+* Zu was wertet die Form `{"x" 1, "x" 2}` aus? Macht das Sinn?
+* Zu was wertet die Form `{["x" 1]}` aus? Macht das Sinn?
+* Zu was wertet die Form `{["x" 1] ["x" 2]}` aus? Macht das Sinn?
+* Wie könntest du mit Hilfe einer Map ausdrücken, dass der Merkur der nächste
+  Planet zur Sonne ist, die Venus der zweitnächste usw.? Überlege dir **zwei**
+  mögliche Darstellungen als Map.
 
 ## Funktionen
 
-Bisher haben wir verschiedene Arten von Daten(-typen) kennen gelernt (Zahlen,
-Strings, Boolean) und wie du diese über ihre Form beschreiben und ein- und
-ausgeben kannst.
+Bisher haben wir verschiedene Arten von einfachen (Zahlen, Strings, Boolean) und
+zusammengesetzten (Vektoren, Mengen, Maps) Daten(-typen) kennen gelernt und wie
+du diese über ihre Form beschreiben und ein- und ausgeben kannst.
 
 Nun wollen wir etwas mit den Werten dieser Datentypen **tun**. In Clojure nutzen
 wir dazu [**Funktionen**](https://de.wikipedia.org/wiki/Funktion_(Mathematik)).
@@ -250,6 +330,10 @@ Du kannst dir eine Funktion als eine **Maschine** vorstellen, in die du Werte
 hinein gibst (*du **rufst** die **Funktion** mit einem **Wert** auf*) und aus
 der das **Ergebnis** der Funktion als **Rückgabewert** heraus kommt.
 
+In dem oben aufgeführten Beispiel ist `x` der (formale) **Parameter** der
+Funktion `f` und `5` ist das **Argument** bzw. der Argumentwert des
+Funktionsaufrufs.
+
 > Wir wollen Funktionen hier als etwas *aktives* (wie z.B. eine Maschine)
 > betrachten. In der Mathematik sind Funktionen eine *passive* Beziehung
 > zwischen Mengen. Wir werden unsere Funktionen **ausführen**, was auch
@@ -267,11 +351,12 @@ schließen also den Namen der Funktion mit in die Klammern ein.
 > genannt.
 
 Übung:
+
 * Was liefert `(inc 8)`?
 
 ## Funktionsaufruf als Form
 
-Bisher haben wir Formen für Zahlen, Zeichenketten und Wahrheitswerte kennen
+Bisher haben wir Formen für u.a. Zahlen, Zeichenketten und Vektoren kennen
 gelernt. Der Funktionsaufruf `(inc 5)` führt zwei neue Arten von Formen ein:
 
 ### Symbole
@@ -294,51 +379,59 @@ verwenden können.
 > später nochmal auf den Unterschied zwischen Symbol und Funktion zu sprechen.
 
 Übung:
+
 * Was erhältst du, wenn du `inc` eingibst? Wie unterscheidet sich das von den
   bisherigen Ein-Ausgaben?
 
 ### Listen
 
-Eine Liste ist (bzw. enthält) eine (möglicherweise leere) **Folge von Werten**.
-Die Liste mit den Werten **42** (Zahl), **TOLL!** (String) und **falsch**
-(Boolean) wird geschrieben als:
+Eine Liste besteht aus einer (ggf. leeren) Folge von Werten (wie die Vektoren).
+In Clojure werden Listen mit runden Klammern `(` ... `)` geschrieben.
 
-```
-(42 "TOLL!" false)
-```
+Die Liste mit den **Elementen** **42** (Ganzzahl), **TOLL!** (String) und
+**wahr** (Boolean) wird geschrieben als `(42 "TOLL!" true)`. Die Elemente werden
+einfach durch Leerzeichen bzw. Kommata (vgl. oben) getrennt.
 
-> Die Liste an sich ist ebenfalls ein **Wert**. Ein Wert des Datentyps *Liste*.
+Weitere Beispiele für Listen:
 
-Listen werden von der REPL auf eine besondere Weise behandelt: 
-* Wenn die REPL beim *read* auf eine runde öffnende Klammer (`(`) stößt, erkennt
-  sie, dass hier eine **Listen-Form** **beginnt**.
-* Die REPL fährt damit fort, Formen einzulesen und **auszuwerten**. Die REPL
-  **merkt** sich die **Werte** zu den ausgewerteten Formen. Denn dies sind ja
-  die Elemente (Bestandteile) der Liste, die hier gerade eingelesen wird.
-* Sobald die REPL auf die runde schließende Klammer (`)`) stößt, erkennt sie,
-  dass hier die Listen-Form endet. Die REPL erzeugt eine Liste (einen
-  **Listen-Wert**), die als Elemente/Bestandteile jene Werte enthält, die seit
-  der öffnenden Klammer durch die Auswertung der Formen als Werte aufgesammelt
-  wurden.
-* Nun **wertet** die REPL die soeben erzeugte Liste **aus** (so wie jede andere
-  Form ja auch!). Dabei nimmt sie an, dass das erste Element der Liste eine
-  **Funktion** ist. Nun ruft die REPL diese Funktion mit den restlichen
-  Elementen als
+* `()` (die leere Liste)
+* `(true)`
+* `("k" 2)` (Listen können Werte unterschiedlicher Datentypen enthalten)
+* `(1 1 0)` (Listen können Werte mehrfach enthalten)
+* `("A" ("x" "y") 7)` (Listen können auch Listen enthalten)
+* `((()) ())` (**geschachtelte** Datenstrukturen; engl. *nested*)
+
+Listen werden von der REPL auf eine **ganz besondere Weise behandelt**: 
+
+* Zuerst wird die Listen-Form genau so ermittelt, wie es bei den anderen
+  zusammengesetzten Formen der Fall ist (vgl. die Beschreibung oben zu den
+  Vektoren). 
+
+* Sobald die REPL den Listen-Wert ermittelt hat, nimmt sie an, dass das erste
+  Element der Liste eine **Funktion** ist (vgl. oben). D.h., die erste Form in
+  der Liste muss zu einer Funktion ausgewertet sein. Nun ruft die REPL diese
+  Funktion mit den restlichen Elementen (den Werten) der Liste als
   [**Argument**](https://de.wikipedia.org/wiki/Parameter_(Informatik)) auf.
+
 * Der Rückgabewert des Funktionsaufrufs (das **Funktionsergebnis**) ist der Wert
-  der Auswertung der Liste.
+  der Auswertung der Liste. Also jener **Wert, zu dem die Listen-Form
+  auswertet**.
 
 > Don't Panic! Das schauen wir uns ganz in Ruhe nochmal an ;-)
 
 Übungen:
+
 * Erkläre deinem Tischnachbarn, wieso `(inc 5)` zu dem Wert **6** auswertet.
 * Zu was wertet `inc` aus?
-* Probier aus, zu was `()` auswerten.
+* Probier aus, zu was `()` auswerten. Macht das Sinn?
 * Zu was wertet `(5 inc)` aus. Wieso?
 * Zu was wertet `(inc)` aus. Wieso?
 * Zu was wertet `(inc 5 8)` aus? Hast du eine Idee, wieso das so sein könnte?
 * Zu was wertet `(inc "12")` aus? Macht das Sinn?
 * Zu was wertet `(inc false)` aus? Und `(inc true)`? Macht das Sinn?
+* Zu was wertet `[inc]` aus? Wieso?
+* Zu was wertet `[inc 5]` aus? Wieso?
+* Zu was wertet `[(inc 5)]` aus? Wieso?
 
 ### Geschachtelte Listen
 
