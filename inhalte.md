@@ -448,3 +448,35 @@ anwenden.
 * Wieso lässt sich `(inc 4))` nicht auswerten?
 * Und `inc 4)`?
 
+## Zugriff auf die Elemente zusammengesetzter Datentypen
+
+Bisher haben wir die Werte zusammengesetzter Datentypen als Form zwar
+hinschreiben können. Nun möchten wir aber auf die Teile (also die Elemente) der
+Datentyp-Werte **zugreifen**.
+
+Für diesen Zugriff bietet Clojure eine Reihe von Funktionen:
+
+> Im [Cheatsheet](https://clojure.org/api/cheatsheet) findest du viele
+> Funktionen, von denen wir einige im folgenden kennen lernen.
+
+* `first` liefert dir das erste Element eines zusammengesetzten Wertes. 
+* `last` liefert dir das letzte Element eines zusammengesetzten Wertes. 
+
+Übungen:
+
+* Zu was wertet `(first [1 true "a"])` aus?
+* Zu was wertet `(first [[1 true "a"]])` aus?
+* Zu was wertet `(first 1 true "a")` aus?
+* Zu was wertet `(first)` aus?
+* Zu was wertet `(first [])` aus?
+* Zu was wertet `(first {1 true "a" 42})` aus? Macht das Sinn?
+* Zu was wertet `(first {})` aus?
+* Zu was wertet `(first #{1 true "a" 42})` aus? Macht das Sinn?
+* Zu was wertet `(first #{})` aus?
+
+## Was ist `nil`?
+
+## Was ist der Unterschied zwischen einem Datentyp und einer Sequenz?
+
+## Weitere Funktionen für den Zugriff auf zusammengesetzte Datentypen
+
