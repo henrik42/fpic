@@ -106,8 +106,8 @@ Programm vorhanden sind und der äußeren **Form**, mit der wir diese Werte
 eingeben können und mit der diese Werte auch wieder ausgegeben werden.
 
 Übungen:
-* Welche Formen (unabhängig von Clojure) kennst du, mit denen du die Zahl 12
-  ausdrücken kannst?
+* Welche Formen (unabhängig von Clojure) kennst du, mit denen du die Zahl (also
+  den Wert) 12 ausdrücken kannst? 
 
 > Denk nochmal über die REPL nach. Die REPL liest deine Eingabe ein (*read*).
 Deine Eingabe muss aus Formen bestehen. Nach dem Einlesen **wertet** die REPL
@@ -117,8 +117,9 @@ deine Formen **aus** (*eval*). Das Ergebnis dieser Auswertung ergibt den
 
 ## Werte und Datentypen
 
-Bisher haben wir Zahlen und Zeichenfolgen kennen gelernt. Wir sprechen bei
-diesen verschiedenen *Arten von Daten* auch von **Datentypen**.
+Bisher haben wir **Zahlen** und **Zeichenfolgen** (sowohl als **Form** als auch
+als **Wert**) kennen gelernt. Wir sprechen bei diesen verschiedenen *Arten von
+Daten* (also die Werte) auch von **Datentypen**.
 
 Clojure kennt verschiedene Zahl-Datentypen
 ([Ganzzahl](https://de.wikipedia.org/wiki/Ganze_Zahl), [Rationale
@@ -128,16 +129,18 @@ mehr) und auch verschiedene text-artige Datentypen:
 [Zeichenfolgen](https://de.wikipedia.org/wiki/Zeichenkette) (*strings*),
 [Zeichen](https://de.wikipedia.org/wiki/Char_(Datentyp)) (*character*).
 
-Durch den Datentyp wird festgelegt, welche Werte wir mit diesem Datentyp
-ausdrücken können. Clojure erkennt beim Einlesen (durch den
-[Reader](https://clojure.org/reference/reader)) an der äußeren Form, welches der
-zugehörige Datentyp des mit der Form beschriebenen Wertes ist.
+Durch den jeweiligen Datentyp wird festgelegt, welche Werte wir mit diesem
+Datentyp ausdrücken können (**Wertebereich**). Clojure erkennt beim Einlesen
+(durch den [Reader](https://clojure.org/reference/reader)) an der **äußeren
+Form**, welches der **zugehörige Datentyp** des mit der Form beschriebenen
+Wertes ist.
 
-* die Form `12` ist der Ganzzahl-Wert *12*.
-* die Form `"TOLL!"` ist der String-Wert *TOLL!*.
-* die Form `"12"` ist der String-Wert *12*.
+* die Form `12` beschreibt der Ganzzahl-Wert *12* (d.h. die Form `12` wertet zu
+  dem Ganzzahl-Wert *12* aus)
+* die Form `"TOLL!"` beschreibt den String-Wert *TOLL!*.
+* die Form `"12"` beschreibt den String-Wert *12*.
 
-### Boolean / Wahrheitswerte
+## Boolean / Wahrheitswerte
 
 Der Datentyp [**Boolean**](https://de.wikipedia.org/wiki/Boolean) (siehe auch
   [Wahrheitswerte](https://de.wikipedia.org/wiki/Wahrheitswert)) umfasst nur
@@ -148,6 +151,78 @@ Der Datentyp [**Boolean**](https://de.wikipedia.org/wiki/Boolean) (siehe auch
 * Welche Arten von Daten kennst du aus deinem Alltag? In welcher Form werden
   diese dargestellt? Tipp: schau mal in die Kontakte-App in deinem Smartphone -
   welche Dinge kannst du dort eingeben?
+
+## Zusammengesetzte Datentypen
+
+Bisher haben wir nur *einfache* (unstrukturierte) **Datentypen** und die
+zugehörigen **Werte** und **Formen** kennen gelernt. Clojure kennt aber auch
+[*zusammengesetzte*](https://de.wikipedia.org/wiki/Datentyp#Zusammengesetzte_Datentypen)
+(*strukturierte*, *komplexe*) Datentypen.
+
+Ein zusammengesetzter Datentyp besitzt Werte, die als **Bestandteil** andere
+Werte enthalten. 
+
+Clojure kennt u.a. folgende zusammengesetzte Datentypen:
+
+* [Vektor]((https://de.wikipedia.org/wiki/Vektor)) : eine (ggf. leere) Folge von
+  Werten
+* [Liste](https://de.wikipedia.org/wiki/Liste_(Datenstruktur)) : eine (ggf.
+  leere) Folge von Werten
+* [Menge](https://de.wikipedia.org/wiki/Menge_(Datenstruktur)) (engl. *set*):
+  eine (ggf. leere) ungeordnete Sammlung von Werten, von denen jeweils maximal
+  ein Exemplar enthalten ist (kein Wert darf mehrfach in der Menge enthalten
+  sein).
+* [Zuordnungstabelle](https://de.wikipedia.org/wiki/Zuordnungstabelle) (engl.
+  *map*) : eine (ggf. leere) Sammlung von Schlüssel-Wert-Paaren.
+
+> Die Bezeichnung *Vektor* kennst du vielleicht aus dem Mathematikunterricht. In
+> der Informatik wird auch von einem
+> [**Tupel**](https://de.wikipedia.org/wiki/Tupel_(Informatik)) oder von einem
+> [**Feld**](https://de.wikipedia.org/wiki/Feld_(Datentyp)) gesprochen. Alle
+> drei Bedeutungen entsprechen nicht ganz dem, was ein Vektor in Clojure ist.
+
+Die zusammengesetzten Datentypen schauen wir uns nun eim Detail an. Genau so wie
+bei den **einfachen** Datentypen werden wir auch im Falle der
+**zusammengesetzten** Datentypen zwischen deren **Form** und deren **Werten**
+unterscheiden. 
+
+### Vektor
+
+Ein Vektor besteht aus einer (ggf. leeren) Folge von Werten. In Clojure werden
+Vektoren mit eckigen Klammern (`[` ... `]`) geschrieben.
+
+Der Vektor mit den **Elementen** **42** (Ganzzahl), **TOLL!** (String) und
+**wahr** (Boolean) wird geschrieben als `[42 "TOLL!" true]`. Die Elemente werden
+einfach durch Leerzeichen getrennt. Es wird kein Komma verwendet.
+
+Weitere Beispiele für Vektoren:
+
+* `[]` (der leere Vektor)
+* `[true]`
+* `["k" 2]` (Vektoren können Werte unterschiedlicher Datentypen enthalten)
+* `[1 1 0]` (Vektoren können Werte mehrfach enthalten)
+* `["A" ["x" "y"] 7]` (Vektoren können auch Vektoren enthalten)
+* `[[[]] []]` (**geschachtelte** Datenstrukturen; engl. *nested*)
+
+> Das Komma (`,`) ist ein Clojure ein *white space*. D.h., es kann an Stelle
+> eines **Leerzeichens** (` `) verwendet werden. Es ist erlaubt (z.B. zur
+> besseren Lesbarkeit), in einem Vektor die Elemente durch Kommata zu trennen:
+> `[1,2,"x",true]`.
+
+Übungen:
+
+* Zu was wertet die Form `,,,` aus? Wieso?
+* Zu was wertet die Form `,[,],` aus? Wieso?
+* Zu was wertet die Form `[, ,1,,2, ,]` aus? Wieso?
+* Zu was wertet die Form `[1, 2, "x", true]` aus? Wieso?
+* Wie sieht der Vektor aus (also die Form), mit den Elementen 'dein Vorname',
+  'dein Nachname', 'dein Alter in Jahren', 'deine Körpergröße in cm', 'deine
+  Schuhgröße'? Welche Datentypen nutzt du? Wieso?
+
+### Menge
+
+### Zuordnungstabelle
+
 
 ## Funktionen
 
@@ -223,14 +298,6 @@ verwenden können.
   bisherigen Ein-Ausgaben?
 
 ### Listen
-
-Bisher haben wir nur *einfache* (unstrukturierte) **Datentypen** und die
-zugehörigen **Werte** und **Formen** kennen gelernt. Clojure kennt aber auch
-[*zusammengesetzte*](https://de.wikipedia.org/wiki/Datentyp#Zusammengesetzte_Datentypen)
-(*strukturierte*, *komplexe*) Datentypen --- z.B. **Listen**.
-
-Ein zusammengesetzter Datentyp besitzt Werte, die als **Bestandteil** andere
-Werte enthalten. 
 
 Eine Liste ist (bzw. enthält) eine (möglicherweise leere) **Folge von Werten**.
 Die Liste mit den Werten **42** (Zahl), **TOLL!** (String) und **falsch**
