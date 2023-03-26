@@ -197,7 +197,7 @@ Clojure kennt u.a. folgende zusammengesetzte Datentypen:
 > [**Feld**](https://de.wikipedia.org/wiki/Feld_(Datentyp)) gesprochen. Alle
 > drei Bedeutungen entsprechen nicht ganz dem, was ein Vektor in Clojure ist.
 
-Die zusammengesetzten Datentypen schauen wir uns nun eim Detail an. Genau so wie
+Die zusammengesetzten Datentypen schauen wir uns nun im Detail an. Genau so wie
 bei den **einfachen** Datentypen werden wir auch im Falle der
 **zusammengesetzten** Datentypen zwischen deren **Form** und deren **Werten**
 unterscheiden. 
@@ -239,7 +239,7 @@ Weitere Beispiele für Vektoren:
 Formulierung) in der obigen Erläuterung die Entstehung der **geschachtelte**
 Datenstrukturen zu erkennen ist.
 
-> Das Komma (`,`) ist ein Clojure ein *white space*. D.h., es kann an Stelle
+> Das Komma (`,`) ist in Clojure ein *white space*. D.h., es kann an Stelle
 > eines **Leerzeichens** (` `) verwendet werden. Es ist erlaubt (z.B. zur
 > besseren Lesbarkeit), in einem Vektor die Elemente durch Kommata zu trennen:
 > `[1,2,"x",true]`.
@@ -254,7 +254,8 @@ Datenstrukturen zu erkennen ist.
   'dein Nachname', 'dein Geburtsdatum', 'deine Körpergröße in cm' und 'deine
   Schuhgröße'? Welche Datentypen nutzt du? Wieso?
 * Überlege dir zusammen mit deiner Tischnachbarin, welche verschiedenen
-  Möglichkeiten ihr habt, ein Geburtsdatum als Clojure-Datentyp darzustellen.
+  Möglichkeiten ihr habt, ein Geburtsdatum mit Hilfe von Clojure-Datentypen
+  darzustellen.
 
 ### Mengen
 
@@ -296,6 +297,12 @@ den jeweiligen **Schlüssel-Werten** und dem (einen) zugeordneten **Wert** aus.
 In Clojure werden Maps mit geschweiften Klammern (`{` ... `}`) geschrieben. Die
 **Schlüssel-Wert-Paare** werden als aufeinanderfolgende Elemente geschrieben.
 
+Sowohl der **Schlüssel** des Schlüssel-Wert-Paares als auch der **Wert** des
+Schlüssel-Wert-Paares sind **Werte**. D.h., dass du als Schlüssel auch z.B.
+einen Vektor verwenden kannst.
+
+Außerdem brauchen die Schlüssel einer Map nicht alle vom gleichen Datentyp sein.
+
 > Wichtig: wir sagen, dass es sich um Schlüssel-Wert-Paare handelt, aber die
 > Paare werden nicht gesondert *eingeklammert*. Du kannst die Paare zwar durch
 > Kommata trennen, so dass sie sich bei Lesen besser von einander abheben, aber
@@ -307,6 +314,10 @@ Beispiele für Maps:
 
 * `{}` (die leere Map)
 * `{"HSV" 2 "FCB" 1 "St. Pauli" 2}` 
+* `{[1 2] 3 [5 6] 11 "nix" 0}`
+
+Übungen:
+
 * Zu was wertet die Form `{"x" 1 "X" 1}` aus?
 * Zu was wertet die Form `{"x" 1, "X" 1}` aus?
 * Zu was wertet die Form `{"x" 1, "x" 2}` aus? Macht das Sinn?
@@ -314,7 +325,8 @@ Beispiele für Maps:
 * Zu was wertet die Form `{["x" 1] ["x" 2]}` aus? Macht das Sinn?
 * Wie könntest du mit Hilfe einer Map ausdrücken, dass der Merkur der nächste
   Planet zur Sonne ist, die Venus der zweitnächste usw.? Überlege dir **zwei**
-  mögliche Darstellungen als Map.
+  mögliche Darstellungen als Map. Tipp: zeichnet dir eine Zuordnungstabelle auf
+  ein Stück Papier. Kommst du drauf?
 
 -------------------------------------------------------------------------------
 ## Funktionen
@@ -360,8 +372,8 @@ schließen also den Namen der Funktion mit in die Klammern ein.
 
 > Diese Form ist an die [Polnische
 > Notation](https://de.wikipedia.org/wiki/Polnische_Notation) angelehnt. Die
-> Formen werden auch [S-Expressions](https://en.wikipedia.org/wiki/S-expression)
-> genannt.
+> Klammer-Ausdrücke/Formen werden auch
+> [S-Expressions](https://en.wikipedia.org/wiki/S-expression) genannt.
 
 Übung:
 
@@ -421,14 +433,15 @@ Listen werden von der REPL auf eine **ganz besondere Weise behandelt**:
   zusammengesetzten Formen der Fall ist (vgl. die Beschreibung oben zu den
   Vektoren). 
 
-* Sobald die REPL den Listen-Wert ermittelt hat, nimmt sie an, dass das erste
-  Element der Liste eine **Funktion** ist (vgl. oben). D.h., die erste Form in
-  der Liste muss zu einer Funktion ausgewertet sein. Nun ruft die REPL diese
-  Funktion mit den restlichen Elementen (den Werten) der Liste als
-  [**Argument**](https://de.wikipedia.org/wiki/Parameter_(Informatik)) auf.
+* Sobald die REPL den **Listen-Wert** ermittelt hat, nimmt sie an, dass das
+  **erste Element** der Liste eine **Funktion** ist (vgl. oben). D.h., die
+  **erste Form** in der Liste muss **zu einer Funktion ausgewertet sein**. Nun
+  ruft die REPL diese Funktion mit den restlichen Elementen (den Werten) der
+  Liste als [**Argument**](https://de.wikipedia.org/wiki/Parameter_(Informatik))
+  auf.
 
-* Der Rückgabewert des Funktionsaufrufs (das **Funktionsergebnis**) ist der Wert
-  der Auswertung der Liste. Also jener **Wert, zu dem die Listen-Form
+* Der **Rückgabewert** des Funktionsaufrufs (das **Funktionsergebnis**) ist der
+  Wert der Auswertung der Liste. Also jener **Wert, zu dem die Listen-Form
   auswertet**.
 
 > Don't Panic! Das schauen wir uns ganz in Ruhe nochmal an ;-)
@@ -466,8 +479,9 @@ anwenden.
 ## Zugriff auf die Elemente zusammengesetzter Datentypen
 
 Bisher haben wir die Werte zusammengesetzter Datentypen als Form zwar
-hinschreiben können. Nun möchten wir aber auf die Teile (also die Elemente) der
-Datentyp-Werte **zugreifen**.
+hinschreiben können (als Literale). Nun möchten wir aber auf die Teile (also die
+Elemente) der Datentyp-Werte **zugreifen** und die Teile so aus den
+zusammengesetzten Werten herauslesen.
 
 Für diesen Zugriff bietet Clojure eine Reihe von Funktionen:
 
@@ -484,7 +498,7 @@ Für diesen Zugriff bietet Clojure eine Reihe von Funktionen:
 * Zu was wertet `(first [1 true "a"])` aus?
 * Zu was wertet `(first [[1 true "a"]])` aus?
 * Zu was wertet `(first 1 true "a")` aus?
-* Zu was wertet `(first)` aus?
+* Zu was wertet `(first)` aus? Macht das Sinn?
 * Zu was wertet `(first [])` aus?
 * Zu was wertet `(first {1 true "a" 42})` aus? Macht das Sinn?
 * Zu was wertet `(first {})` aus?
@@ -500,7 +514,7 @@ Für diesen Zugriff bietet Clojure eine Reihe von Funktionen:
 Die Funktion `nth` liefert dir das __n__-te Element eines zusammengesetzten
 Wertes.
 
-> Kannst du dir vorstellen, wieso die Funktion gerade `nth` heißt? Kennst du den
+> Kannst du dir vorstellen, wieso die Funktion gerade `nth` heißt? Kennst du die
 > Buchstaben **n** bzw. **N** aus dem Mathematikunterricht? Welche Bedeutung hat
 > der Buchstabe dort?
 
@@ -528,10 +542,10 @@ numbering](https://en.wikipedia.org/wiki/Zero-based_numbering)__.
 > __Das Problem mit der
 > [Metasprache](https://de.wikipedia.org/wiki/Metasprache)__: wir schreiben hier
 > mit Deutsch und teilweise Englisch und zusätzlich auch noch mit Clojure
-> __über__ Clojure. D.h., wie nutzen verschiedene __Sprachen__, um über eine
+> __über__ Clojure. D.h., wie nutzen verschiedene __Sprachen__, um __über__ eine
 > __Sprache__ (Clojure) zu schreiben. Bei deinen Recherchen im Internet und in
 > Büchern wirst du verschiedene Arten finden, wie die Autorinnen Sprache
-> benutzen, um über Clojure zu schreiben. Um z.B. zu beschreiben, [wie die
+> benutzen, um __über__ Clojure zu schreiben. Um z.B. zu beschreiben, [wie die
 > Funktion `nth` aufgerufen werden
 > kann](https://clojuredocs.org/clojure.core/nth), nutzen viele Autoren die
 > Schreibweise `(nth coll index)`. Damit möchte der Autor ausdrücken, dass die
@@ -547,6 +561,15 @@ numbering](https://en.wikipedia.org/wiki/Zero-based_numbering)__.
 > diese zweite Art der Schreibweise verwenden.
 
 Die Funktion `nth` kannst du mit __zwei__ oder __drei__ __Argumenten__ aufrufen.
+
+> Clojure-Funktionen können also verschiedene
+> [Stelligkeiten](https://de.wikipedia.org/wiki/Stelligkeit) (Arität) haben.
+> Viele Funktionen haben nur eine Stelligkeit. Die Funktion `nth` hat zwei.
+> Dabei wird in Clojure die Stelligkeit nur nach der **Anzahl der erwarteten
+> Argumente** unterschieden. In anderen Programmiersprachen wird im Zusammenhang
+> mit den erwarteten Datentypen auch von
+> [Signatur](https://de.wikipedia.org/wiki/Signatur_(Programmierung))
+> gesprochen.
 
 * `(nth <coll> <n>)` : liefert das n-te (0-based) Element der Collection. Falls
   n größer oder gleich der Anzahl der Elemente der Collection ist, wird ein
@@ -570,9 +593,9 @@ Die Funktion `nth` kannst du mit __zwei__ oder __drei__ __Argumenten__ aufrufen.
 * Zu was wertet `(nth [2020 2021 2022 2023] -3 99)` aus? Macht das Sinn? Was
   hättest du erwartet? Zu was wertet `(nth [2020 2021 2022 2023] 3 (nth [] 0))`
   aus? Macht das Sinn? Was hättest du erwartet? Schau dir nochmal genau an, wie
-  (geschachtelte) Funktionsaufrufe in Clojure erfolgen. Was passiert wann? In
-  welcher Reihenfolge werden die Formen ausgewertet? Zu was wertet `(nth [2020
-  (nth [] 1) 2022 2023] 3 (nth [] 0))` aus?
+  die Auswertung von (geschachtelten) Funktionsaufrufen in Clojure erfolgt. Was
+  passiert wann? In welcher Reihenfolge werden die Formen ausgewertet? Zu was
+  wertet `(nth [2020 (nth [] 1) 2022 2023] 3 (nth [] 0))` aus?
 * Was ist der Unterschied zwischen `(first [])` und `(nth [] 0)` und `(nth [] 0
   nil)`?
 
