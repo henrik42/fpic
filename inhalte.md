@@ -610,9 +610,88 @@ Die Funktion `nth` kannst du mit __zwei__ oder __drei__ __Argumenten__ aufrufen.
 -------------------------------------------------------------------------------
 ## Was ist `nil`?
 
+Vielleicht hast du bei den Übungen schon bemerkt, dass `(first [])` zu `nil`
+auswertet. Aber was ist `nil`? 
+
+`nil` ist das **Literal** (also eine **Form**) für den **Wert** __nil__. 
+
+> Ich werde ab jetzt immer `nil` schreiben. Aus dem Kontext sollte sich ergeben,
+> ob ich dabei über die Form `nil` oder den Wert **nil** spreche.
+
+`nil` ist ein Wert, dessen Datentyp keinen expliziten Namen in Clojure hat.
+
+Der Wert `nil` wird i.d.R. verwendet, um auszudrücken, dass *etwas nicht
+vorhanden ist*. Aber du kannst ihn verwenden wie jeden anderen Wert. Du wirst
+aber feststellen, dass die Funktionen, die von Clojure mitgeliefert werden,
+`nil` in dem Sinne *etwas ist nicht vorhanden* verwenden.
+
+> Clojure ist eine [LISP](https://de.wikipedia.org/wiki/Lisp)-Sprache. In diesen
+> gibt es verschiedene Arten, *nichts* (oder *nicht vorhanden*) auszudrücken. So
+> spielt in LISP die leere Liste `()` eine Sonderrolle -- nicht aber in Clojure.
+> Mehr zu dem Thema findest du in dem [Wikipedia-Artikel
+> **Nullwert**](https://de.wikipedia.org/wiki/Nullwert).
+
+Übungen:
+
+* Zu was wertet `nil` aus?
+* Zu was wertet `[nil]` aus?
+* Zu was wertet `[nil nil]` aus?
+* Zu was wertet `(nil)` aus?
+* Zu was wertet `(inc nil)` aus? Macht das Sinn?
+* Zu was wertet `(first nil)` aus? Macht das Sinn?
+* Zu was wertet `(nth nil 1)` aus? Macht das Sinn?
+
+-------------------------------------------------------------------------------
+## Weitere Funktionen für den Zugriff auf zusammengesetzte Datentypen
+
+Es gibt sehr viele Funktionen in Clojure, um auf Collections zuzugreifen. Hier
+führe ich einfach etwas willkürlich einige davon auf, einfach damit du diese
+Funktionen kennen lernst und anschließend verwenden kannst.
+
+* `(count <coll>)` : liefert die Anzahl der Elemente in `<coll>`.
+
+* `(into <to-coll> <from-coll>)` : fügt die Elemente von `<from-coll>` zu der
+  Collection `<to-coll>` hinzu und liefert das Resultat als Ergebnis. Das
+  Resultat ist vom **gleichen Datentyp** wie `<to-coll>`.
+
+> In Clojure sind alle Datentypen **unveränderlich** (engl. *immutable*). D.h.,
+> wenn ich hier schreibe, dass einer Collection Elemente hinzugefügt werden,
+> dann meine ich damit, dass eine neue Collection erzeugt wird, die zu Beginn
+> die gleichen Werte enthält wie `<to-coll>` und dass dann dieser neuen
+> Collection die Elemente von `<from-coll>` hinzugefügt werden. Weder
+> `<from-coll>` noch `<to-coll>` werden geändert --- sie können gar nicht
+> geändert werden, weil Clojure das eben nicht zulässt.
+
+* `(rest <coll>)` : liefert die Elemente aus `<coll>`, die **nach** dem ersten
+  Element (also `(first <coll>)`) in `<coll>` vorhanden sind, als **Liste**.
+  Falls es ein solches Element nicht gibt, wird die leere Liste `()` geliefert.
+
+> Wir werden später über den Unterschied zwischen **Listen** und **Sequenzen**
+> sprechen. Aber bis dahin sind das alles Listen für uns.
+
+* `(next <coll>)` : liefert die Elemente aus `<coll>`, die **nach** dem ersten
+  Element (also `(first <coll>)`) in `<coll>` vorhanden sind, als **Liste**.
+  Falls es ein solches Element nicht gibt, wird `nil` geliefert.
+
+> Wir werden später sehen, dass wir uns genau überlegen müssen, ob wir `next`
+> oder `rest` nutzen möchten/müssen.
+
+Übungen:
+
+* Zu was wertet `(count)` aus? Macht das Sinn?
+* Zu was wertet `(count [])` aus? Macht das Sinn?
+* Zu was wertet `(count [[1 2]])` aus? Macht das Sinn?
+* Zu was wertet `(into [] [1 2 3 4])` aus?
+* Zu was wertet `(into {} {1 2 3 4})` aus?
+* Zu was wertet `(into ["a"] {1 2 3 4})` aus? Macht das Sinn? Lies dir nochmal
+  durch, was Maps genau sind und wie sie als Literal/Form geschrieben werden?
+
+-------------------------------------------------------------------------------
+## Prädikate und Wahrheit
+
 -------------------------------------------------------------------------------
 ## Was ist der Unterschied zwischen einem Datentyp und einer Sequenz?
 
 -------------------------------------------------------------------------------
-## Weitere Funktionen für den Zugriff auf zusammengesetzte Datentypen
+## Funktionen, die Funktionen als Argument nutzen (higher order functions)
 
