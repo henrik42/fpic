@@ -1,5 +1,13 @@
 # Inhalte
 
+> Anmerkungen zu den Inhalten: der folgende Text ist nicht dazu geeignet, als
+> Skript von oben nach unten durchgelesen oder durchgearbeitet zu werden. Viele
+> Ausführungen sind zu knapp, andere enthalten wiederum viele Fachausdrücke, die
+> du nicht unbedingt verstehen musst, um das Programmieren mit Clojure zu
+> lernen. Der Text soll eher mir als Leiter der AG als Gedächtnisstütze und
+> Rahmen dienen. Während der AG werden wir dann auch spontan andere Sachen
+> hinzunehmen und bestimmt auch Teile auslassen.
+
 ## Einführung
 
 * Was macht ein [Computer](https://de.wikipedia.org/wiki/Computer)?
