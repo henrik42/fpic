@@ -5,14 +5,20 @@
 * Was macht ein [Computer](https://de.wikipedia.org/wiki/Computer)?
 * Was ist [Software](https://de.wikipedia.org/wiki/Software)?
 * Was sind [Daten](https://de.wikipedia.org/wiki/Daten#Informatik)? 
-* Welche Arten von Daten gibt es? Was ist ein [Datentyp](https://de.wikipedia.org/wiki/Datentyp#Elementare_Datentypen)?
+* Welche Arten von Daten gibt es? Was ist ein
+  [Datentyp](https://de.wikipedia.org/wiki/Datentyp#Elementare_Datentypen)?
 * Was ist [Information](https://de.wikipedia.org/wiki/Information)?
-* Was ist ein [(Computer-)Programm](https://de.wikipedia.org/wiki/Computerprogramm)?
+* Was ist ein
+  [(Computer-)Programm](https://de.wikipedia.org/wiki/Computerprogramm)?
 * Was bedeutet es, ein Programm auszuführen?
-* [Was ist Programmieren](https://www.codefuchs.com/artikel/was-ist-programmieren/)?
-* Was ist eine [Programmiersprache](https://de.wikipedia.org/wiki/Programmiersprache)?
-* Was ist [Syntax](https://de.wikipedia.org/wiki/Syntax#Syntax_formaler_Sprachen)?
+* [Was ist
+  Programmieren](https://www.codefuchs.com/artikel/was-ist-programmieren/)?
+* Was ist eine
+  [Programmiersprache](https://de.wikipedia.org/wiki/Programmiersprache)?
+* Was ist
+  [Syntax](https://de.wikipedia.org/wiki/Syntax#Syntax_formaler_Sprachen)?
 
+-------------------------------------------------------------------------------
 ## Die REPL
 
 Was ist eine [Clojure-REPL](https://lambdaisland.com/guides/clojure-repls)?
@@ -21,7 +27,8 @@ Du gibst eine *Form* ein, die REPL *wertet* die Form *aus* und schreibt das
 *Ergebnis* in die Ausgabe.
 
 **REPL** steht für:
-* **Read**: eine [Form](https://clojure.org/guides/learn/syntax) [**einlesen**](https://clojure.org/reference/reader) (*to read*)
+* **Read**: eine [Form](https://clojure.org/guides/learn/syntax)
+  [**einlesen**](https://clojure.org/reference/reader) (*to read*)
 * **Eval**: die eingelesene Form
   [**auswerten**](https://clojure.org/reference/evaluation) (*to evaluate*). Die
   Auswertung ergibt einen **Wert**.
@@ -39,6 +46,7 @@ Browser und einen Internetzugang.
 
 * https://clojurescript.io/ : eine weitere REPL, die im Browser läuft. 
 
+-------------------------------------------------------------------------------
 ## Formen
 
 Was sind Clojure [Formen](https://clojure.org/guides/learn/syntax)? 
@@ -94,6 +102,7 @@ und am Ende eingegeben.
 * Was passiert, wenn du am Ende die Anführungszeichen nicht angibst?
 * Was passiert, wenn du zu Beginn die Anführungszeichen nicht angibst?
 
+-------------------------------------------------------------------------------
 ## Formen und Werte
 
 Die Form `"hallo"` ist die äußere Darstellung der Zeichenfolge `hallo`. `hallo`
@@ -115,6 +124,7 @@ deine Formen **aus** (*eval*). Das Ergebnis dieser Auswertung ergibt den
 **Wert** deiner Eingabe. Und dieser Wert wird von der REPL wiederum als Form
 **ausgegeben** (*print*).
 
+-------------------------------------------------------------------------------
 ## Werte und Datentypen
 
 Bisher haben wir **Zahlen** und **Zeichenfolgen** (sowohl als **Form** als auch
@@ -140,6 +150,7 @@ Wertes ist.
 * die Form `"TOLL!"` beschreibt den String-Wert *TOLL!*.
 * die Form `"12"` beschreibt den String-Wert *12*.
 
+-------------------------------------------------------------------------------
 ## Boolean / Wahrheitswerte
 
 Der Datentyp [**Boolean**](https://de.wikipedia.org/wiki/Boolean) (siehe auch
@@ -152,6 +163,7 @@ Der Datentyp [**Boolean**](https://de.wikipedia.org/wiki/Boolean) (siehe auch
   diese dargestellt? Tipp: schau mal in die Kontakte-App in deinem Smartphone -
   welche Dinge kannst du dort eingeben?
 
+-------------------------------------------------------------------------------
 ## Zusammengesetzte Datentypen
 
 Bisher haben wir nur *einfache* (unstrukturierte) **Datentypen** und die
@@ -304,6 +316,7 @@ Beispiele für Maps:
   Planet zur Sonne ist, die Venus der zweitnächste usw.? Überlege dir **zwei**
   mögliche Darstellungen als Map.
 
+-------------------------------------------------------------------------------
 ## Funktionen
 
 Bisher haben wir verschiedene Arten von einfachen (Zahlen, Strings, Boolean) und
@@ -354,6 +367,7 @@ schließen also den Namen der Funktion mit in die Klammern ein.
 
 * Was liefert `(inc 8)`?
 
+-------------------------------------------------------------------------------
 ## Funktionsaufruf als Form
 
 Bisher haben wir Formen für u.a. Zahlen, Zeichenketten und Vektoren kennen
@@ -433,7 +447,7 @@ Listen werden von der REPL auf eine **ganz besondere Weise behandelt**:
 * Zu was wertet `[inc 5]` aus? Wieso?
 * Zu was wertet `[(inc 5)]` aus? Wieso?
 
-### Geschachtelte Listen
+### Geschachtelte Listen/Funktionsaufrufe
 
 Die oben beschrieben Auswertungsregel für Listen lässt sich auch *geschachtelt*
 anwenden.
@@ -448,6 +462,7 @@ anwenden.
 * Wieso lässt sich `(inc 4))` nicht auswerten?
 * Und `inc 4)`?
 
+-------------------------------------------------------------------------------
 ## Zugriff auf die Elemente zusammengesetzter Datentypen
 
 Bisher haben wir die Werte zusammengesetzter Datentypen als Form zwar
@@ -457,9 +472,11 @@ Datentyp-Werte **zugreifen**.
 Für diesen Zugriff bietet Clojure eine Reihe von Funktionen:
 
 > Im [Cheatsheet](https://clojure.org/api/cheatsheet) findest du viele
-> Funktionen, von denen wir einige im folgenden kennen lernen.
+> Funktionen, von denen wir einige im folgenden kennen lernen. In dem Cheatsheet
+> werden die zusammengesetzten Datentypen __*collections*__ genannt.
 
 * `first` liefert dir das erste Element eines zusammengesetzten Wertes. 
+* `second` liefert dir das zweite Element eines zusammengesetzten Wertes. 
 * `last` liefert dir das letzte Element eines zusammengesetzten Wertes. 
 
 Übungen:
@@ -473,10 +490,98 @@ Für diesen Zugriff bietet Clojure eine Reihe von Funktionen:
 * Zu was wertet `(first {})` aus?
 * Zu was wertet `(first #{1 true "a" 42})` aus? Macht das Sinn?
 * Zu was wertet `(first #{})` aus?
+* Denk dir zusammen mit deiner Tischnachbarin weitere Beispiele aus, in denen
+  ihr `first`, `second` und `last` zusammen mit Vektoren, Maps und Sets
+  verwendet.
 
+-------------------------------------------------------------------------------
+## `nth`
+
+Die Funktion `nth` liefert dir das __n__-te Element eines zusammengesetzten
+Wertes.
+
+> Kannst du dir vorstellen, wieso die Funktion gerade `nth` heißt? Kennst du den
+> Buchstaben **n** bzw. **N** aus dem Mathematikunterricht? Welche Bedeutung hat
+> der Buchstabe dort?
+
+Dabei ist **n** der __Versatz__ (engl. *offset*) zum ersten Element. Somit
+liefert dir `(nth ,,, 0)` das __erste__ Element (da der __Versatz__ zum
+__ersten__ Element 0 ist), `(nth ,,, 1)` das zweite Element (da der __Versatz__
+zum __ersten__ Element 1 ist), `(nth ,,, 2)` das dritte Element usw. Häufig
+wirst du auch die Bezeichnung __Index__ anstatt Versatz hören/lesen. Und man
+spricht dann auch vom __*zero-based index*__ oder __[zero-based
+numbering](https://en.wikipedia.org/wiki/Zero-based_numbering)__.
+
+> In der Form `(nth ,,, 2)` nutze ich die drei Kommata (`,,,`) so, wie du es in
+> der Schriftsprache vielleicht mit den drei Punkten (`...`) tun würdest
+> ([Auslassungspunkte](https://de.wikipedia.org/wiki/Auslassungspunkte)). Damit
+> drückst du aus, dass an dieser Stelle etwas steht, was du hier aber nicht
+> explizit/konkret hinschreiben möchtest. Das nennt man
+> [Ellipse](https://de.wikipedia.org/wiki/Ellipse_(Sprache)). Da in Clojure das
+> Komma wie ein Leerzeichen wirkt, kannst du es in bestimmten Situationen auch
+> tatsächlich in dein Programm schreiben. Wir nutzen es als Ersatz für die drei
+> Punkte. Ich hätte also in dem Beispiel auch `(nth ... 2)` schreiben können,
+> nur wäre das eben keine korrekte Clojure-Form. Du wirst sehen, dass auch
+> andere Leute diese drei Kommata als Stilmittel nutzen, wenn sie Clojure-Code
+> schreiben oder __über__ Clojure schreiben.
+
+> __Das Problem mit der
+> [Metasprache](https://de.wikipedia.org/wiki/Metasprache)__: wir schreiben hier
+> mit Deutsch und teilweise Englisch und zusätzlich auch noch mit Clojure
+> __über__ Clojure. D.h., wie nutzen verschiedene __Sprachen__, um über eine
+> __Sprache__ (Clojure) zu schreiben. Bei deinen Recherchen im Internet und in
+> Büchern wirst du verschiedene Arten finden, wie die Autorinnen Sprache
+> benutzen, um über Clojure zu schreiben. Um z.B. zu beschreiben, [wie die
+> Funktion `nth` aufgerufen werden
+> kann](https://clojuredocs.org/clojure.core/nth), nutzen viele Autoren die
+> Schreibweise `(nth coll index)`. Damit möchte der Autor ausdrücken, dass die
+> Funktion zwei Argumente erwartet, von denen das erste ein zusammengesetzter
+> Datentyp(-wert) ist (eine *Collection*) und das zweite ist eine Zahl, die als
+> Index/Offset verwendet wird. Der Autor hätte natürlich auch `(nth c i)`
+> schreiben können, aber dann hätte wir noch mehr Schwierigkeiten zu verstehen,
+> was der Autor uns eigentlich sagen will. Du findest aber auch die Schreibweise
+> `(nth <coll> <index>)`. Mit dieser Schreibweise soll deutlich gemacht werden,
+> dass du das `nth` wirklich als `nth` hinschreiben musst, die Ausdrücke
+> `<coll>` und `<index>` aber nur *Platzhalter* sind für __Formen__, die du bei
+> der Verwendung (d.h. beim Aufruf) der Funktion `nth` angeben musst. Ich werde
+> diese zweite Art der Schreibweise verwenden.
+
+Die Funktion `nth` kannst du mit __zwei__ oder __drei__ __Argumenten__ aufrufen.
+
+* `(nth <coll> <n>)` : liefert das n-te (0-based) Element der Collection. Falls
+  n größer oder gleich der Anzahl der Elemente der Collection ist, wird ein
+  Fehler geliefert.
+
+> Wir gehen später noch auf das Thema **Fehler** ein. 
+
+* `(nth <coll> <n> <not-found>)` : liefert das n-te (0-based) Element der
+  Collection. Falls n größer oder gleich der Anzahl der Elemente der Collection
+  ist, wird der Nicht-Gefunden-Wert geliefert.
+
+Übungen:
+
+* Zu was wertet `(nth [2020 2021 2022 2023] 0)` aus?
+* Zu was wertet `(nth [] 0)` aus?
+* Zu was wertet `(nth [,,,] 0)` aus?
+* Zu was wertet `(nth [2020 2021 2022 2023] 3)` aus?
+* Zu was wertet `(nth [2020 2021 2022 2023] 4)` aus?
+* Zu was wertet `(nth [2020 2021 2022 2023] 4 99)` aus?
+* Zu was wertet `(nth [2020 2021 2022 2023] -3)` aus?
+* Zu was wertet `(nth [2020 2021 2022 2023] -3 99)` aus? Macht das Sinn? Was
+  hättest du erwartet? Zu was wertet `(nth [2020 2021 2022 2023] 3 (nth [] 0))`
+  aus? Macht das Sinn? Was hättest du erwartet? Schau dir nochmal genau an, wie
+  (geschachtelte) Funktionsaufrufe in Clojure erfolgen. Was passiert wann? In
+  welcher Reihenfolge werden die Formen ausgewertet? Zu was wertet `(nth [2020
+  (nth [] 1) 2022 2023] 3 (nth [] 0))` aus?
+* Was ist der Unterschied zwischen `(first [])` und `(nth [] 0)` und `(nth [] 0
+  nil)`?
+
+-------------------------------------------------------------------------------
 ## Was ist `nil`?
 
+-------------------------------------------------------------------------------
 ## Was ist der Unterschied zwischen einem Datentyp und einer Sequenz?
 
+-------------------------------------------------------------------------------
 ## Weitere Funktionen für den Zugriff auf zusammengesetzte Datentypen
 
