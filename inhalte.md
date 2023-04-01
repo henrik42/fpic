@@ -451,10 +451,22 @@ verwenden können.
 > um die Zahl **42** zu nennen. Bei Funktionen ist es fast genau so. Wir kommen
 > später nochmal auf den Unterschied zwischen Symbol und Funktion zu sprechen.
 
+Symbole werden also anders ausgewertet, als z.B. Strings oder Zahlen. Wenn die
+REPL ein Symbol **<sym>** (wie z.B. `inc`) **auswertet**, schaut sie in einer
+bestimmten Zuordnungstabelle (Map) unter dem Schlüssel **<sym>** nach, welchen
+zugeordneten Wert sie dort findet. Dieser zugeordnete Wert ist jener Wert, der
+als Ergebnis der Auswertung verwendet wird.
+
+> Diese Zuordnungstabellen wird **Namespace** genannt und wir lernen später mehr
+> darüber.
+
 Übung:
 
 * Was erhältst du, wenn du `inc` eingibst? Wie unterscheidet sich das von den
   bisherigen Ein-Ausgaben?
+
+* Was erhältst du, wenn du `a` eingibt? Macht das Sinn? Wie verstehst du die
+  Fehlermeldung?
 
 ### Listen
 
@@ -726,6 +738,67 @@ Funktionen kennen lernst und anschließend verwenden kannst.
   durch, was Maps genau sind und wie sie als Literal/Form geschrieben werden?
 
 -------------------------------------------------------------------------------
+## Listen, Symbole und `quote`
+
+Weiter oben hatten wir schon Listen kennen gelernt und erfahren, dass eine
+Listen-Form auf eine ganz besondere Weise zu einem Wert ausgewertet wird.
+
+Manchmal möchten wir aber Listen nicht nutzen, um eine Funktion aufzurufen,
+sondern wir möchten sie als **Datenstruktur** nutzen --- genau wie z.B.
+Vektoren.
+
+Um aber die Liste mit den Elementen `1`, `"a"` und `nil` zu konstruieren, können
+wir nicht `(1 "a" nil)` schreiben (wieso nicht?). Wir müssen Clojure bzw. die
+REPL davon abhalten, das erste Element als Funktion zu interpretieren und diese
+aufzurufen. Stattdessen möchten wir einfach nur die Liste mit den Werten `1`,
+`"a"` und `nil` erhalten.
+
+Genau für diesen Zweck gibt es die Funktion `quote`.
+
+> `quote` ist tatsächlich keine Funktion sondern eine [special
+> form](https://clojure.org/reference/special_forms#quote). Wir brauchen uns
+> damit aber noch nicht zu beschäftigen. Später lernen wir noch den Unterschied
+> kennen.
+
+Mit `quote` können wir also verhindern, dass Listen und Symbole, die als
+Argument zu `quote` angegeben werden, ausgewertet werden.
+
+Es gibt noch eine Kurzform zu `quote`: das einfache Anführungszeichen (`'`).
+
+* `inc` wertet zu `#object[Ke]` aus. Dies ist die Art, wie Clojure uns die
+  Funktion in der REPL anzeigt, die über die Zuordnungstabelle unter dem
+  Schlüssel `inc` zu finden ist.
+
+* `'inc` und `(quote inc)` werten zu `inc` aus. In diesem Fall handelt es sich
+  also nicht um die Funktion **inc**, sondern um das Symbol `inc`.
+
+* `(inc 2)` wertet zu `3` aus.
+
+* `'(inc 2)` wertet zu `(inc 2)` aus. Das ist die Liste mit den Elementen `inc`
+  (ein Symbol) und der Zahl `2`. Das `quote` hat also sowohl die Auswertung von
+  `inc` als auch die Auswertung der Liste verhindert.
+
+Anstatt eine Liste als Listen-Form (Literal) mit Hilfe des `quotes`
+aufzuschreiben, kannst du auch die Funktion `list` nutzen, um eine Liste zu
+erzeugen.
+
+* `(list 1 "a" nil)` wertet zu `(1 "a" nil)` aus. Das ist das gleiche wie `'(1
+  "a" nil)`
+
+Übungen: Versuche die Ergebnisse zusammen mit deinem Tischnachbarn zu verstehen.
+Könnt ihr erklären, wieso die Auswertung jeweils genau so erfolgt?
+
+* Zu was wertet `inc` aus?
+* Zu was wertet `(quote inc)` aus? 
+* Zu was wertet `a` aus?
+* Zu was wertet `'a` aus?
+* Zu was wertet `(inc 2)` aus?
+* Zu was wertet `'(inc 2)` aus?
+* Zu was wertet `'(a 2)` aus?
+* Zu was wertet `(list inc 2)` aus?
+* Zu was wertet `(list a 2)` aus?
+
+-------------------------------------------------------------------------------
 ## Mathematische Operatoren
 
 Aus dem Mathematikunterricht kennst du
@@ -795,7 +868,7 @@ Die Präfixnotation hat aber einige Vorteile:
 * Zu was wertet `(-)` aus? Macht das Sinn?
 
 -------------------------------------------------------------------------------
-## Prädikate und Wahrheit
+## Prädikate
 
 Wenn du etwas programmierst, wirst du häufig prüfen müssen, ob eine bestimmte
 Aussage **wahr** oder **falsch** ist.
@@ -824,8 +897,9 @@ liefern, nennt man
 
 Es gibt weitere Prädikate:
 
-* `>` (größer als) 
-* `<=` (kleiner oder gleich)
+* `>` (größer als?) 
+* `<=` (kleiner oder gleich?)
+* `=` (ist gleich?) 
 * `even?`/`odd?` (ist die Zahl gerade/ungerade?)
 * `pos?`/`neg?` (ist die Zahl positiv/negativ?)
 
