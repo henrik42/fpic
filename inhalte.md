@@ -839,6 +839,13 @@ anderen Datentypen, die wir schon kennen gelernt haben:
 * `string?` : prüft, ob das Argument ein String ist. `(string "foo")` liefert
   `true`. 
 
+> nerd fact: Die Wörter [**foobar**](https://de.wikipedia.org/wiki/Fubar),
+> **foo**, **bar**, **baz** etc. wirst du häufiger mal im Zusammenhang mit
+> Programmiersprachen sehen. Ich nutze sie auch gerne. In deutschen Beiträgen
+> werden als [Metasyntaktische
+> Variablen](https://de.wikipedia.org/wiki/Metasyntaktische_Variable) auch gerne
+> **bla**, **blubb**, **blabla**, **blablabla** und **blafasel** verwendet.
+
 Übungen:
 
 * Ist die Zahl 0 positiv?
