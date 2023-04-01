@@ -815,7 +815,7 @@ mehr als ein Element in der Lösungsmenge.
 In Clojure gibt es **Funktionen**, die eine Aussage prüfen und dir dann den
 **Wert** `true` oder `false` liefern. Solche Funktionen, die einen Wahrheitswert
 liefern, nennt man
-*[Prädikate](https://de.wikipedia.org/wiki/Pr%C3%A4dikat_(Logik)*.
+*[Prädikate](https://de.wikipedia.org/wiki/Pr%C3%A4dikat_(Logik))*.
 
 > Also nochmal nachdenken: im Mathematikunterricht ist **4 < 7** eine Aussage,
 > über deren Wahrheit wir entscheiden können. In Clojure ist `(< 4 7)` **ein
