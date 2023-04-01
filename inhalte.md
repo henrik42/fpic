@@ -55,6 +55,45 @@ Browser und einen Internetzugang.
 * https://clojurescript.io/ : eine weitere REPL, die im Browser läuft. 
 
 -------------------------------------------------------------------------------
+## Hello, world! 👋
+
+Bevor wir überhaupt wirklich irgend etwas über Clojure lernen, wollen wir gleich
+unser erstes Programm schreiben.
+
+```
+(println "Hello, world! 👋")
+```
+
+In der REPL sieht das etwas so aus:
+
+```
+=> (println "Hello, world! 👋")
+ Hello, world! 👋
+ nil
+=>
+```
+
+Der Prompt `=>` zeigt dir an, dass die REPL eine Eingabe von dir erwartet. Wir
+haben hier `(println "Hello, world! 👋")` eingegeben und dann die ENTER-Taste
+gedrückt.
+
+> Wenn du das auch ausprobieren möchtest, kannst du dir den Text einfach hier
+> mit der Maus markieren, dann kopieren und in die REPL wieder einfügen.
+> [Hier](https://unicode.org/emoji/charts/full-emoji-list.html) findest du
+> weitere Emojis.
+
+Die REPL führt nun unser Programm aus. In diesem Fall gibt sie den Text `Hello,
+world! 👋`, aus, weil wir in unserem Programm die Funktion `println` nutzen.
+
+Wenn die REPL fertig damit ist, unser Programm auszuführen, gibt sie noch den
+*Wert* aus, der von unserem Programm als Ergebnis geliefert wurde. In diesem
+Fall ist es der Wert `nil`.
+
+> Don't panic! Diese ganzen Sachen machen bisher wenig Sinn und du brauchst sie
+> auch noch nicht zu verstehen. Wir wollen uns hier nur etwas mit der REPL
+> vertraut machen. Wir werden alles in Ruhe anschauen und ausprobieren.
+
+-------------------------------------------------------------------------------
 ## Formen
 
 Was sind Clojure [Formen](https://clojure.org/guides/learn/syntax)? 
@@ -687,7 +726,123 @@ Funktionen kennen lernst und anschließend verwenden kannst.
   durch, was Maps genau sind und wie sie als Literal/Form geschrieben werden?
 
 -------------------------------------------------------------------------------
+## Mathematische Operatoren
+
+Aus dem Mathematikunterricht kennst du
+[Terme](https://de.wikipedia.org/wiki/Term) wie **4 + 7** und **(9 - 2) * 3**.
+In Clojure möchten wir auch gerne rechnen und brauchen daher auch eine
+Möglichkeit, solche Terme zu formulieren.
+
+In Clojure schreiben wir aber nicht `4 + 7` oder `(4 + 7)`. Diese Art, Ausdrücke
+zu schreiben, wird [Infixnotation](https://de.wikipedia.org/wiki/Infixnotation)
+genannt. Bei der Infixnotation steht der
+[Operator](https://de.wikipedia.org/wiki/Operator_(Mathematik)) zwischen den
+beiden [Operanden](https://de.wikipedia.org/wiki/Operator_(Mathematik)#Operand).
+
+> Wieso können wir nicht `(4 + 7)` schreiben? Schau nochmal oben, wie eine
+> solche **Form** in Clojure ausgewertet wird.
+
+Stattdessen schreiben wir `(+ 4 7)`. In diesem Fall wird die **Funktion** `+`
+aufgerufen. Wir schreiben den Operator also an die erste Stelle der Listen-Form.
+Diese Form wertet zu `11` aus.
+
+> In Clojure ist es völlig ok, Sonderzeichen als **Symbol** und damit als
+> **Namen für eine Funktion** zu verwenden. Das Plus-Zeichen spielt also keine
+> Sonderrolle: es ist ein *normales* Symbol und damit ein Name für eine
+> Funktion. Genau wie die Symbole/Namen `count`, `inc` und `next`.
+
+Es gibt neben `+` weitere arithmetische Funktionen:
+
+* `-` : Subtraktion
+* `*` : Multiplikation
+* `/` : Division
+
+Die Infixnotation ist dir natürlich aus dem Mathematikunterricht viel vertrauter
+als die [Präfixnotation](https://de.wikipedia.org/wiki/Polnische_Notation) von
+Clojure.
+
+Die Präfixnotation hat aber einige Vorteile:
+
+* [Operatorrangfolge](https://de.wikipedia.org/wiki/Operatorrangfolge): aus dem
+  Mathematikunterricht kennst du die **Punkt-vor-Strich-Rechenregel**. Diese
+  besagt, dass der Term **1 + 2 * 3** gleich **7** und nicht gleich **9** ist.
+  Die Operatorrangfolge legt also fest, in welcher **Reihenfolge die Operatoren
+  anzuwenden sind*.  
+  In Clojure brauchen wir das nicht, weil wir durch die Klammern ausdrücken, in
+  welcher Reihenfolge die Formen auszuwerten sind und damit, in welcher
+  Reihenfolge die Funktionen anzuwenden sind.  
+  So wertet `(+ 1 (* 2 3))` zu `7` aus und `(* (+ 1 2) 3)` zu `9`.
+
+* [Stelligkeiten](https://de.wikipedia.org/wiki/Stelligkeit): Bei der
+  Infixnotation haben die Operatoren immer eine Stelligkeit von **zwei**. D.h.
+  du kannst damit immer nur **zwei Operanden** verarbeiten. Wenn du also die
+  Zahlen 1, 2, 3 und 4 addieren möchtest, musst du **1 + 2 + 3 + 4** schreiben.  
+  In Clojure können die Funktionen aber viele Stelligkeiten haben. D.h. die
+  Funktion `+` kann mit null, einem, zwei, drei bzw. vielen Operanden (wir
+  nennen sie Argumente) aufgerufen werden.  
+  In Clojure können wir also `(+ 1 2 3 4)` schreiben.
+
+Übungen:
+
+* Zu was wertet `(+ 4)` aus? Macht das Sinn?
+* Zu was wertet `(+ 4 7)` aus?
+* Zu was wertet `(+ 4 7 23)` aus?
+* Schreibe die Clojure-Form für **1 + 2 * 14 / 7 - 2 * 3** auf.
+* Zu was wertet `+` aus?
+* Zu was wertet `(+)` aus? Macht das Sinn?
+* Zu was wertet `(*)` aus? Macht das Sinn? Weißt du, was ein [neutrales
+  Element](https://de.wikipedia.org/wiki/Neutrales_Element) ist?
+* Zu was wertet `(-)` aus? Macht das Sinn?
+
+-------------------------------------------------------------------------------
 ## Prädikate und Wahrheit
+
+Wenn du etwas programmierst, wirst du häufig prüfen müssen, ob eine bestimmte
+Aussage **wahr** oder **falsch** ist.
+
+Im Mathematikunterricht hast du es häufig mit **Aussagen** wie **4 ist kleiner
+als 7** (4 < 7), **7 ist kleiner als 5** (7 < 5) und **7 ist gleich 9** (7 = 9)
+zu tun. Es gibt **wahre** und **falsche** **Aussagen**.
+
+Manchmal findest du auch Aussagen wie **x plus 1 ist gleich 6** (x + 1 = 6). In
+diesem Fall besteht deine Aufgabe aber nicht darin, zu entscheiden, ob die
+Aussage wahr oder falsch ist. Stattdessen besteht deine Aufgabe darin, eine
+**Zahl** zu finden, die du für **x** einsetzen kannst und die dann zu einer
+**wahren Aussage** führt. Die gesuchte Zahl ist dann Element der
+**Lösungsmenge**. Einige Gleichungen haben auch mehrere Lösungen -- d.h. es gibt
+mehr als ein Element in der Lösungsmenge.
+
+In Clojure gibt es **Funktionen**, die eine Aussage prüfen und dir dann den
+**Wert** `true` oder `false` liefern. Solche Funktionen, die einen Wahrheitswert
+liefern, nennt man
+*[Prädikate](https://de.wikipedia.org/wiki/Pr%C3%A4dikat_(Logik)*.
+
+> Also nochmal nachdenken: im Mathematikunterricht ist **4 < 7** eine Aussage,
+> über deren Wahrheit wir entscheiden können. In Clojure ist `(< 4 7)` **ein
+> Wert** (d.h., die Form wertet zu einem Wert aus), mit dem wir anschließend
+> weiter arbeiten können.
+
+Es gibt weitere Prädikate:
+
+* `>` (größer als) 
+* `<=` (kleiner oder gleich)
+* `even?`/`odd?` (ist die Zahl gerade/ungerade?)
+* `pos?`/`neg?` (ist die Zahl positiv/negativ?)
+
+Clojure liefert dir aber nicht nur Prädikate für Zahlen sondern auch für die
+anderen Datentypen, die wir schon kennen gelernt haben:
+
+* `distinct` : prüft, ob jeder der Argumentwerte nur einmalig vorkommt?
+  `(distinct? 1 "a" true)` liefert `true`. `(distinct? 1 "a" true 1)` liefert
+  `false`.
+
+* `string?` : prüft, ob das Argument ein String ist. `(string "foo")` liefert
+  `true`. 
+
+Übungen:
+
+* Ist die Zahl 0 positiv?
+* Zu was wertet `(even? 1.4)` aus? Macht das Sinn?
 
 -------------------------------------------------------------------------------
 ## Was ist der Unterschied zwischen einem Datentyp und einer Sequenz?
