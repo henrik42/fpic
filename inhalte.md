@@ -926,8 +926,102 @@ anderen Datentypen, die wir schon kennen gelernt haben:
 * Zu was wertet `(even? 1.4)` aus? Macht das Sinn?
 
 -------------------------------------------------------------------------------
-## Was ist der Unterschied zwischen einem Datentyp und einer Sequenz?
+## Funktionen, die Funktionen als Argument nutzen (higher order functions)
+
+Clojure ist eine [funktionale
+Programmiersprache](https://de.wikipedia.org/wiki/Funktionale_Programmierung#Funktionale_Programmiersprachen).
+Wir wollen noch nicht im Detail darauf eingehen, was das genau bedeutet, aber
+zumindest können wir sagen, dass **Funktionen** in einer funktionalen
+Programmiersprache eine zentrale Rolle spielen sollten.
+
+Bisher haben wir den Funktionen, die wir verwendet haben, als Argumente immer
+irgendwelche **Daten** übergeben: Zahlen, Strings, Vektoren, etc.
+
+Nun werden wir Funktionen kennen lernen, denen wir als Argument eine (und später
+auch mehrere) **Funktionen** als Argument übergeben. Wieso man so etwas tun
+sollte, wird hoffentlich im Laufe der Zeit klar werden. 
+
+Funktionen, die wiederum Funktionen als Argument verwenden, werden **[Funktion
+höherer Ordnung](https://de.wikipedia.org/wiki/Funktion_h%C3%B6herer_Ordnung)**
+(engl. **higher-order functions**; HOFs) genannt.
+
+> Don't panic! Wir lassen uns Zeit und schauen uns alles in Ruhe an.
+
+Als erstes möchten wir von einem Vektor oder einer Liste nur all Werte
+**behalten**, die eine gerade Zahl sind. Alle anderen Elemente der Collection
+sollen entfernt werden. Dazu nutzen wir die Funktion `(filter <pred> <coll>)`.
+
+> Die allermeisten Informationen zu Clojure im Internet sind auf Englisch. Schau
+dir doch einfach mal die Beschreibung zu
+[filter](https://clojuredocs.org/clojure.core/filter) an. Du wirst zu Beginn
+nicht alles verstehen, aber wenn du regelmäßig in die Dokumentation schaust,
+wirst du feststellen, dass das verwendete Englisch relativ einfach gehalten ist
+und auch die Art und Weise, wie die Dinge beschrieben sind, einem gewissen
+einheitlichen Stil folgen. Nach einiger Zeit, wirst du dich daran gewöhnt haben
+und die Sachverhalten besser verstehen.
+
+Das erste Argument `<pred>` muss ein **einstelliges Prädikat** sein (vgl. oben).
+Also eine **Funktion**, die **ein** Argument erwartet und `true` oder `false`
+liefert.
+
+Das zweite Argument von `filter` ist die Collection, aus der wir die
+nicht-geraden Werte entfernen wollen.
+
+Die Funktion `filter` wendet das Prädikat `<pred>` der Reihenfolge nach auf die
+Element/Werte `<e>` von `<coll>` an und behält nur jene Werte `<e>`, für die
+`(<pred> <e>)` den Wert `true` liefert.
+
+Da wir nur die geraden Zahlen aus `<coll>` behalten wollen, nutzen wir `even?`
+als Prädikat.
+
+Wenn wir `(filter even? [1 2 3 4])` auswerten, erhalten wir die Liste `(2 4)`. 
+
+> Tatsächlich handelt es sich nicht um eine Liste sondern um eine Sequenz. Wir
+> schauen uns weiter unten den Unterschied zwischen Listen und Sequenzen an. Für
+> jetzt sprechen wir nur von Listen.
+
+Es gibt eine ganze Reihe von Funktionen, die als Ergebnis eine Liste liefern,
+selbst wenn wir ihnen z.B. Vektoren, Sets oder Maps als Argument übergeben. Aber
+wenn wir gerne wieder einen Vektor als Ergebnis haben möchten, können wir die
+Funktion [`into`](https://clojuredocs.org/clojure.core/into) nutzen.
+
+```
+(into [] (filter even? [1 2 3 4])) ;=> [2 4]
+```
+
+> In Clojure ist das Semikolon (`;`) das Kommentar-Zeichen. Wenn du das
+> Semikolon außerhalb von Strings nutzt, ist alles vom Semikolon bis zum Ende
+> der Zeile ein Kommentar, der von der REPL ignoriert bzw. nicht ausgewertet
+> wird. Wenn wir also `;=> [2 4]` schreiben, tun wir das, um zum einen
+> auszudrücken, dass eine Form zu einem bestimmten Wert auswertet. Und wir tun
+> das auf eine Weise, die es uns sogar erlauben würde, diese Angabe in ein
+> Programm zu schreiben, ohne dass das Programm sich dadurch anders verhalten
+> würde. Denn es handelt sich ja um einen Kommentar.  
+> Wir hätten auch `(into [] (filter even? [1 2 3 4])) --> [2 4]` schreiben
+> können, aber das wäre dann kein korrektes Clojure-Programm mehr. Die
+> Verwendung von `;=>` anstatt z.B. `;->` soll an die Ausgabe `=>` der REPL
+> erinnern. Ansonsten hat das keine besondere Bedeutung.
+
+Übungen:
+
+* Zu was wertet `(list? (filter even? [1 2 3 4]))` aus?
+* Zu was wertet `(seq? (filter even? [1 2 3 4]))` aus? 
+* Zu was wertet `(filter odd? [2 4])` aus?
+* Zu was wertet `(filter odd? nil)` aus? Macht das Sinn?
+* Nutze `filter` und das Prädikat `number?`, um die Zahlen aus der Liste `(1
+  "zwei" drei 4 )` zu filtern.
+* Nutze `filter`, `into` und das Prädikat `pos?`, um die positiven Zahlen aus
+  der Menge `#{0 "a" 1 foo -3.14 42}` zu filtern und als Menge zu liefern.
 
 -------------------------------------------------------------------------------
-## Funktionen, die Funktionen als Argument nutzen (higher order functions)
+## Funktionen, die Funktionen liefern
+
+
+
+-------------------------------------------------------------------------------
+## Wahrheit
+
+-------------------------------------------------------------------------------
+## Was ist der Unterschied zwischen einem Datentyp und einer Sequenz?
+
 
