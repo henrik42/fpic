@@ -938,8 +938,8 @@ Bisher haben wir den Funktionen, die wir verwendet haben, als Argumente immer
 irgendwelche **Daten** übergeben: Zahlen, Strings, Vektoren, etc.
 
 Nun werden wir Funktionen kennen lernen, denen wir als Argument eine (und später
-auch mehrere) **Funktionen** als Argument übergeben. Wieso man so etwas tun
-sollte, wird hoffentlich im Laufe der Zeit klar werden. 
+auch mehrere) **Funktionen** übergeben. Wieso man so etwas tun sollte, wird
+hoffentlich im Laufe der Zeit klar werden. 
 
 Funktionen, die wiederum Funktionen als Argument verwenden, werden **[Funktion
 höherer Ordnung](https://de.wikipedia.org/wiki/Funktion_h%C3%B6herer_Ordnung)**
@@ -947,9 +947,12 @@ höherer Ordnung](https://de.wikipedia.org/wiki/Funktion_h%C3%B6herer_Ordnung)**
 
 > Don't panic! Wir lassen uns Zeit und schauen uns alles in Ruhe an.
 
-Als erstes möchten wir von einem Vektor oder einer Liste nur all Werte
-**behalten**, die eine gerade Zahl sind. Alle anderen Elemente der Collection
-sollen entfernt werden. Dazu nutzen wir die Funktion `(filter <pred> <coll>)`.
+### `filter`
+
+Als erstes möchten wir von einem Vektor oder einer Liste nur all jene Werte
+**behalten**, die eine **gerade Zahl** sind. Alle anderen Elemente der
+Collection sollen entfernt werden. Dazu nutzen wir die Funktion `(filter <pred>
+<coll>)`.
 
 > Die allermeisten Informationen zu Clojure im Internet sind auf Englisch. Schau
 dir doch einfach mal die Beschreibung zu
@@ -957,7 +960,7 @@ dir doch einfach mal die Beschreibung zu
 nicht alles verstehen, aber wenn du regelmäßig in die Dokumentation schaust,
 wirst du feststellen, dass das verwendete Englisch relativ einfach gehalten ist
 und auch die Art und Weise, wie die Dinge beschrieben sind, einem gewissen
-einheitlichen Stil folgen. Nach einiger Zeit, wirst du dich daran gewöhnt haben
+einheitlichen Stil folgen. Nach einiger Zeit wirst du dich daran gewöhnt haben
 und die Sachverhalten besser verstehen.
 
 Das erste Argument `<pred>` muss ein **einstelliges Prädikat** sein (vgl. oben).
@@ -1002,6 +1005,31 @@ Funktion [`into`](https://clojuredocs.org/clojure.core/into) nutzen.
 > Verwendung von `;=>` anstatt z.B. `;->` soll an die Ausgabe `=>` der REPL
 > erinnern. Ansonsten hat das keine besondere Bedeutung.
 
+### `map`
+
+Mit `filter` konnten wir **unerwünschte** Elemente aus der Collection `<coll>`
+**entfernen**.
+
+Nun möchten wir eine Funktion `<f>` auf alle Elemente `<e>` einer Collection
+`<coll>` anwenden und als Ergebnis die Collection der **Funktionsergebnisse**
+`(<fn> <e>)`. Die Funktion `<fn>` muss in diesem Fall wieder einstellig sein.
+
+Dazu nutzen wir die Funktion `(map <f> <coll>)`.
+
+```
+(into #{} (map inc [4 22 56])) ;=> #{5 23 57}
+```
+
+Die Funktion `map` kann aber auch mit mehr als einer Collection als Argument
+aufgerufen werden: `(map <f> <coll-1> <coll-2> ,,, <coll-n>)`. In diesem Fall
+wird die Funktion `<f>` mit `(<f> <e-1> <e-2> ,,, <e-n>)` aufgerufen. D.h., die
+**Stelligkeit** der Funktion `<f>` muss zu der Anzahl der Argumente passen, die
+wir beim Aufruf von `map` angeben. Wir können z.B. `+` nutzen:
+
+```
+(map + [9 5 1] [3 6 8] [1 2 3]) ;=> (13 13 12)
+```
+
 Übungen:
 
 * Zu was wertet `(list? (filter even? [1 2 3 4]))` aus?
@@ -1012,11 +1040,13 @@ Funktion [`into`](https://clojuredocs.org/clojure.core/into) nutzen.
   "zwei" drei 4 )` zu filtern.
 * Nutze `filter`, `into` und das Prädikat `pos?`, um die positiven Zahlen aus
   der Menge `#{0 "a" 1 foo -3.14 42}` zu filtern und als Menge zu liefern.
+* Zu was wertet `(map str "foobar")` aus? Macht das Sinn? 
+* Zu was wertet `(map > [9 5 1] [3 6 8] [1 2 3])` aus?
+* Nutze `into`, `map` und `vector`, um aus `[1 2 3]` und `"abc"` die Map `{1
+  "a", 2 "b", 3 "c"}` zu erzeugen.
 
 -------------------------------------------------------------------------------
 ## Funktionen, die Funktionen liefern
-
-
 
 -------------------------------------------------------------------------------
 ## Wahrheit
