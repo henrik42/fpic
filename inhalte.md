@@ -12,6 +12,7 @@
 
 * Was macht ein [Computer](https://de.wikipedia.org/wiki/Computer)?
 * Was ist [Software](https://de.wikipedia.org/wiki/Software)?
+* Was ist [Hardware](https://de.wikipedia.org/wiki/Hardware)?
 * Was sind [Daten](https://de.wikipedia.org/wiki/Daten#Informatik)? 
 * Welche Arten von Daten gibt es? Was ist ein
   [Datentyp](https://de.wikipedia.org/wiki/Datentyp#Elementare_Datentypen)?
@@ -25,40 +26,78 @@
   [Programmiersprache](https://de.wikipedia.org/wiki/Programmiersprache)?
 * Was ist
   [Syntax](https://de.wikipedia.org/wiki/Syntax#Syntax_formaler_Sprachen)?
+* Was ist
+  [Semantik](https://de.wikipedia.org/wiki/Semantik#Semantik_in_der_Informatik)?
 
 -------------------------------------------------------------------------------
-## Die REPL
+## Clojure und die REPL
+
+[Clojure](https://de.wikipedia.org/wiki/Clojure) ist eine Programmiersprache,
+die u.a. einen sehr [interaktiven
+Programmierstil](https://en.wikipedia.org/wiki/Interactive_programming) erlaubt.
+D.h., dass du während des Programmierens schon mit deinem **laufenden Programm**
+**interagierst**: du schreibst es, du führst es aus, du änderst den
+Programmcode, du führst ihn erneut aus, du denkst nach, wieso das Programm nicht
+tut, was du wolltest, du findest den Fehler, änderst den Code erneut, probierst
+ihn abermals aus und -- et voilà -- dein Programm ist fertig und fehlerfrei.
+
+> Viele andere Programmiersprachen lassen diese Art des Programmierens nicht zu.
+> Wir werden später noch sehen, was du alles mit Clojure auf diese Weise machen
+> kannst. 
 
 Was ist eine [Clojure-REPL](https://lambdaisland.com/guides/clojure-repls)?
 
-Du gibst eine *Form* ein, die REPL *wertet* die Form *aus* und schreibt das
-*Ergebnis* in die Ausgabe.
+Die REPL erlaubt dir, dein Programm direkt einzugeben und auszuführen. 
+
+> Später werden wir sehen, dass es viel besser ist, anstatt der REPL einen
+> [Texteditor](https://de.wikipedia.org/wiki/Texteditor) wie z.B. [Visual Studio
+> Code](https://code.visualstudio.com/) zu nutzen und diesen [mit der REPL zu
+> verbinden](https://calva.io/).
+
+Die REPL funktioniert so: Du gibst eine **Form** (also dein Programm) ein, die
+REPL **wertet** die Form **aus** und schreibt das **Ergebnis** in die Ausgabe.
 
 **REPL** steht für:
-* **Read**: eine [Form](https://clojure.org/guides/learn/syntax)
+* **Read**: eine **[Form](https://clojure.org/guides/learn/syntax)**
   [**einlesen**](https://clojure.org/reference/reader) (*to read*)
 * **Eval**: die eingelesene Form
   [**auswerten**](https://clojure.org/reference/evaluation) (*to evaluate*). Die
   Auswertung ergibt einen **Wert**.
-* **Print**: das Ergebnis der Auswertung (den **Wert**) **ausgeben** (*to print
-  something*)
+* **Print**: das Ergebnis der Auswertung (also den **Wert**) **ausgeben** (*to
+  print something*)
 * **Loop**: und das ganz **wiederholen** (*to loop*, *a loop*)
 
-Es gibt verschiedene Möglichkeiten, dies im Browser auszuprobieren. Wir brauchen
-dafür keine lokal installierte Software auf unserem Computer, sondern nur einen
-Browser und einen Internetzugang.
+Es gibt verschiedene Möglichkeiten, dies **im Browser** auszuprobieren. Wir
+brauchen dafür also vorerst **keine lokal installierte Software auf unserem
+Computer**, sondern nur einen Browser und einen Internetzugang.
 
 * https://tryclojure.org/ : du bekommst eine laufende REPL und kannst sofort
   Formen eingeben, die sofort ausgewertet werden. In der REPL kannst du ein
   Tutorial durcharbeiten.
 
-* https://clojurescript.io/ : eine weitere REPL, die im Browser läuft. 
+* https://clojurescript.io/
+
+* https://onecompiler.com/clojure
+
+* https://www.jdoodle.com/execute-clojure-online/
+
+* https://www.mycompiler.io/new/clojure
+
+* https://tio.run/#clojure
+
+* https://www.gitpod.io/ : Und eine
+  [Anleitung](https://calva.io/get-started-with-clojure/) (Englisch).
 
 -------------------------------------------------------------------------------
 ## Hello, world! 👋
 
 Bevor wir überhaupt wirklich irgend etwas über Clojure lernen, wollen wir gleich
-unser erstes Programm schreiben.
+unser erstes
+[Hello-World!](https://de.wikipedia.org/wiki/Hallo-Welt-Programm)-Programm
+schreiben.
+
+> Ich nutze https://tryclojure.org/ für die Beispiele. Dort solltest du sie also
+> auch nachvollziehen und ausprobieren können.
 
 ```
 (println "Hello, world! 👋")
@@ -80,14 +119,15 @@ gedrückt.
 > Wenn du das auch ausprobieren möchtest, kannst du dir den Text einfach hier
 > mit der Maus markieren, dann kopieren und in die REPL wieder einfügen.
 > [Hier](https://unicode.org/emoji/charts/full-emoji-list.html) findest du
-> weitere Emojis.
+> weitere Emojis 🙂.
 
-Die REPL führt nun unser Programm aus. In diesem Fall gibt sie den Text `Hello,
-world! 👋`, aus, weil wir in unserem Programm die Funktion `println` nutzen.
+**Die REPL führt nun unser Programm aus**. In diesem Fall gibt sie den Text
+`Hello, world! 👋`, aus, weil wir in unserem Programm die Funktion `println`
+nutzen.
 
 Wenn die REPL fertig damit ist, unser Programm auszuführen, gibt sie noch den
-*Wert* aus, der von unserem Programm als Ergebnis geliefert wurde. In diesem
-Fall ist es der Wert `nil`.
+**Wert** aus, der von unserem Programm als **Ergebnis** geliefert wurde. In
+diesem Fall ist es der Wert `nil`.
 
 > Don't panic! Diese ganzen Sachen machen bisher wenig Sinn und du brauchst sie
 > auch noch nicht zu verstehen. Wir wollen uns hier nur etwas mit der REPL
@@ -113,7 +153,8 @@ natürlichen Sprache (aus denen wir anschließend Sätze bilden können).
 > diesem Fall nicht. In diesem Sinne sind z.B. Zahlen bzw.
 > [Literale](https://de.wikipedia.org/wiki/Literal) für Clojure also **atomar**
 > bzw.
-> [**elementar**](https://de.wikipedia.org/wiki/Datentyp#Elementare_Datentypen).
+> [**elementar**](https://de.wikipedia.org/wiki/Datentyp#Elementare_Datentypen)
+> --- eben **einfach**.
 
 ### Zahlen
 
@@ -146,8 +187,8 @@ und am Ende eingegeben.
 * Gib eine Zeichenfolge mit zwei Leerzeichen ein.
 * Gib eine leere Zeichenfolge ein (also eine, aus keinem Zeichen besteht). Diese
   Zeichenfolge hat die Länge 0.
-* Was passiert, wenn du am Ende die Anführungszeichen nicht angibst?
-* Was passiert, wenn du zu Beginn die Anführungszeichen nicht angibst?
+* Was passiert, wenn du am Ende die doppelten Anführungszeichen nicht angibst?
+* Was passiert, wenn du zu Beginn die doppelten Anführungszeichen nicht angibst?
 
 -------------------------------------------------------------------------------
 ## Formen und Werte
@@ -155,7 +196,7 @@ und am Ende eingegeben.
 Die Form `"hallo"` ist die äußere Darstellung der Zeichenfolge `hallo`. `hallo`
 ist also der **Wert**, den wir über die Form `"hallo"` eingeben können. 
 
-Wenn die REPL den Wert `hallo` ausgibt, nutze sie dieselbe Form `"hallo"` dazu. 
+Wenn die REPL den Wert `hallo` ausgibt, nutzt sie dieselbe Form `"hallo"` dazu. 
 
 Wir müssen also unterscheiden zwischen den **Werten** (Daten), die in unserem
 Programm vorhanden sind und der äußeren **Form**, mit der wir diese Werte
@@ -176,7 +217,7 @@ deine Formen **aus** (*eval*). Das Ergebnis dieser Auswertung ergibt den
 
 Bisher haben wir **Zahlen** und **Zeichenfolgen** (sowohl als **Form** als auch
 als **Wert**) kennen gelernt. Wir sprechen bei diesen verschiedenen *Arten von
-Daten* (also die Werte) auch von **Datentypen**.
+Daten* (also den Werten) auch von **Datentypen**.
 
 Clojure kennt verschiedene Zahl-Datentypen
 ([Ganzzahl](https://de.wikipedia.org/wiki/Ganze_Zahl), [Rationale
@@ -188,7 +229,7 @@ mehr) und auch verschiedene text-artige Datentypen:
 
 Durch den jeweiligen Datentyp wird festgelegt, welche Werte wir mit diesem
 Datentyp ausdrücken können (**Wertebereich**). Clojure erkennt beim Einlesen
-(durch den [Reader](https://clojure.org/reference/reader)) an der **äußeren
+(durch den [**Reader**](https://clojure.org/reference/reader)) an der **äußeren
 Form**, welches der **zugehörige Datentyp** des mit der Form beschriebenen
 Wertes ist.
 
@@ -236,7 +277,10 @@ Clojure kennt u.a. folgende zusammengesetzte Datentypen:
   ein Exemplar enthalten ist (kein Wert darf mehrfach in der Menge enthalten
   sein).
 * [Zuordnungstabelle](https://de.wikipedia.org/wiki/Zuordnungstabelle) (engl.
-  *map*) : eine (ggf. leere) Sammlung von Schlüssel-Wert-Paaren.
+  *map*) : eine (ggf. leere) Sammlung von Schlüssel-Wert-Paaren. Du kannst dir
+  eine Map wie eine zwei-spaltige Tabelle vorstellen: in der linken Spalte steht
+  jeweils der Schlüssel und in der rechten Spalte steht dann der (dem Schlüssel
+  zugeordnete) Wert.
 
 > Die Bezeichnung *Vektor* kennst du vielleicht aus dem Mathematikunterricht. In
 > der Informatik wird auch von einem
@@ -273,6 +317,9 @@ Vektoren werden von der REPL auf eine **besondere Weise eingelesen**:
 Der Vektor mit den **Elementen** **42** (Ganzzahl), **TOLL!** (String) und
 **wahr** (Boolean) wird geschrieben als `[42 "TOLL!" true]`. Die Elemente werden
 einfach durch Leerzeichen getrennt. Es wird kein Komma verwendet.
+
+> Weiter unten werden wir sehen, dass du auch Kommata verwenden kannst. Aber es
+> ist eben optional. D.h., du kannst es tun, aber du musst es nicht.
 
 Weitere Beispiele für Vektoren:
 
@@ -315,7 +362,7 @@ Lattenkreuz (engl. *hash*) (`#{` ... `}`) geschrieben.
 
 Die Menge mit den **Elementen** **42** (Ganzzahl), **TOLL!** (String) und
 **wahr** (Boolean) wird geschrieben als `#{42 "TOLL!" true}`. Die Elemente
-werden durch Leerzeichen (bzw. Kommata) getrennt (wie bei den Vektoren).
+werden durch Leerzeichen (und/oder Kommata) getrennt (wie bei den Vektoren).
 
 Weitere Beispiele für Mengen:
 
@@ -339,7 +386,7 @@ Weitere Beispiele für Mengen:
 
 Eine Zuordnungstabelle (engl. *map*) ist eine (ggf. leere) Sammlung von
 **Schlüssel-Wert-Paaren**. Durch eine Map drückst du einen Zusammenhang zwischen
-den jeweiligen **Schlüssel-Werten** und dem (einen) zugeordneten **Wert** aus.
+den jeweiligen **Schlüssel-Werten** und dem jeweils zugeordneten **Wert** aus.
 
 In Clojure werden Maps mit geschweiften Klammern (`{` ... `}`) geschrieben. Die
 **Schlüssel-Wert-Paare** werden als aufeinanderfolgende Elemente geschrieben.
@@ -348,7 +395,7 @@ Sowohl der **Schlüssel** des Schlüssel-Wert-Paares als auch der **Wert** des
 Schlüssel-Wert-Paares sind **Werte**. D.h., dass du als Schlüssel auch z.B.
 einen Vektor verwenden kannst.
 
-Außerdem brauchen die Schlüssel einer Map nicht alle vom gleichen Datentyp sein.
+Außerdem können die Schlüssel einer Map von verschiedenen Datentypen stammen.
 
 > Wichtig: wir sagen, dass es sich um Schlüssel-Wert-Paare handelt, aber die
 > Paare werden nicht gesondert *eingeklammert*. Du kannst die Paare zwar durch
@@ -361,6 +408,7 @@ Beispiele für Maps:
 
 * `{}` (die leere Map)
 * `{"HSV" 2 "FCB" 1 "St. Pauli" 2}` 
+* `{1 "eins" "zwei" 2}`
 * `{[1 2] 3 [5 6] 11 "nix" 0}`
 
 Übungen:
@@ -372,7 +420,7 @@ Beispiele für Maps:
 * Zu was wertet die Form `{["x" 1] ["x" 2]}` aus? Macht das Sinn?
 * Wie könntest du mit Hilfe einer Map ausdrücken, dass der Merkur der nächste
   Planet zur Sonne ist, die Venus der zweitnächste usw.? Überlege dir **zwei**
-  mögliche Darstellungen als Map. Tipp: zeichnet dir eine Zuordnungstabelle auf
+  mögliche Darstellungen als Map. Tipp: zeichne dir eine Zuordnungstabelle auf
   ein Stück Papier. Kommst du drauf?
 
 -------------------------------------------------------------------------------
@@ -451,11 +499,15 @@ verwenden können.
 > um die Zahl **42** zu nennen. Bei Funktionen ist es fast genau so. Wir kommen
 > später nochmal auf den Unterschied zwischen Symbol und Funktion zu sprechen.
 
-Symbole werden also anders ausgewertet, als z.B. Strings oder Zahlen. Wenn die
-REPL ein Symbol **<sym>** (wie z.B. `inc`) **auswertet**, schaut sie in einer
-bestimmten Zuordnungstabelle (Map) unter dem Schlüssel **<sym>** nach, welchen
-zugeordneten Wert sie dort findet. Dieser zugeordnete Wert ist jener Wert, der
-als Ergebnis der Auswertung verwendet wird.
+Symbole (d.h. Symbol-Formen) werden also anders ausgewertet, als z.B. Strings
+oder Zahlen. Wenn die REPL ein Symbol **&lt;sym>** (wie z.B. `inc`)
+**auswertet**, schaut sie in einer bestimmten internen Zuordnungstabelle (Map)
+unter dem Schlüssel **&lt;sym>** (also z.B. `inc`) nach, welchen zugeordneten
+Wert sie dort findet. Dieser zugeordnete Wert ist jener Wert, der als Ergebnis
+der Auswertung verwendet wird.
+
+In dieser Zuordnungstabelle können den Symbolen (Schlüssel) beliebige
+Werte/Datentypen zugeordnet sein --- nicht nur Funktionen.
 
 > Diese Zuordnungstabellen wird **Namespace** genannt und wir lernen später mehr
 > darüber.
@@ -521,15 +573,20 @@ Listen werden von der REPL auf eine **ganz besondere Weise behandelt**:
 
 ### Geschachtelte Listen/Funktionsaufrufe
 
-Die oben beschrieben Auswertungsregel für Listen lässt sich auch *geschachtelt*
-anwenden.
+Die oben beschriebene Auswertungsregel für Listen lässt sich auch
+[**rekursiv**](https://de.wikipedia.org/wiki/Rekursion) anwenden. Damit ist
+gemeint, dass innerhalb einer Listen-Form die einzelnen Elemente auch wiederum
+Listen-Formen (und auch andere zusammengesetzte Formen) sein können.
+
+Somit wird die REPL erst die eingebettete Liste auswerten und dann die
+**umschließende**. Die Auswertung erfolgt also **von innen nach außen**.
 
 Übungen:
 * Zu was wertet `(inc (inc 4))` aus? Wieso?
 * Zu was wertet `(inc (inc (inc 4)))` aus?
 * Erkläre deiner Tischnachbarin, wieso die Form `((inc 4))` nicht ausgewertet
-  werden kann. Welchen Unterschied findest du zwischen den Klammern in Clojure
-  und den Klammern, die du im Mathematikunterricht benutzt?
+  werden kann. Welchen Unterschied findest du zwischen den runden Klammern in
+  Clojure und den runden Klammern, die du im Mathematikunterricht benutzt?
 * Wieso lässt sich `(inc 4` nicht auswerten? 
 * Wieso lässt sich `(inc 4))` nicht auswerten?
 * Und `inc 4)`?
@@ -542,15 +599,18 @@ hinschreiben können (als Literale). Nun möchten wir aber auf die Teile (also d
 Elemente) der Datentyp-Werte **zugreifen** und die Teile so aus den
 zusammengesetzten Werten herauslesen.
 
-Für diesen Zugriff bietet Clojure eine Reihe von Funktionen:
+Für diesen Zugriff bietet Clojure eine Reihe von **Funktionen**:
 
 > Im [Cheatsheet](https://clojure.org/api/cheatsheet) findest du viele
 > Funktionen, von denen wir einige im folgenden kennen lernen. In dem Cheatsheet
 > werden die zusammengesetzten Datentypen __*collections*__ genannt.
 
-* `first` liefert dir das erste Element eines zusammengesetzten Wertes. 
-* `second` liefert dir das zweite Element eines zusammengesetzten Wertes. 
-* `last` liefert dir das letzte Element eines zusammengesetzten Wertes. 
+* `first` liefert dir das erste Element einer Collection. 
+* `second` liefert dir das zweite Element einer Collection. 
+* `last` liefert dir das letzte Element einer Collection. 
+
+> Wir werden später sehen, dass diese Aussage nicht 100% korrekt ist. Du kannst
+> ja mal ausprobieren, zu was `(second "abc")` auswertet. Macht das Sinn?
 
 Übungen:
 
@@ -566,6 +626,10 @@ Für diesen Zugriff bietet Clojure eine Reihe von Funktionen:
 * Denk dir zusammen mit deiner Tischnachbarin weitere Beispiele aus, in denen
   ihr `first`, `second` und `last` zusammen mit Vektoren, Maps und Sets
   verwendet.
+* Greife mit Hilfe von `first`, `second` und `last` auf folgende Datenstruktur
+  zu: `[1 [[2 3 4] 5 6] 7]`. Wie muss die Form aussehen, die zu `4` auswertet?
+  Wenn du nicht gleich drauf kommst, nutze einfach die REPL, um dich **von
+  außen** der Lösung zu nähern.
 
 -------------------------------------------------------------------------------
 ## `nth`
@@ -622,12 +686,12 @@ numbering](https://en.wikipedia.org/wiki/Zero-based_numbering)__.
 Die Funktion `nth` kannst du mit __zwei__ oder __drei__ __Argumenten__ aufrufen.
 
 > Clojure-Funktionen können also verschiedene
-> [Stelligkeiten](https://de.wikipedia.org/wiki/Stelligkeit) (Arität) haben.
+> [**Stelligkeiten**](https://de.wikipedia.org/wiki/Stelligkeit) (Arität) haben.
 > Viele Funktionen haben nur eine Stelligkeit. Die Funktion `nth` hat zwei.
 > Dabei wird in Clojure die Stelligkeit nur nach der **Anzahl der erwarteten
 > Argumente** unterschieden. In anderen Programmiersprachen wird im Zusammenhang
 > mit den erwarteten Datentypen auch von
-> [Signatur](https://de.wikipedia.org/wiki/Signatur_(Programmierung))
+> [**Signatur**](https://de.wikipedia.org/wiki/Signatur_(Programmierung))
 > gesprochen.
 
 * `(nth <coll> <n>)` : liefert das n-te (0-based) Element der Collection. Falls
@@ -673,13 +737,13 @@ auswertet. Aber was ist `nil`?
 
 Der Wert `nil` wird i.d.R. verwendet, um auszudrücken, dass *etwas nicht
 vorhanden ist*. Aber du kannst ihn verwenden wie jeden anderen Wert. Du wirst
-aber feststellen, dass die Funktionen, die von Clojure mitgeliefert werden,
-`nil` in dem Sinne *etwas ist nicht vorhanden* verwenden.
+aber feststellen, dass viele der Funktionen, die von Clojure mitgeliefert
+werden, `nil` in dem Sinne *etwas ist nicht vorhanden* verwenden.
 
-> Clojure ist eine [LISP](https://de.wikipedia.org/wiki/Lisp)-Sprache. In diesen
-> gibt es verschiedene Arten, *nichts* (oder *nicht vorhanden*) auszudrücken. So
-> spielt in LISP die leere Liste `()` eine Sonderrolle -- nicht aber in Clojure.
-> Mehr zu dem Thema findest du in dem [Wikipedia-Artikel
+> Clojure ist eine [**LISP**](https://de.wikipedia.org/wiki/Lisp)-Sprache. In
+> diesen gibt es verschiedene Arten, *nichts* (oder *nicht vorhanden*)
+> auszudrücken. So spielt in LISP die leere Liste `()` eine Sonderrolle -- nicht
+> aber in Clojure. Mehr zu dem Thema findest du in dem [Wikipedia-Artikel
 > **Nullwert**](https://de.wikipedia.org/wiki/Nullwert).
 
 Übungen:
@@ -693,11 +757,12 @@ aber feststellen, dass die Funktionen, die von Clojure mitgeliefert werden,
 * Zu was wertet `(nth nil 1)` aus? Macht das Sinn?
 
 -------------------------------------------------------------------------------
-## Weitere Funktionen für den Zugriff auf zusammengesetzte Datentypen
+## Weitere Funktionen für zusammengesetzte Datentypen
 
-Es gibt sehr viele Funktionen in Clojure, um auf Collections zuzugreifen. Hier
-führe ich einfach etwas willkürlich einige davon auf, einfach damit du diese
-Funktionen kennen lernst und anschließend verwenden kannst.
+Es gibt sehr viele Funktionen in Clojure, um auf Collections zuzugreifen und
+Collections zu erzeugen. Hier führe ich einfach etwas willkürlich einige davon
+auf, einfach damit du diese Funktionen kennen lernst und anschließend verwenden
+kannst.
 
 * `(count <coll>)` : liefert die Anzahl der Elemente in `<coll>`.
 
@@ -706,12 +771,12 @@ Funktionen kennen lernst und anschließend verwenden kannst.
   Resultat ist vom **gleichen Datentyp** wie `<to-coll>`.
 
 > In Clojure sind alle Datentypen **unveränderlich** (engl. *immutable*). D.h.,
-> wenn ich hier schreibe, dass einer Collection Elemente hinzugefügt werden,
-> dann meine ich damit, dass eine neue Collection erzeugt wird, die zu Beginn
-> die gleichen Werte enthält wie `<to-coll>` und dass dann dieser neuen
-> Collection die Elemente von `<from-coll>` hinzugefügt werden. Weder
+> wenn ich hier schreibe, dass einer Collection Elemente **hinzugefügt** werden,
+> dann meine ich damit, dass eine **neue Collection erzeugt wird**, die zu
+> Beginn die gleichen Werte enthält wie `<to-coll>` und dass dann dieser **neuen
+> Collection** die Elemente von `<from-coll>` hinzugefügt werden. Weder
 > `<from-coll>` noch `<to-coll>` werden geändert --- sie können gar nicht
-> geändert werden, weil Clojure das eben nicht zulässt.
+> geändert werden, weil Clojure das eben **nicht zulässt**.
 
 * `(rest <coll>)` : liefert die Elemente aus `<coll>`, die **nach** dem ersten
   Element (also `(first <coll>)`) in `<coll>` vorhanden sind, als **Liste**.
@@ -736,6 +801,8 @@ Funktionen kennen lernst und anschließend verwenden kannst.
 * Zu was wertet `(into {} {1 2 3 4})` aus?
 * Zu was wertet `(into ["a"] {1 2 3 4})` aus? Macht das Sinn? Lies dir nochmal
   durch, was Maps genau sind und wie sie als Literal/Form geschrieben werden?
+* Oben hatten wir gesehen, dass `#{"a" "a"}` keine zulässige Mengen-Form ist.
+  Wieso? Probiere aus, zu was `(into #{} ["a" "a"])` auswertet. Macht das Sinn?
 
 -------------------------------------------------------------------------------
 ## Listen, Symbole und `quote`
@@ -743,8 +810,8 @@ Funktionen kennen lernst und anschließend verwenden kannst.
 Weiter oben hatten wir schon Listen kennen gelernt und erfahren, dass eine
 Listen-Form auf eine ganz besondere Weise zu einem Wert ausgewertet wird.
 
-Manchmal möchten wir aber Listen nicht nutzen, um eine Funktion aufzurufen,
-sondern wir möchten sie als **Datenstruktur** nutzen --- genau wie z.B.
+Manchmal möchten wir aber Listen nicht nutzen, um eine **Funktion aufzurufen**,
+sondern wir möchten die Liste als **Datenstruktur** nutzen --- genau wie z.B.
 Vektoren.
 
 Um aber die Liste mit den Elementen `1`, `"a"` und `nil` zu konstruieren, können
@@ -760,10 +827,11 @@ Genau für diesen Zweck gibt es die Funktion `quote`.
 > damit aber noch nicht zu beschäftigen. Später lernen wir noch den Unterschied
 > kennen.
 
-Mit `quote` können wir also verhindern, dass Listen und Symbole, die als
+Mit `quote` können wir also verhindern, dass **Listen und Symbole**, die als
 Argument zu `quote` angegeben werden, ausgewertet werden.
 
-Es gibt noch eine Kurzform zu `quote`: das einfache Anführungszeichen (`'`).
+Es gibt noch eine Kurzform zu `quote`: das **einfache vorangestellte
+Anführungszeichen** (`'`).
 
 * `inc` wertet zu `#object[Ke]` aus. Dies ist die Art, wie Clojure uns die
   Funktion in der REPL anzeigt, die über die Zuordnungstabelle unter dem
@@ -792,14 +860,26 @@ Könnt ihr erklären, wieso die Auswertung jeweils genau so erfolgt?
 * Zu was wertet `(quote inc)` aus? 
 * Zu was wertet `a` aus?
 * Zu was wertet `'a` aus?
+* Zu was wertet `'  a` aus? Macht das Sinn?
+* Zu was wertet `',,aa` aus? 
 * Zu was wertet `(inc 2)` aus?
 * Zu was wertet `'(inc 2)` aus?
 * Zu was wertet `'(a 2)` aus?
 * Zu was wertet `(list inc 2)` aus?
+* Zu was wertet `(list inc 'inc 2)` aus?
 * Zu was wertet `(list a 2)` aus?
 
 -------------------------------------------------------------------------------
 ## Mathematische Operatoren
+
+Bisher haben wir einfache und strukturierte Daten(-typen) kennengelernt. Wir
+haben Funktionen genutzt, um auf die Eigenschaften (z.B. `count`) und Teile
+(z.B. `nth`) dieser Daten zuzugreifen und wir haben mit `into` eine Funktion
+genutzt, um Daten **zusammenzuführen**.
+
+Nun möchten wir
+[Operatoren](https://de.wikipedia.org/wiki/Operator_(Mathematik)) nutzen, um mit
+Zahlen zu rechnen.
 
 Aus dem Mathematikunterricht kennst du
 [Terme](https://de.wikipedia.org/wiki/Term) wie **4 + 7** und **(9 - 2) * 3**.
@@ -808,12 +888,11 @@ Möglichkeit, solche Terme zu formulieren.
 
 In Clojure schreiben wir aber nicht `4 + 7` oder `(4 + 7)`. Diese Art, Ausdrücke
 zu schreiben, wird [Infixnotation](https://de.wikipedia.org/wiki/Infixnotation)
-genannt. Bei der Infixnotation steht der
-[Operator](https://de.wikipedia.org/wiki/Operator_(Mathematik)) zwischen den
-beiden [Operanden](https://de.wikipedia.org/wiki/Operator_(Mathematik)#Operand).
+genannt. Bei der Infixnotation steht der **Operator** zwischen den beiden
+[Operanden](https://de.wikipedia.org/wiki/Operator_(Mathematik)#Operand).
 
-> Wieso können wir nicht `(4 + 7)` schreiben? Schau nochmal oben, wie eine
-> solche **Form** in Clojure ausgewertet wird.
+> Wieso können wir in Clojure nicht `(4 + 7)` schreiben? Schau nochmal oben, wie
+> eine solche **Form** in Clojure ausgewertet wird.
 
 Stattdessen schreiben wir `(+ 4 7)`. In diesem Fall wird die **Funktion** `+`
 aufgerufen. Wir schreiben den Operator also an die erste Stelle der Listen-Form.
@@ -840,7 +919,7 @@ Die Präfixnotation hat aber einige Vorteile:
   Mathematikunterricht kennst du die **Punkt-vor-Strich-Rechenregel**. Diese
   besagt, dass der Term **1 + 2 * 3** gleich **7** und nicht gleich **9** ist.
   Die Operatorrangfolge legt also fest, in welcher **Reihenfolge die Operatoren
-  anzuwenden sind*.  
+  anzuwenden sind**.  
   In Clojure brauchen wir das nicht, weil wir durch die Klammern ausdrücken, in
   welcher Reihenfolge die Formen auszuwerten sind und damit, in welcher
   Reihenfolge die Funktionen anzuwenden sind.  
@@ -870,8 +949,17 @@ Die Präfixnotation hat aber einige Vorteile:
 -------------------------------------------------------------------------------
 ## Prädikate
 
-Wenn du etwas programmierst, wirst du häufig prüfen müssen, ob eine bestimmte
-Aussage **wahr** oder **falsch** ist.
+> Wenn du etwas programmierst, wirst du häufig prüfen müssen, ob eine bestimmte
+Aussage **wahr** oder **falsch** ist. Du musst eine Fallunterscheidung treffen.
+Wenn jemand z.B. ein falsches Passwort eingibt, muss dein Programm vielleicht
+erneut nach dem Passwort fragen. Wird das Passwort korrekt eingegeben, gewährt
+dein Programm vielleicht den Zugriff auf weitere Informationen. Du musst also
+zum einen eine **Prüfung** programmieren und zum anderen brauchst du eine
+Möglichkeit, dein Programm abhängig vom Ergebnis der Prüfung in die **eine oder
+andere Richtung** weiterlaufen zu lassen ([Bedingte Anweisung und
+Verzweigung](https://de.wikipedia.org/wiki/Bedingte_Anweisung_und_Verzweigung)).
+In diesem Abschnitt schauen wir uns erstmal an, wie du eine solche Prüfung
+programmieren kannst.
 
 Im Mathematikunterricht hast du es häufig mit **Aussagen** wie **4 ist kleiner
 als 7** (4 < 7), **7 ist kleiner als 5** (7 < 5) und **7 ist gleich 9** (7 = 9)
@@ -895,7 +983,7 @@ liefern, nennt man
 > Wert** (d.h., die Form wertet zu einem Wert aus), mit dem wir anschließend
 > weiter arbeiten können.
 
-Es gibt weitere Prädikate:
+Es gibt weitere Prädikate in Clojure:
 
 * `>` (größer als?) 
 * `<=` (kleiner oder gleich?)
@@ -906,9 +994,16 @@ Es gibt weitere Prädikate:
 Clojure liefert dir aber nicht nur Prädikate für Zahlen sondern auch für die
 anderen Datentypen, die wir schon kennen gelernt haben:
 
-* `distinct` : prüft, ob jeder der Argumentwerte nur einmalig vorkommt?
+* `distinct?` : prüft, ob jeder der Argumentwerte nur einmalig vorkommt?
   `(distinct? 1 "a" true)` liefert `true`. `(distinct? 1 "a" true 1)` liefert
   `false`.
+
+> `(distinct? <x> <x*>)` erwartet nicht eine Collection `<coll>` als Argument,
+> sondern **1 oder mehrere Argumente**. Wieso die Funktion so programmiert
+> wurde, kann ich nicht sagen. Ich nutze die Notation `<x*>`, um auszudrücken,
+> dass es sich um 0 oder mehrere Vorkommen eines beliebigen Datentyps handelt.
+> Im Internet findest du auch die Schreibweise `(distinct? x & x)`. Wir werden
+> später verstehen, wie es zu dieser Schreibweise kommt.
 
 * `string?` : prüft, ob das Argument ein String ist. `(string "foo")` liefert
   `true`. 
@@ -920,10 +1015,32 @@ anderen Datentypen, die wir schon kennen gelernt haben:
 > Variablen](https://de.wikipedia.org/wiki/Metasyntaktische_Variable) auch gerne
 > **bla**, **blubb**, **blabla**, **blablabla** und **blafasel** verwendet.
 
+* `every` : TBD
+
 Übungen:
 
 * Ist die Zahl 0 positiv?
 * Zu was wertet `(even? 1.4)` aus? Macht das Sinn?
+* Zu was wertet `(= '(1 2 3) [1 2 3])` aus? Macht das Sinn?
+* Zu was wertet `(distinct? '(1 2 3) [1 2 3])` aus? Macht das Sinn?
+* Zu was wertet `(distinct '[(1 2 3) [1 2 3]])` aus? Macht das Sinn?
+
+> Es wundert sich bestimmt, dass `(= '(1 2 3) [1 2 3])` zu `true` auswertet. Wir
+> werden später lernen, wieso das in Clojure so ist.
+
+-------------------------------------------------------------------------------
+## Weitere Funktionen, mit denen wir Daten verarbeiten können
+
+TBD
+
+
+
+
+
+
+
+
+
 
 -------------------------------------------------------------------------------
 ## Funktionen, die Funktionen als Argument nutzen (higher order functions)
@@ -949,10 +1066,9 @@ höherer Ordnung](https://de.wikipedia.org/wiki/Funktion_h%C3%B6herer_Ordnung)**
 
 ### `filter`
 
-Als erstes möchten wir von einem Vektor oder einer Liste nur all jene Werte
-**behalten**, die eine **gerade Zahl** sind. Alle anderen Elemente der
-Collection sollen entfernt werden. Dazu nutzen wir die Funktion `(filter <pred>
-<coll>)`.
+Als erstes möchten wir von einer Collection nur all jene Werte **behalten**, die
+eine **gerade Zahl** sind. Alle anderen Elemente der Collection sollen entfernt
+werden. Dazu nutzen wir die Funktion `(filter <pred> <coll>)`.
 
 > Die allermeisten Informationen zu Clojure im Internet sind auf Englisch. Schau
 dir doch einfach mal die Beschreibung zu
@@ -961,7 +1077,7 @@ nicht alles verstehen, aber wenn du regelmäßig in die Dokumentation schaust,
 wirst du feststellen, dass das verwendete Englisch relativ einfach gehalten ist
 und auch die Art und Weise, wie die Dinge beschrieben sind, einem gewissen
 einheitlichen Stil folgen. Nach einiger Zeit wirst du dich daran gewöhnt haben
-und die Sachverhalten besser verstehen.
+und die Sachverhalten/Texte besser verstehen.
 
 Das erste Argument `<pred>` muss ein **einstelliges Prädikat** sein (vgl. oben).
 Also eine **Funktion**, die **ein** Argument erwartet und `true` oder `false`
@@ -1012,7 +1128,7 @@ Mit `filter` konnten wir **unerwünschte** Elemente aus der Collection `<coll>`
 
 Nun möchten wir eine Funktion `<f>` auf alle Elemente `<e>` einer Collection
 `<coll>` anwenden und als Ergebnis die Collection der **Funktionsergebnisse**
-`(<fn> <e>)`. Die Funktion `<fn>` muss in diesem Fall wieder einstellig sein.
+`(<f> <e>)`. Die Funktion `<f>` muss in diesem Fall wieder einstellig sein.
 
 Dazu nutzen wir die Funktion `(map <f> <coll>)`.
 
@@ -1024,11 +1140,38 @@ Die Funktion `map` kann aber auch mit mehr als einer Collection als Argument
 aufgerufen werden: `(map <f> <coll-1> <coll-2> ,,, <coll-n>)`. In diesem Fall
 wird die Funktion `<f>` mit `(<f> <e-1> <e-2> ,,, <e-n>)` aufgerufen. D.h., die
 **Stelligkeit** der Funktion `<f>` muss zu der Anzahl der Argumente passen, die
-wir beim Aufruf von `map` angeben. Wir können z.B. `+` nutzen:
+wir beim Aufruf von `map` angeben.
+
+> Wir könnten die Funktion auch so schreiben: `(map <f> <coll> <coll*>)`.
+
+Wir können z.B. `+` nutzen:
+
+> Die Funktion `(+ <num*>)` hat eine **beliebige Stelligkeit**. Sie akzeptiert 0
+> bis n Argumente, die jedoch Zahlen sein müssen.
 
 ```
 (map + [9 5 1] [3 6 8] [1 2 3]) ;=> (13 13 12)
 ```
+
+### `some`
+
+TBD
+
+### `zipmap`
+
+TBD: nimmt keine Funktion!
+
+### `reduce`
+
+TBD
+
+### `mapv`
+
+TBD
+
+### `filterv`
+
+TBD
 
 Übungen:
 
@@ -1049,9 +1192,16 @@ wir beim Aufruf von `map` angeben. Wir können z.B. `+` nutzen:
 ## Funktionen, die Funktionen liefern
 
 -------------------------------------------------------------------------------
-## Wahrheit
+## Wahrheit und nochmal Prädikate
 
 -------------------------------------------------------------------------------
 ## Was ist der Unterschied zwischen einem Datentyp und einer Sequenz?
 
+-------------------------------------------------------------------------------
+## Bedingte Verzweigung
 
+-------------------------------------------------------------------------------
+## Rekursion
+
+-------------------------------------------------------------------------------
+## Schleifen
