@@ -540,7 +540,7 @@ schließen also den Namen der Funktion mit in die Klammern ein.
 ## Funktionsaufruf als Form
 
 Bisher haben wir Formen für u.a. Zahlen, Zeichenketten und Vektoren kennen
-gelernt. Der Funktionsaufruf `(inc 5)` führt zwei neue Arten von Formen ein:
+gelernt. Der Funktionsaufruf `(inc 5)` führt zwei neue **Arten von Formen** ein:
 
 ### Symbole
 
@@ -561,12 +561,12 @@ verwenden können.
 > um die Zahl **42** zu nennen. Bei Funktionen ist es fast genau so. Wir kommen
 > später nochmal auf den Unterschied zwischen Symbol und Funktion zu sprechen.
 
-Symbole (d.h. Symbol-Formen) werden also anders ausgewertet, als z.B. Strings
-oder Zahlen. Wenn die REPL ein Symbol **&lt;sym>** (wie z.B. `inc`)
+Symbole (d.h. Symbol-Formen) werden also **anders ausgewertet**, als z.B.
+Strings oder Zahlen. Wenn die REPL ein Symbol **&lt;sym>** (wie z.B. `inc`)
 **auswertet**, schaut sie in einer bestimmten internen Zuordnungstabelle (Map)
 unter dem Schlüssel **&lt;sym>** (also z.B. `inc`) nach, welchen zugeordneten
 Wert sie dort findet. Dieser zugeordnete Wert ist jener Wert, der als Ergebnis
-der Auswertung verwendet wird.
+der Auswertung der Symbol-Form verwendet wird.
 
 In dieser Zuordnungstabelle können den Symbolen (Schlüssel) beliebige
 Werte/Datentypen zugeordnet sein --- nicht nur Funktionen.
@@ -583,6 +583,17 @@ Werte/Datentypen zugeordnet sein --- nicht nur Funktionen.
   Fehlermeldung?
 
 ### Listen
+
+Aber die (Funktionsaufruf-)Form `(inc 5)` führt noch eine weitere Form ein: die
+**Liste**.
+
+> Die Listen bzw. die vielen öffnenden und schließenden runden Klammern wirken
+> auf viele Programmierer sehr befremdlich. Wir werden uns schnell daran
+> gewöhnen und sie schließlich einfach akzeptieren und vielleicht sogar zu
+> schätzen lernen. Clojure ist zwar ein
+> [LISP](https://de.wikipedia.org/wiki/Lisp)-Dialekt, jedoch werden auch eckige
+> und geschweifte Klammern verwendet (vgl. oben), wodurch die Lesbarkeit
+> verbessert wird.
 
 Eine Liste besteht aus einer (ggf. leeren) Folge von Werten (wie die Vektoren).
 In Clojure werden Listen mit runden Klammern `(` ... `)` geschrieben.
@@ -639,6 +650,9 @@ Die oben beschriebene Auswertungsregel für Listen lässt sich auch
 [**rekursiv**](https://de.wikipedia.org/wiki/Rekursion) anwenden. Damit ist
 gemeint, dass innerhalb einer Listen-Form die einzelnen Elemente auch wiederum
 Listen-Formen (und auch andere zusammengesetzte Formen) sein können.
+
+> Man spricht von **rekursiven Datenstrukturen** oder auch von **geschachtelten
+> Datenstrukturen** (engl. **nested**).
 
 Somit wird die REPL erst die eingebettete Liste auswerten und dann die
 **umschließende**. Die Auswertung erfolgt also **von innen nach außen**.
@@ -1077,8 +1091,6 @@ anderen Datentypen, die wir schon kennen gelernt haben:
 > Variablen](https://de.wikipedia.org/wiki/Metasyntaktische_Variable) auch gerne
 > **bla**, **blubb**, **blabla**, **blablabla** und **blafasel** verwendet.
 
-* `every` : TBD
-
 Übungen:
 
 * Ist die Zahl 0 positiv?
@@ -1091,9 +1103,6 @@ anderen Datentypen, die wir schon kennen gelernt haben:
 > werden später lernen, wieso das in Clojure so ist.
 
 -------------------------------------------------------------------------------
-## TBD: Weitere Funktionen, mit denen wir Daten verarbeiten können
-
--------------------------------------------------------------------------------
 ## Funktionen, die Funktionen als Argument nutzen (higher order functions)
 
 Clojure ist eine [funktionale
@@ -1102,12 +1111,12 @@ Wir wollen noch nicht im Detail darauf eingehen, was das genau bedeutet, aber
 zumindest können wir sagen, dass **Funktionen** in einer funktionalen
 Programmiersprache eine zentrale Rolle spielen sollten.
 
-Bisher haben wir den Funktionen, die wir verwendet haben, als Argumente immer
-irgendwelche **Daten** übergeben: Zahlen, Strings, Vektoren, etc.
+Bisher haben wir den Funktionen, die wir verwendet haben, als **Argumente**
+immer irgendwelche **Daten** übergeben: Zahlen, Strings, Vektoren, etc.
 
-Nun werden wir Funktionen kennen lernen, denen wir als Argument eine (und später
-auch mehrere) **Funktionen** übergeben. Wieso man so etwas tun sollte, wird
-hoffentlich im Laufe der Zeit klar werden. 
+Nun werden wir Funktionen kennen lernen, denen wir als **Argument** eine (und
+später auch mehrere) **Funktionen** übergeben. Wieso man so etwas tun sollte,
+wird hoffentlich im Laufe der Zeit klar werden. 
 
 Funktionen, die wiederum Funktionen als Argument verwenden, werden **[Funktion
 höherer Ordnung](https://de.wikipedia.org/wiki/Funktion_h%C3%B6herer_Ordnung)**
@@ -1115,11 +1124,35 @@ höherer Ordnung](https://de.wikipedia.org/wiki/Funktion_h%C3%B6herer_Ordnung)**
 
 > Don't panic! Wir lassen uns Zeit und schauen uns alles in Ruhe an.
 
+### `every?`
+
+Oben haben wir **Prädikate** kennengelernt: Funktionen, die prüfen, ob eine
+bestimmte Aussage wahr oder falsch ist. Die Funktion `every?` ist auch ein
+Prädikat, das prüft, ob eine bestimmte Aussage für **alle** Elemente einer
+Collection `<c>` wahr ist. Falls dies der Fall ist, liefert `every?` den Wert
+`true` --- andernfalls liefert sie `false`.
+
+Nur im Gegensatz zu den Prädikaten, die wir bisher kennengelernt haben, weiß
+`every?` aber nicht, **welche** Aussage bzgl. der Elemente denn betrachtet
+werden soll (anders als z.B. `even?`). Stattdessen müssen wir `every?` dies beim
+Aufruf mit Hilfe einer **Funktion (Prädikat!) als Argument** mitteilen.
+
+Der Aufruf sieht also so aus: `(every? <pred> <coll>)`
+
+Dabei ist `<pred>` unsere Prädikats-Funktion und `<coll>` die Collection.
+
+Beispiel: `(every? even? [1 2 3])`
+
+> Probiere es doch einfach mal selber aus.  
+> Überlege nochmal, was der **Wert** der **Form** `even?` ist. Wieso haben wir
+> nicht `(every? (even?) [1 2 3])` geschrieben? Was ist der **Wert** der
+> **Form** `(even?)`?
+
 ### `filter`
 
-Als erstes möchten wir von einer Collection nur all jene Werte **behalten**, die
-eine **gerade Zahl** sind. Alle anderen Elemente der Collection sollen entfernt
-werden. Dazu nutzen wir die Funktion `(filter <pred> <coll>)`.
+Als nächstes möchten wir von einer Collection nur all jene Werte **behalten**,
+die eine **gerade Zahl** sind. Alle anderen Elemente der Collection sollen
+entfernt werden. Dazu nutzen wir die Funktion `(filter <pred> <coll>)`.
 
 > Die allermeisten Informationen zu Clojure im Internet sind auf Englisch. Schau
 dir doch einfach mal die Beschreibung zu
@@ -1204,26 +1237,6 @@ Wir können z.B. `+` nutzen:
 (map + [9 5 1] [3 6 8] [1 2 3]) ;=> (13 13 12)
 ```
 
-### `some`
-
-TBD
-
-### `zipmap`
-
-TBD: nimmt keine Funktion!
-
-### `reduce`
-
-TBD
-
-### `mapv`
-
-TBD
-
-### `filterv`
-
-TBD
-
 Übungen:
 
 * Zu was wertet `(list? (filter even? [1 2 3 4]))` aus?
@@ -1252,10 +1265,17 @@ TBD
 ## TBD: Bedingte Verzweigung
 
 -------------------------------------------------------------------------------
-## TBD: Rekursion
+## TBD: Lokale Namen, Auswertung von Symbolen, let
+
+-------------------------------------------------------------------------------
+## TBD: Rekursion, der Stack, Endrekursion
 
 -------------------------------------------------------------------------------
 ## TBD: Schleifen
+
+### for
+
+### loop/recur
 
 -------------------------------------------------------------------------------
 ## TBD: Threading
@@ -1271,3 +1291,14 @@ TBD
 
 -------------------------------------------------------------------------------
 ## TBD: Meta-Programmierung / Makros
+
+-------------------------------------------------------------------------------
+## TBD: Transducer
+
+-------------------------------------------------------------------------------
+## TBD: Nebenläufigkeit und Parallelität
+
+-------------------------------------------------------------------------------
+## TBD: Vars und Namensräume
+
+-------------------------------------------------------------------------------
