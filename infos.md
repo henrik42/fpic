@@ -34,4 +34,6 @@ Programmier-AG hilfreich sein können.
   [Logo-Programmiersprache](https://de.wikipedia.org/wiki/Logo_(Programmiersprache))
   implementiert.
 
+* https://livebook.manning.com/book/get-programming-with-clojure/
+
 

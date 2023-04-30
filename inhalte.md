@@ -149,15 +149,24 @@ diesem Fall ist es der Wert `nil`.
 -------------------------------------------------------------------------------
 ## Formen
 
+> In der Literatur wirst du sowohl den Bezeichner **Form** als auch den
+> Bezeichner **Expression**
+> (**[Ausdruck](https://de.wikipedia.org/wiki/Ausdruck_(Programmierung))**)
+> finden. Es gibt wohl einen [feinen
+> Unterschied](https://stackoverflow.com/questions/17206657/are-lisp-forms-and-lisp-expressions-same-thing),
+> den wir aber einfach ignorieren. Für uns ist eine Form/Expression etwas, das
+> einen **Wert** hat (dazu unten mehr). Das unterscheidet sie von einer
+> [Anweisung](https://de.wikipedia.org/wiki/Anweisung_(Programmierung)). 
+
 Was sind Clojure [Formen](https://clojure.org/guides/learn/syntax)? 
 
-> Die Formen in Clojure entsprechen den Sätzen in der natürlichen Sprache (das
-> stimmt nicht wirklich, aber da wir hier nicht im Deutschunterricht sind, ist
-> das ok für uns). Ein Clojure-Programm besteht aus einer Folge von Formen, d.h.
-> Sätzen.
+> Die **Formen** in Clojure entsprechen den Wörtern und Sätzen in der
+> natürlichen Sprache (das stimmt nicht 100%-tig, aber da wir hier nicht im
+> Deutschunterricht sind, ist das ok für uns). Ein Clojure-Programm besteht aus
+> einer **Folge** von Formen, d.h. einer Folge von Sätzen.
 
-Wir fangen mit den *einfachen* (d.h. unstrukturierten, den
-nicht-zusammengesetzten) Formen an. Diese entsprechen den Wörtern der
+Wir fangen mit den **einfachen** (d.h. unstrukturierten, den
+nicht-zusammengesetzten) **Formen** an. Diese entsprechen den Wörtern der
 natürlichen Sprache (aus denen wir anschließend Sätze bilden können).
 
 > *Einfach* bedeutet in diesem Zusammenhang, dass wir die Formen nicht weiter in
@@ -169,6 +178,26 @@ natürlichen Sprache (aus denen wir anschließend Sätze bilden können).
 > [**elementar**](https://de.wikipedia.org/wiki/Datentyp#Elementare_Datentypen)
 > --- eben **einfach**.
 
+> In dem legendären Video [Simple Made
+> Easy](https://www.infoq.com/presentations/Simple-Made-Easy/) (Englisch!) geht
+> Clojure-Erfinder [Rich Hickey](https://en.wikipedia.org/wiki/Rich_Hickey) auf
+> den Unterschied zwischen __einfach__ (engl. *simple*) und __leicht__ (engl.
+> *easy*) ein. *Simple* bedeutet in diesem Zusammenhang, dass Clojure aus
+> einfachen Teilen besteht, die sich jeweils nur um **einen Aspekt** kümmern und
+> Dinge nicht unnötig vermischt werden. Diese Teile können dann wiederum durch
+> **einfache** Mechanismen zu größeren Teilen zusammengesetzt werden
+> ([Komposition](https://de.wikipedia.org/wiki/Assoziation_(UML)#Komposition)).
+> Andererseits bedeutet **[komplex](https://de.wiktionary.org/wiki/komplex)**,
+> dass Dinge, die eigentlich unabhängig von einander sein sollten/könnten,
+> unnötigerweise mit einander vermischt/verknotet sind, wodurch sie schwer zu
+> verstehen sind und vor allem aufgrund ihrer *Verwobenheit* nicht so vielfältig
+> verwendet werden können, als wenn sie eben *simple* wären.  
+> [Talks von Rich
+> Hickey](https://www.youtube.com/playlist?list=PLZdCLR02grLrEwKaZv-5QbUzK0zGKOOcr)
+> findest du auf YouTube. Die Vorträge sind zwar alle auf Englisch und du wirst
+> vielleicht nicht alles beim ersten Mal verstehen, aber vielleicht findest du
+> trotzdem Freud daran.
+
 ### Zahlen
 
 Dies sind Beispiele für Zahlen in Clojure: `-5`, `0`, `1`, `2`, `42`, `1.56`,
@@ -177,7 +206,7 @@ Dies sind Beispiele für Zahlen in Clojure: `-5`, `0`, `1`, `2`, `42`, `1.56`,
 > Die Kommata zwischen den Zahlen gehören nicht zu den Zahlen. Ich nutze sie, um
 > die Zahlen von einander zu trennen und die Lesbarkeit zu erhöhen.
 
-Übungen zu Zahlen:
+Übungen:
 
 * Starte einen Browser und navigiere zu https://tryclojure.org/
 * Gib dort die Zahlen (*Formen*) `1`, `2` und `234` ein. Nach jeder Form musst
@@ -200,7 +229,7 @@ Dies sind Beispiele für
 Zeichenfolgen werden inklusive der doppelten Anführungszeichen (`"`) am Anfang
 und am Ende eingegeben.
 
-Übungen zu Zeichenfolgen
+Übungen:
 
 * Gib die Zeichenfolge `"hallo"` ein. Wir sagen, dass diese Zeichenfolge aus 5
   Zeichen besteht. Die Zeichenfolge `"hallo"` hat die Länge 5.
@@ -232,10 +261,10 @@ eingeben können und mit der diese Werte auch wieder ausgegeben werden.
   den Wert) 12 ausdrücken kannst? 
 
 > Denk nochmal über die REPL nach. Die REPL liest deine Eingabe ein (*read*).
-Deine Eingabe muss aus Formen bestehen. Nach dem Einlesen **wertet** die REPL
-deine Formen **aus** (*eval*). Das Ergebnis dieser Auswertung ergibt den
-**Wert** deiner Eingabe. Und dieser Wert wird von der REPL wiederum als Form
-**ausgegeben** (*print*).
+Deine Eingabe muss aus **Formen** bestehen. Nach dem Einlesen **wertet** die
+REPL deine Formen **aus** (*eval*). Das **Ergebnis dieser Auswertung** ergibt
+den **Wert** deiner Eingabe. Und dieser **Wert** wird von der REPL wiederum als
+Form **ausgegeben** (*print*).  
 
 -------------------------------------------------------------------------------
 ## Werte und Datentypen
@@ -270,7 +299,8 @@ Der Datentyp [**Boolean**](https://de.wikipedia.org/wiki/Boolean) (siehe auch
   [Wahrheitswerte](https://de.wikipedia.org/wiki/Wahrheitswert)) umfasst nur
   zwei mögliche Werte: *wahr* (`true`) und *falsch* (`false`).
 
-Übung:
+Übungen:
+
 * Gibt den Boolean-**Wert** *wahr* ein? Welche **Form** musst du nutzen?
 * Welche Arten von Daten kennst du aus deinem Alltag? In welcher Form werden
   diese dargestellt? Tipp: schau mal in die Kontakte-App in deinem Smartphone -
@@ -451,9 +481,16 @@ Beispiele für Maps:
 -------------------------------------------------------------------------------
 ## Funktionen
 
-Bisher haben wir verschiedene Arten von einfachen (Zahlen, Strings, Boolean) und
-zusammengesetzten (Vektoren, Mengen, Maps) Daten(-typen) kennen gelernt und wie
-du diese über ihre Form beschreiben und ein- und ausgeben kannst.
+Bisher haben wir verschiedene Arten von **einfachen** (Zahlen, Strings, Boolean)
+und **zusammengesetzten** (Vektoren, Mengen, Maps) **Daten(-typen)**
+kennengelernt und wie du diese über ihre **Form** beschreiben und ein- und
+ausgeben kannst.
+
+> Diese Daten sind sehr nützlich, aber sie sind **passiv**. Wir können mit ihnen
+bestimmte Dinge ausdrücken (z.B. wie alt jemand ist oder wie viele Apps wir auf
+unserem Smartphone installiert haben), aber wir können nichts **aktives** mit
+ihnen tun. Wir haben bisher keinen Mechanismus, um mit diesen Werten z.B. zu
+rechnen.
 
 Nun wollen wir etwas mit den Werten dieser Datentypen **tun**. In Clojure nutzen
 wir dazu [**Funktionen**](https://de.wikipedia.org/wiki/Funktion_(Mathematik)).
@@ -1054,18 +1091,7 @@ anderen Datentypen, die wir schon kennen gelernt haben:
 > werden später lernen, wieso das in Clojure so ist.
 
 -------------------------------------------------------------------------------
-## Weitere Funktionen, mit denen wir Daten verarbeiten können
-
-TBD
-
-
-
-
-
-
-
-
-
+## TBD: Weitere Funktionen, mit denen wir Daten verarbeiten können
 
 -------------------------------------------------------------------------------
 ## Funktionen, die Funktionen als Argument nutzen (higher order functions)
@@ -1214,19 +1240,34 @@ TBD
   "a", 2 "b", 3 "c"}` zu erzeugen.
 
 -------------------------------------------------------------------------------
-## Funktionen, die Funktionen liefern
+## TBD: Funktionen, die Funktionen liefern
 
 -------------------------------------------------------------------------------
-## Wahrheit und nochmal Prädikate
+## TBD: Wahrheit und nochmal Prädikate
 
 -------------------------------------------------------------------------------
-## Was ist der Unterschied zwischen einem Datentyp und einer Sequenz?
+## TBD: Was ist der Unterschied zwischen einem Datentyp und einer Sequenz?
 
 -------------------------------------------------------------------------------
-## Bedingte Verzweigung
+## TBD: Bedingte Verzweigung
 
 -------------------------------------------------------------------------------
-## Rekursion
+## TBD: Rekursion
 
 -------------------------------------------------------------------------------
-## Schleifen
+## TBD: Schleifen
+
+-------------------------------------------------------------------------------
+## TBD: Threading
+
+-------------------------------------------------------------------------------
+## TBD: Datentypen als Funktion
+
+-------------------------------------------------------------------------------
+## TBD: Gleichheit
+
+-------------------------------------------------------------------------------
+## TBD: Destructuring
+
+-------------------------------------------------------------------------------
+## TBD: Meta-Programmierung / Makros
