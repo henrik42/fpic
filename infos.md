@@ -21,4 +21,17 @@ Programmier-AG hilfreich sein können.
   eine Gleitkommazahl ist. Ich denke, dieser Artikel ist nichts für die
   Mittelstufe, wohl aber für die Oberstufe.
 
+* https://www.codewars.com/collections/clojure-4
+
+* https://news.ycombinator.com/item?id=22087583: eine kontroverse Diskussion um
+  die Frage, ob Kinder Programmieren lernen wollen/sollen und ob LISP/Clojure
+  eine gute Wahl für so ein Unterfangen ist.
+
+* https://kidscodecs.com/clojure/
+
+* https://github.com/google/clojure-turtle : Eine Clojure-Anwendung/Bibliothek,
+  die die
+  [Logo-Programmiersprache](https://de.wikipedia.org/wiki/Logo_(Programmiersprache))
+  implementiert.
+
 

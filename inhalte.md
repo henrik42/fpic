@@ -19,7 +19,10 @@
 * Was ist [Information](https://de.wikipedia.org/wiki/Information)?
 * Was ist ein
   [(Computer-)Programm](https://de.wikipedia.org/wiki/Computerprogramm)?
-* Was bedeutet es, ein Programm auszuführen?
+* Was bedeutet es, ein Programm
+  [auszuführen](https://de.m.wikipedia.org/wiki/Computerprogramm#%C3%9Cbersetzung_und_Ausf%C3%BChrung)?
+* Was ist der Unterschied zwischen einem [Programm und dem zugehörigen
+  Prozess](https://vfhcab.eduloop.de/loop/Vom_Programm_zum_Prozess)?
 * [Was ist
   Programmieren](https://www.codefuchs.com/artikel/was-ist-programmieren/)?
 * Was ist eine
@@ -33,13 +36,14 @@
 ## Clojure und die REPL
 
 [Clojure](https://de.wikipedia.org/wiki/Clojure) ist eine Programmiersprache,
-die u.a. einen sehr [interaktiven
+die u.a. einen [interaktiven
 Programmierstil](https://en.wikipedia.org/wiki/Interactive_programming) erlaubt.
 D.h., dass du während des Programmierens schon mit deinem **laufenden Programm**
-**interagierst**: du schreibst es, du führst es aus, du änderst den
-Programmcode, du führst ihn erneut aus, du denkst nach, wieso das Programm nicht
-tut, was du wolltest, du findest den Fehler, änderst den Code erneut, probierst
-ihn abermals aus und -- et voilà -- dein Programm ist fertig und fehlerfrei.
+**interagierst**: du schreibst es, du führst es aus, du änderst den Programmcode
+(während das Programm läuft), du führst einen Teil erneut aus, du denkst nach,
+wieso das Programm nicht tut, was du wolltest, du findest den Fehler, änderst
+den Code erneut, probierst ihn abermals aus und -- et voilà -- dein Programm ist
+fertig und fehlerfrei.
 
 > Viele andere Programmiersprachen lassen diese Art des Programmierens nicht zu.
 > Wir werden später noch sehen, was du alles mit Clojure auf diese Weise machen
@@ -88,10 +92,18 @@ Computer**, sondern nur einen Browser und einen Internetzugang.
 * https://www.gitpod.io/ : Und eine
   [Anleitung](https://calva.io/get-started-with-clojure/) (Englisch).
 
+* https://www.maria.cloud/
+
+* https://github.com/fredoverflow/clopad
+
+* http://kids.klipse.tech/ : Eine Programmier-Lehranwendung für Clojure. Der
+  [Quellcode](https://github.com/viebel/kids.klipse.tech) ist open-source und
+  kann angepasst werden.
+
 -------------------------------------------------------------------------------
 ## Hello, world! 👋
 
-Bevor wir überhaupt wirklich irgend etwas über Clojure lernen, wollen wir gleich
+Bevor wir überhaupt wirklich irgendetwas über Clojure lernen, wollen wir gleich
 unser erstes
 [Hello-World!](https://de.wikipedia.org/wiki/Hallo-Welt-Programm)-Programm
 schreiben.
@@ -112,9 +124,10 @@ In der REPL sieht das etwas so aus:
 =>
 ```
 
-Der Prompt `=>` zeigt dir an, dass die REPL eine Eingabe von dir erwartet. Wir
-haben hier `(println "Hello, world! 👋")` eingegeben und dann die ENTER-Taste
-gedrückt.
+Der [Prompt](https://de.wikipedia.org/wiki/Prompt) `=>` zeigt dir an, dass die
+REPL eine Eingabe von dir erwartet. Wir haben hier `(println "Hello, world!
+👋")` eingegeben und dann die
+[ENTER](https://de.wikipedia.org/wiki/Eingabetaste)-Taste gedrückt.
 
 > Wenn du das auch ausprobieren möchtest, kannst du dir den Text einfach hier
 > mit der Maus markieren, dann kopieren und in die REPL wieder einfügen.
@@ -158,10 +171,15 @@ natürlichen Sprache (aus denen wir anschließend Sätze bilden können).
 
 ### Zahlen
 
-Zahlen: `-5`, `0`, `1`, `2`, `42`, `1.56`, `4/2`, `5/3`
+Dies sind Beispiele für Zahlen in Clojure: `-5`, `0`, `1`, `2`, `42`, `1.56`,
+`4/2`, `5/3`
+
+> Die Kommata zwischen den Zahlen gehören nicht zu den Zahlen. Ich nutze sie, um
+> die Zahlen von einander zu trennen und die Lesbarkeit zu erhöhen.
 
 Übungen zu Zahlen:
-* Starte einen Browser, navigiere zu https://tryclojure.org/
+
+* Starte einen Browser und navigiere zu https://tryclojure.org/
 * Gib dort die Zahlen (*Formen*) `1`, `2` und `234` ein. Nach jeder Form musst
   du die *ENTER*-Taste drücken. Was passiert?
 * Was passiert, wenn du mehrere Formen hintereinander durch Leerzeichen getrennt
@@ -169,17 +187,21 @@ Zahlen: `-5`, `0`, `1`, `2`, `42`, `1.56`, `4/2`, `5/3`
 * Was passiert, wenn du eine sehr große Zahl eingibst?
 * Gib nun eine negative Zahl ein. Nutze dazu das vorangestellte Minuszeichen
   (`-`).
-* Gib eine Dezimalzahl ein. Als Dezimaltrenner musst du den Punkt (`.`) nutzen -
-  nicht das Komma (`,`).
+* Gib eine [Dezimalzahl](https://de.wikipedia.org/wiki/Dezimalsystem) mit zwei
+  [Nachkommastellen](https://de.wikipedia.org/wiki/Nachkommastelle) ein. Als
+  Dezimaltrenner musst du den Punkt (`.`) nutzen - nicht das Komma (`,`).
 
 ### Zeichenfolgen
 
-Zeichenfolgen (englisch *string*/*strings*): `"hallo"`, `"TOLL!"`, `" i j k "`
+Dies sind Beispiele für
+[Zeichenfolgen](https://de.wikipedia.org/wiki/Zeichenkette) (englisch
+*string*/*strings*): `"hallo"`, `"TOLL!"`, `" i j k "`
 
 Zeichenfolgen werden inklusive der doppelten Anführungszeichen (`"`) am Anfang
 und am Ende eingegeben.
 
 Übungen zu Zeichenfolgen
+
 * Gib die Zeichenfolge `"hallo"` ein. Wir sagen, dass diese Zeichenfolge aus 5
   Zeichen besteht. Die Zeichenfolge `"hallo"` hat die Länge 5.
 * Gib die Zeichenfolgen `"TOLL!"`, `"A_B_$"`, `"a$b/c:_|<>#~'"` ein.
@@ -193,16 +215,19 @@ und am Ende eingegeben.
 -------------------------------------------------------------------------------
 ## Formen und Werte
 
-Die Form `"hallo"` ist die äußere Darstellung der Zeichenfolge `hallo`. `hallo`
-ist also der **Wert**, den wir über die Form `"hallo"` eingeben können. 
+Die Form `"hallo"` ist die __äußere Darstellung__ der Zeichenfolge `hallo`.
+`hallo` ist also der **Wert**, den wir über die Form `"hallo"` __eingeben__
+können. 
 
-Wenn die REPL den Wert `hallo` ausgibt, nutzt sie dieselbe Form `"hallo"` dazu. 
+Wenn die REPL den Wert `hallo` __ausgibt__, nutzt sie __dieselbe Form__
+`"hallo"` dazu. 
 
 Wir müssen also unterscheiden zwischen den **Werten** (Daten), die in unserem
 Programm vorhanden sind und der äußeren **Form**, mit der wir diese Werte
 eingeben können und mit der diese Werte auch wieder ausgegeben werden.
 
 Übungen:
+
 * Welche Formen (unabhängig von Clojure) kennst du, mit denen du die Zahl (also
   den Wert) 12 ausdrücken kannst? 
 
