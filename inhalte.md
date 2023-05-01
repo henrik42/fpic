@@ -1026,15 +1026,16 @@ Die Präfixnotation hat aber einige Vorteile:
 ## Prädikate
 
 > Wenn du etwas programmierst, wirst du häufig prüfen müssen, ob eine bestimmte
-Aussage **wahr** oder **falsch** ist. Du musst eine Fallunterscheidung treffen.
-Wenn jemand z.B. ein falsches Passwort eingibt, muss dein Programm vielleicht
-erneut nach dem Passwort fragen. Wird das Passwort korrekt eingegeben, gewährt
-dein Programm vielleicht den Zugriff auf weitere Informationen. Du musst also
-zum einen eine **Prüfung** programmieren und zum anderen brauchst du eine
-Möglichkeit, dein Programm abhängig vom Ergebnis der Prüfung in die **eine oder
-andere Richtung** weiterlaufen zu lassen ([Bedingte Anweisung und
+Aussage **wahr** oder **falsch** ist. Du musst eine **Fallunterscheidung**
+treffen. Wenn jemand z.B. ein falsches Passwort eingibt, muss dein Programm
+vielleicht erneut nach dem Passwort fragen. Wird das Passwort korrekt
+eingegeben, gewährt dein Programm vielleicht den Zugriff auf weitere
+Informationen. Du musst also zum einen eine **Prüfung** programmieren und zum
+anderen brauchst du eine Möglichkeit, dein Programm abhängig vom Ergebnis der
+Prüfung in die **eine oder andere Richtung** weiterlaufen zu lassen ([Bedingte
+Anweisung und
 Verzweigung](https://de.wikipedia.org/wiki/Bedingte_Anweisung_und_Verzweigung)).
-In diesem Abschnitt schauen wir uns erstmal an, wie du eine solche Prüfung
+In diesem Abschnitt schauen wir uns erstmal an, wie du eine solche **Prüfung**
 programmieren kannst.
 
 Im Mathematikunterricht hast du es häufig mit **Aussagen** wie **4 ist kleiner
@@ -1074,11 +1075,11 @@ anderen Datentypen, die wir schon kennen gelernt haben:
   `(distinct? 1 "a" true)` liefert `true`. `(distinct? 1 "a" true 1)` liefert
   `false`.
 
-> `(distinct? <x> <x*>)` erwartet nicht eine Collection `<coll>` als Argument,
+> `(distinct? <x> <xs*>)` erwartet nicht eine Collection `<coll>` als Argument,
 > sondern **1 oder mehrere Argumente**. Wieso die Funktion so programmiert
-> wurde, kann ich nicht sagen. Ich nutze die Notation `<x*>`, um auszudrücken,
+> wurde, kann ich nicht sagen. Ich nutze die Notation `<xs*>`, um auszudrücken,
 > dass es sich um 0 oder mehrere Vorkommen eines beliebigen Datentyps handelt.
-> Im Internet findest du auch die Schreibweise `(distinct? x & x)`. Wir werden
+> Im Internet findest du auch die Schreibweise `(distinct? x & xs)`. Wir werden
 > später verstehen, wie es zu dieser Schreibweise kommt.
 
 * `string?` : prüft, ob das Argument ein String ist. `(string "foo")` liefert
@@ -1226,12 +1227,12 @@ wird die Funktion `<f>` mit `(<f> <e-1> <e-2> ,,, <e-n>)` aufgerufen. D.h., die
 **Stelligkeit** der Funktion `<f>` muss zu der Anzahl der Argumente passen, die
 wir beim Aufruf von `map` angeben.
 
-> Wir könnten die Funktion auch so schreiben: `(map <f> <coll> <coll*>)`.
+> Wir könnten die Funktion auch so schreiben: `(map <f> <coll> <colls*>)`.
 
 Wir können z.B. `+` nutzen:
 
-> Die Funktion `(+ <num*>)` hat eine **beliebige Stelligkeit**. Sie akzeptiert 0
-> bis n Argumente, die jedoch Zahlen sein müssen.
+> Die Funktion `(+ <nums*>)` hat eine **beliebige Stelligkeit**. Sie akzeptiert
+> 0 bis n Argumente, die jedoch Zahlen sein müssen.
 
 ```
 (map + [9 5 1] [3 6 8] [1 2 3]) ;=> (13 13 12)
@@ -1253,7 +1254,108 @@ Wir können z.B. `+` nutzen:
   "a", 2 "b", 3 "c"}` zu erzeugen.
 
 -------------------------------------------------------------------------------
-## TBD: Funktionen, die Funktionen liefern
+## Funktionen, die Funktionen liefern (higher order functions)
+
+Oben haben wir Funktionen (HOFs) kennengelernt, denen wir beim Aufruf als
+Argument Funktionen übergeben. Während der Ausführung unseres Funktionsaufrufs
+nutzt die HOF die übergebene Funktion, indem sie diese selber aufruft.
+
+__Beispiel__: Wir rufen die HOF `every?` auf und übergeben ihr die
+Funktion/Prädikat `even?`. Während `every?` ausgeführt wird, ruft sie die
+Funktion `even?` auf. 
+
+Als Ergebnis erhalten wir `true` oder `false`.
+
+```
+(every? even? [2 4 6]) ;=> true
+```
+
+Es gibt aber auch HOFs, die nicht selber die übergebene Funktion aufrufen,
+sondern die uns als **Ergebnis** eine **neue Funktion** liefern und diese neue
+Funktion ruft (falls/wenn wir sie aufrufen) dann die von uns übergebene Funktion
+auf.
+
+> Aus dem Mathematikunterricht kennst du vielleicht die
+> **[Komposition](https://de.wikipedia.org/wiki/Komposition_(Mathematik))** von
+> Funktionen. Wenn ich z.B. die Funktionen **f(x)** und **g(x)** habe, dann kann
+> ich durch **Komposition ∘** die Funktion **h = g ∘ f** bilden. D.h., durch die
+> Kompositions-Operation **∘** __schaffe ich eine neue Funktion__. Dabei ist
+> **h(x) = (g ∘ f)(x) = g(f(x))**. Das kannst du in Clojure auch machen.
+
+### `comp`
+
+Die Funktion `(comp <fs*>)` liefert als **Ergebnis** die
+**Kompositions-Funktion** (also eine __neue Funktion!__) der übergebenen
+Argumente (__Funktionen__). 
+
+Wenn wir diese neue Funktion mit Argumenten aufrufen, wird sie die zuvor
+übergebenen Funktionen *der Reihe nach* auf den Argumenten aufrufen und das
+Ergebnis liefern.
+
+**Beispiel**: wir konstruieren die Komposition der Funktionen `/` und `-`, indem
+wir `(comp - /)` aufrufen. Die gelieferte Funktion wird erst `/` auf ihren
+Argumenten aufrufen und anschließend auf dem Ergebnis der Division die Funktion
+`-` aufrufen. Schließlich liefert sie das Ergebnis.
+
+> Lies dir nochmal durch, wie die Auswertungsregel für Listen aussieht. Die
+> ersten Position einer Liste muss eine Funktion sein und diese wird bei der
+> Auswertung der Liste aufgerufen. Wenn wir also schreiben `((comp <fs*>) ,,,)`,
+> dann wertet `(comp <fs*>)` zu einer Funktion `<f>` aus und diese Funktion
+> `<f>` wird dann in der Liste `(<f> ,,,)` das erste Element sein und bei der
+> Auswertung der Liste mit den restlichen Elementen der Liste als Argumente
+> aufgerufen.
+
+> Beachte die Reihenfolge, in der die Funktionen/Argument von `comp` ausgeführt
+> werden: die Reihenfolge der Ausführung erfolgt von *rechts nach links*. Genau
+> wie bei der Komposition **∘** (vgl. oben).
+
+```
+(comp - /) ;=> #object[g]
+((comp - /) 8 3) ;=> -2.6666666666666665
+(- (/ 8 3)) ;=> -2.6666666666666665
+((comp inc - /) 8 3) ;=> -1.6666666666666665
+(inc (- (/ 8 3))) ;=> -1.6666666666666665
+```
+
+Übungen:
+
+* Nutze `comp`, `inc` und `-` um eine Funktion zu konstruieren, die ihr Argument
+  erst negiert und dann um eins erhöht: `((comp ,,,) 4) ;=> -3`
+* Nutze `map`, um diese Funktion auf den Vektor mit den Werten `4`, `10` und `0`
+  anzuwenden: `(map ,,,) ;=> (-3 -9 1)`
+
+### `partial`
+
+Die Funktion `(partial <f> <xs*>)` liefert eine Funktion, die, wenn sie mit
+Argumenten `<ys*>` aufgerufen wird, die Funktion `(<f> <xs*> <ys*>)` aufruft.
+
+Die Funktion `partial` *merkt* sich also, welche Argumente `<xs*>` übergeben
+wurden, wenn sie ausgeführt wird und liefert uns eine **neue Funktion**, in der
+diese Information hinterlegt ist. Und wenn/falls wir später diese **neue
+Funktion** aufrufen und dabei möglicherweise Argumente übergeben, dann wird die
+ursprünglich Funktion `<f>` mit all diesen Argumenten (also `<xs*>` und `<ys*>`)
+aufgerufen.
+
+**Beispiel**
+
+```
+(partial + 42) ;=> #object[g]
+((partial + 42) 10) ;=> 52
+((partial + 42) 10 4) ;=> 56
+((partial (comp - /) 8) 3) ;=> -2.6666666666666665
+```
+
+Übungen:
+
+* Nutze `partial`, um eine Funktion zu definieren, die ihre Argumente mit
+  **zwei** multipliziert und wende diese Funktion auf die Zahl **5** an:
+  `((partial ,,,) 5) ;=> 10`
+* Nutze `filter` und `partial`, um aus dem Vektor mit den Zahlen 0, 1, 2, 3 und
+  4 alle Element zu entfernen, die **kleiner 2** sind: `(,,, [0 1 2 3 4]) ;=> (2
+  3 4)`
+
+-------------------------------------------------------------------------------
+## TBD: Funktionen definieren
 
 -------------------------------------------------------------------------------
 ## TBD: Wahrheit und nochmal Prädikate
@@ -1265,7 +1367,7 @@ Wir können z.B. `+` nutzen:
 ## TBD: Bedingte Verzweigung
 
 -------------------------------------------------------------------------------
-## TBD: Lokale Namen, Auswertung von Symbolen, let
+## TBD: Lokale Namen, Auswertung von Symbolen, `let`
 
 -------------------------------------------------------------------------------
 ## TBD: Rekursion, der Stack, Endrekursion
@@ -1273,9 +1375,9 @@ Wir können z.B. `+` nutzen:
 -------------------------------------------------------------------------------
 ## TBD: Schleifen
 
-### for
+### `for`
 
-### loop/recur
+### `loop`/`recur`
 
 -------------------------------------------------------------------------------
 ## TBD: Threading
