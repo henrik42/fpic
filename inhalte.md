@@ -135,8 +135,8 @@ REPL eine Eingabe von dir erwartet. Wir haben hier `(println "Hello, world!
 > weitere Emojis 🙂.
 
 **Die REPL führt nun unser Programm aus**. In diesem Fall gibt sie den Text
-`Hello, world! 👋`, aus, weil wir in unserem Programm die Funktion `println`
-nutzen.
+`Hello, world! 👋`, aus, weil wir in unserem Programm die Funktion
+[`println`](https://clojuredocs.org/clojure.core/println) nutzen.
 
 Wenn die REPL fertig damit ist, unser Programm auszuführen, gibt sie noch den
 **Wert** aus, der von unserem Programm als **Ergebnis** geliefert wurde. In
@@ -183,20 +183,20 @@ natürlichen Sprache (aus denen wir anschließend Sätze bilden können).
 > Clojure-Erfinder [Rich Hickey](https://en.wikipedia.org/wiki/Rich_Hickey) auf
 > den Unterschied zwischen __einfach__ (engl. *simple*) und __leicht__ (engl.
 > *easy*) ein. *Simple* bedeutet in diesem Zusammenhang, dass Clojure aus
-> einfachen Teilen besteht, die sich jeweils nur um **einen Aspekt** kümmern und
-> Dinge nicht unnötig vermischt werden. Diese Teile können dann wiederum durch
-> **einfache** Mechanismen zu größeren Teilen zusammengesetzt werden
+> __einfachen__ Teilen besteht, die sich jeweils nur um **einen Aspekt** kümmern
+> und Dinge nicht unnötig vermischt werden. Diese Teile können dann wiederum
+> durch **einfache** Mechanismen zu größeren Teilen zusammengesetzt werden
 > ([Komposition](https://de.wikipedia.org/wiki/Assoziation_(UML)#Komposition)).
 > Andererseits bedeutet **[komplex](https://de.wiktionary.org/wiki/komplex)**,
 > dass Dinge, die eigentlich unabhängig von einander sein sollten/könnten,
-> unnötigerweise mit einander vermischt/verknotet sind, wodurch sie schwer zu
-> verstehen sind und vor allem aufgrund ihrer *Verwobenheit* nicht so vielfältig
-> verwendet werden können, als wenn sie eben *simple* wären.  
+> __unnötigerweise__ mit einander vermischt/verknotet sind, wodurch sie schwer
+> zu verstehen sind und vor allem aufgrund ihrer *Verwobenheit* nicht so
+> vielfältig verwendet werden können, als wenn sie eben *simple* wären.  
 > [Talks von Rich
 > Hickey](https://www.youtube.com/playlist?list=PLZdCLR02grLrEwKaZv-5QbUzK0zGKOOcr)
 > findest du auf YouTube. Die Vorträge sind zwar alle auf Englisch und du wirst
 > vielleicht nicht alles beim ersten Mal verstehen, aber vielleicht findest du
-> trotzdem Freud daran.
+> trotzdem Freude daran.
 
 ### Zahlen
 
@@ -1254,6 +1254,62 @@ Wir können z.B. `+` nutzen:
   "a", 2 "b", 3 "c"}` zu erzeugen.
 
 -------------------------------------------------------------------------------
+## Lokale Namen: `let`
+
+
+
+-------------------------------------------------------------------------------
+## Schleifen
+
+> **[Schleifen](https://de.wikipedia.org/wiki/Schleife_(Programmierung))** sind
+> in der Informatik ein sehr umfangreiches Thema. Wir wollen das Thema hier aber
+> eher pragmatisch/praktisch betrachten und ignorieren den theoretischen Teil.  
+> Ein sehr wichtiger Unterschied zwischen Clojures Schleifen-Konstrukten und
+> jenen aus den [imperativen
+> Programmiersprachen](https://de.wikipedia.org/wiki/Imperative_Programmierung)
+> ist, dass Clojures Schleifen **Ausdrücke/Expressions** sind --- sie also
+> **einen Wert haben**. In den imperativen Programmiersprachen sind Schleifen
+> i.d.R. **Anweisungen/Statements** --- diese beeinflussen zwar den
+> Programmfluss (d.h., die steuern, welche Codezeile als nächstes ausgeführt
+> wird), aber sie **haben keinen Wert**. Ihre *Wirkung* entfalten sie
+> ausschließlich durch **Seiteneffekte** --- d.h., sie setzen eine Variable oder
+> geben etwas aus etc. 
+
+In vielen Fällen, in denen du in einer imperativen Programmiersprache eine
+Schleife nutzen würdest, kannst du in Clojure einfach HOFs verwenden (z.B. `map`
+und `filter`). D.h., du brauchst überhaupt kein eigenständiges/explizites
+Schleifen-Konstrukt.
+
+> Das ist eine *gute Sache*. Schleifen können tückisch sein. Häufig wählt man
+> Abbruchkriterien falsch, [so dass die Schleife einen Durchlauf zu viel oder zu
+> wenig macht](https://de.wikipedia.org/wiki/Off-by-one-Error#Beispiele).
+
+### `for`
+
+Mit `for` kannst du eine Liste erzeugen: 
+
+```
+(for [x [1 2 3 4]] x) ;=> (for [x [1 2 3 4]] x)
+```
+
+Das ist noch so spannend 😉
+
+Aber schauen wir uns die Form genauer an --- sie (die Liste) hat **drei**
+Element: hinter dem ersten Element `for` steht als zweites Element ein
+**Vektor**, dessen **erstes** Element das **Symbol** `x` ist und dessen
+**zweites** Element ein Vektor mit Elementen (eine **Collection**) ist. 
+
+Als drittes und letztes Element in der Form steht wieder das Symbol `x`.
+
+Der **Wert** der `for`-Form (Auswertung) ergibt sich wie folgt: es wird eine
+Liste erzeugt, das erste Element des Vektors (hier der Wert `1`) wird an den
+Namen `x` gebunden und dann wird das dritte Element (`x`) als Form ausgewertet.
+
+TBD
+
+### `loop`/`recur`
+
+-------------------------------------------------------------------------------
 ## Funktionen, die Funktionen liefern (higher order functions)
 
 Oben haben wir Funktionen (HOFs) kennengelernt, denen wir beim Aufruf als
@@ -1326,8 +1382,10 @@ Argumenten aufrufen und anschließend auf dem Ergebnis der Division die Funktion
 
 ### `partial`
 
-Die Funktion `(partial <f> <xs*>)` liefert eine Funktion, die, wenn sie mit
-Argumenten `<ys*>` aufgerufen wird, die Funktion `(<f> <xs*> <ys*>)` aufruft.
+Die Funktion `(partial <f> <xs*>)` liefert eine Funktion, die, wenn/falls sie
+mit Argumenten `<ys*>` aufgerufen wird, die Form `(<f> <xs*> <ys*>)` auswertet.
+D.h., die von uns angegebene Funktion `<f>` mit den Argumenten `<xs*>` und
+`<ys*>` *hintereinander geschrieben* aufruft.
 
 Die Funktion `partial` *merkt* sich also, welche Argumente `<xs*>` übergeben
 wurden, wenn sie ausgeführt wird und liefert uns eine **neue Funktion**, in der
@@ -1355,7 +1413,7 @@ aufgerufen.
   3 4)`
 
 -------------------------------------------------------------------------------
-## TBD: Funktionen definieren
+## Funktionen definieren
 
 -------------------------------------------------------------------------------
 ## TBD: Wahrheit und nochmal Prädikate
@@ -1367,17 +1425,7 @@ aufgerufen.
 ## TBD: Bedingte Verzweigung
 
 -------------------------------------------------------------------------------
-## TBD: Lokale Namen, Auswertung von Symbolen, `let`
-
--------------------------------------------------------------------------------
 ## TBD: Rekursion, der Stack, Endrekursion
-
--------------------------------------------------------------------------------
-## TBD: Schleifen
-
-### `for`
-
-### `loop`/`recur`
 
 -------------------------------------------------------------------------------
 ## TBD: Threading
