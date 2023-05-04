@@ -1108,7 +1108,7 @@ anderen Datentypen, die wir schon kennen gelernt haben:
 
 Clojure ist eine [funktionale
 Programmiersprache](https://de.wikipedia.org/wiki/Funktionale_Programmierung#Funktionale_Programmiersprachen).
-Wir wollen noch nicht im Detail darauf eingehen, was das genau bedeutet, aber
+Wir wollen nicht im Detail darauf eingehen, was das genau bedeutet, aber
 zumindest können wir sagen, dass **Funktionen** in einer funktionalen
 Programmiersprache eine zentrale Rolle spielen sollten.
 
@@ -1128,21 +1128,37 @@ höherer Ordnung](https://de.wikipedia.org/wiki/Funktion_h%C3%B6herer_Ordnung)**
 ### `every?`
 
 Oben haben wir **Prädikate** kennengelernt: Funktionen, die prüfen, ob eine
-bestimmte Aussage wahr oder falsch ist. Die Funktion `every?` ist auch ein
-Prädikat, das prüft, ob eine bestimmte Aussage für **alle** Elemente einer
-Collection `<c>` wahr ist. Falls dies der Fall ist, liefert `every?` den Wert
-`true` --- andernfalls liefert sie `false`.
+bestimmte Aussage wahr oder falsch ist.
 
-Nur im Gegensatz zu den Prädikaten, die wir bisher kennengelernt haben, weiß
-`every?` aber nicht, **welche** Aussage bzgl. der Elemente denn betrachtet
-werden soll (anders als z.B. `even?`). Stattdessen müssen wir `every?` dies beim
-Aufruf mit Hilfe einer **Funktion (Prädikat!) als Argument** mitteilen.
+Hier übergeben wir der Funktion/Prädikat den Wert **2**  `(even? 2)` und
+erhalten als Ergebnis `true`.
+
+Die Funktion `every?` ist auch ein Prädikat, das prüft, ob eine bestimmte
+Aussage für **alle** Elemente einer Collection `<c>` wahr ist. Falls dies der
+Fall ist, liefert `every?` den Wert `true` --- andernfalls liefert sie `false`.
+
+Nur im Gegensatz zu den Prädikaten (wie z.B. `even?`), die wir bisher
+kennengelernt haben, weiß `every?` aber nicht, **welche** Aussage bzgl. der
+Elemente denn betrachtet/entschieden werden soll. Das Prädikat `even?` hingegen
+*weiß*, dass es prüfen soll, ob der übergebene Wert **gerade** ist. Der Funktion
+`every?` müssen wir dies beim Aufruf mit Hilfe einer **Funktion (Prädikat!) als
+Argument** mitteilen.
+
+> Kennst du aus dem Mathematikunterricht den
+> **[Allquantor](https://de.wikipedia.org/wiki/Quantor#Schreib-_und_Sprechweise)**
+> "*Für alle*"? Die Funktion `every?` verhält sich im Prinzip wie dieser
+> Allquantor.
 
 Der Aufruf sieht also so aus: `(every? <pred> <coll>)`
 
 Dabei ist `<pred>` unsere Prädikats-Funktion und `<coll>` die Collection.
 
 Beispiel: `(every? even? [1 2 3])`
+
+Die Funktion `every?` wendet das Prädikat `even?` der Reihe nach auf die Element
+der Collection (hier ein Vektor) an. Als erstes wird also `(even? 1)`
+ausgeführt. Da dies schon `false` liefert, beendet `every?` sofort die
+Ausführung und liefert `false`.
 
 > Probiere es doch einfach mal selber aus.  
 > Überlege nochmal, was der **Wert** der **Form** `even?` ist. Wieso haben wir
@@ -1256,7 +1272,89 @@ Wir können z.B. `+` nutzen:
 -------------------------------------------------------------------------------
 ## Lokale Namen: `let`
 
+Aufgabe: erstelle einen Vektor, der als erstes Element die Summe von **5**,
+**3** und **54** hat, als zweites Element soll die Summe des ersten Elements und
+**42** enthalten sein und als drittes Element soll die Differenz von **100** und
+dem ersten Element im Vektor sein.
 
+Die Lösung könnte so aussehen:
+
+```
+[(+ 5 3 54), (+ (+ 5 3 54) 42), (- 100 (+ 5 3 54))]
+```
+
+Das ist aber doch sehr umständlich und wir müssen den gleiche Form mehrfach
+wiederholen.
+
+> Dadurch entsteht zum einen die Gefahr, dass wir uns vertun und versehentlich
+> **45** anstatt **54** schreiben und zum anderen muss die Form `(+ 5 3 54)` ja
+> mehrfach berechnet werden und das ist ja völlig überflüssig.
+
+Mit `let` haben wir die Möglichkeit, einen Wert an einen **Namen zu binden**. 
+
+```
+(let [s (+ 5 3 54)]
+  [s (+ s 42) (- 100 s)]) ;=> [62 104 38]
+```
+
+Die Form `(let [<name-form-paare*>] <forms*>)` wertet dabei zu dem Wert der
+letzten `<form>` aus. Die `name-form-paare` bestehen jeweils aus einem Namen
+(einem Symbol) und einer Form. `let` wertet die `form`s in dem Vektor der Reihe
+nach aus und **bindet** das jeweilige Ergebnis an den angegeben Namen/Symbol.
+Sobald ein Name gebunden ist, kann er anschließend sowohl in den folgenden
+`name-form`-Paaren verwendet werden als auch in den anschließenden `<forms*>`.
+
+Du kannst also auch dies schreiben:
+
+```
+(let [s (+ 5 3 54)
+      m (+ s 42)
+      q (- 100 s)]
+  [s m q])
+```
+
+Hier haben wir den Namen `m` an den Wert der Form `(+ s 42)` gebunden. Das
+konnten wir, weil der Name `s` in dem `let` schon an den Wert `62` gebunden war.
+
+> Oben hatten wir uns angeschaut, wie **Symbole** von der REPL ausgewertet
+> werden. Lies es dir gerne nochmal durch. Wir müssen nun hinzufügen, dass die
+> REPL bei der Auswertung eines Symbols (wie z.B. `m`) erst prüft, ob der Name
+> in einem `let` gebunden ist. Falls ja, wertet das Symbol zu diesem Wert aus.
+> Andernfalls wird wie oben erläutert in dem **Namespace** nachgeschaut.  
+> Wir sprechen in diesem Fall von einem **lexikalischen Scope** --- der
+> **Sichtbarkeit** des Namen. In dem Artikel zu
+> [Variablen](https://de.wikipedia.org/wiki/Variable_(Programmierung)#Sichtbarkeitsbereich_von_Variablen_(Scope))
+> findest du vielleicht ein paar hilfreiche Erläuterungen.  
+> WICHTIG: in vielen Programmiersprachen gibt es **Variablen** --- das sind
+> Namen, die über die Zeit ihren Wert durch eine **Wertzuweisung** ändern
+> können. Die Namen, die durch `let` an Werte gebunden werden, sind **keine**
+> Variablen. Wir schauen uns das später nochmal an. 
+
+Die `let` Formen können auch geschachtelt sein. Die Jedes `let` baut seinen
+eigenen Sichtbarkeitsbereich auf: alls Formen **in** bzw. **unter** einem `let`
+kann die Namen dieses `lets` **sehen**.
+
+```
+(let [s (+ 5 3 54)]
+  (let [m (+ s 42)]
+    (let [q (- 100 s)]
+      [s m q])))
+```
+
+> Ist dir aufgefallen, dass das `let` ganz anders ausgewertet wird als alle
+> anderen Forms, die wir bisher gesehen haben? Bisher hatten wir immer gesagt,
+> dass in einer Liste alle Formen in der Liste ausgewertet werden und dass das
+> erste Element zu einer Funktion auswerten muss und dann diese Funktion
+> aufgerufen wird. Im Fall von `let` wird aber der Vektor mit den
+> `<name-form-paare*>` nicht ausgewertet --- ansonsten müsste ja in dem Beispiel
+> oben das Symbol `s` ausgewertet werden und genau das passiert ja **nicht**.
+> Stattdessen wird ein Name definiert und an einen Wert gebunden.  
+> `let` ist eine **special form** und die **special forms** haben individuelle
+> Auswertungsregeln. Zum Glück gibt es nur wenige **special forms**.
+
+Übungen:
+
+TBD
 
 -------------------------------------------------------------------------------
 ## Schleifen
