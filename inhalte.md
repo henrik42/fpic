@@ -323,19 +323,40 @@ Werte enthalten.
 
 Clojure kennt u.a. folgende zusammengesetzte Datentypen:
 
-* [Vektor](https://de.wikipedia.org/wiki/Vektor) : eine (ggf. leere) Folge von
-  Werten
+> **Anmerkung**: in Clojure gibt es den Datentyp
+> **[Vektor](https://clojure.org/reference/data_structures#Vectors)**. Es gibt
+> aber auch **Arrays**. Arrays sind keine Clojure-Datentypen, sondern sie
+> gehören zu
+> [Java](https://openbook.rheinwerk-verlag.de/javainsel/04_001.html#u4.1) und
+> durch die sog. **[Java
+> Interop](https://clojure.org/reference/java_interop#_arrays)** kannst du von
+> Clojure aus die [Java-Arrays
+> nutzen](https://clojuredocs.org/clojure.core/into-array). Ein Clojure-Vektor
+> verhält sich so ähnlich wie ein Java-Array, aber es sind wirklich zwei völlig
+> verschiedene Dinge. In der Mathematik ist ein
+> [Vektor](https://de.wikipedia.org/wiki/Vektor) etwas anders als in Clojure.
+
+* [Vektor](https://de.wikipedia.org/wiki/Array_(Datentyp)) (ich habe hier
+  bewusst auf den Array-Datentyp verlinkt! Clojure-Vektoren sind **keine
+  Arrays**): eine (ggf. leere) [Folge von
+  Werten](https://clojure.org/reference/data_structures#Vectors) 
+
 * [Liste](https://de.wikipedia.org/wiki/Liste_(Datenstruktur)) : eine (ggf.
-  leere) Folge von Werten
+  leere) [Folge von
+  Werten](https://clojure.org/reference/data_structures#Lists).
+
 * [Menge](https://de.wikipedia.org/wiki/Menge_(Datenstruktur)) (engl. *set*):
-  eine (ggf. leere) ungeordnete Sammlung von Werten, von denen jeweils maximal
-  ein Exemplar enthalten ist (kein Wert darf mehrfach in der Menge enthalten
-  sein).
+  eine (ggf. leere) [ungeordnete Sammlung von
+  Werten](https://clojure.org/reference/data_structures#Sets), von denen jeweils
+  maximal ein Exemplar enthalten ist (kein Wert darf mehrfach in der Menge
+  enthalten sein).
+
 * [Zuordnungstabelle](https://de.wikipedia.org/wiki/Zuordnungstabelle) (engl.
-  *map*) : eine (ggf. leere) Sammlung von Schlüssel-Wert-Paaren. Du kannst dir
-  eine Map wie eine zwei-spaltige Tabelle vorstellen: in der linken Spalte steht
-  jeweils der Schlüssel und in der rechten Spalte steht dann der (dem Schlüssel
-  zugeordnete) Wert.
+  *map*) : eine (ggf. leere) [Sammlung von
+  Schlüssel-Wert-Paaren](https://clojure.org/reference/data_structures#Maps). Du
+  kannst dir eine Map wie eine zwei-spaltige Tabelle vorstellen: in der linken
+  Spalte steht jeweils der Schlüssel und in der rechten Spalte steht dann der
+  (dem Schlüssel zugeordnete) Wert.
 
 > Die Bezeichnung *Vektor* kennst du vielleicht aus dem Mathematikunterricht. In
 > der Informatik wird auch von einem
@@ -909,6 +930,16 @@ Argument zu `quote` angegeben werden, ausgewertet werden.
 Es gibt noch eine Kurzform zu `quote`: das **einfache vorangestellte
 Anführungszeichen** (`'`).
 
+> Don't panic! Das mit den Listen ist am Anfang sehr ungewohnt. In Clojure
+> werden Listen(-Formen) sowohl als **Datenstruktur** genutzt, in der Werte
+> stehen, die unser Programm verarbeitet, als auch als Mechanismus, um das
+> Programm an sich zu schreiben --- um eben **Funktionen aufzurufen**.  
+> Beim Lesen eines Clojure-Programms musst du also verstehen, welche
+> Listen-Formen eine Datenstruktur beschreiben und welche Listen-Formen
+> Programmcode sind.  
+> Am Anfang kann es da schon vor den Augen etwas flimmern 🙂 Du wirst dich aber
+> schnell daran gewöhnen.  
+
 * `inc` wertet zu `#object[Ke]` aus. Dies ist die Art, wie Clojure uns die
   Funktion in der REPL anzeigt, die über die Zuordnungstabelle unter dem
   Schlüssel `inc` zu finden ist.
@@ -923,7 +954,7 @@ Anführungszeichen** (`'`).
   `inc` als auch die Auswertung der Liste verhindert.
 
 Anstatt eine Liste als Listen-Form (Literal) mit Hilfe des `quotes`
-aufzuschreiben, kannst du auch die Funktion `list` nutzen, um eine Liste zu
+aufzuschreiben, kannst du auch die **Funktion** `list` nutzen, um eine Liste zu
 erzeugen.
 
 * `(list 1 "a" nil)` wertet zu `(1 "a" nil)` aus. Das ist das gleiche wie `'(1
@@ -1331,7 +1362,7 @@ gebunden war.
 > werden. Lies es dir gerne nochmal durch. Wir müssen nun hinzufügen, dass die
 > REPL bei der Auswertung eines Symbols (wie z.B. `m`) erst prüft, ob der Name
 > in einem **umschließenden** `let` gebunden ist. Falls ja, wertet das Symbol zu
-> diesem Wert aus. Andernfalls wird wie oben erläutert in dem **Namespace**
+> diesem Wert aus. Andernfalls wird, wie oben erläutert, in dem **Namespace**
 > nachgeschaut.  
 > Wir sprechen in diesem Fall von einem **lexikalischen Scope** --- der
 > **Sichtbarkeit** des Namen. In dem Artikel zu
@@ -1370,6 +1401,62 @@ dem `let` gebundenen Namen verwenden.
 > forms](https://en.wikibooks.org/wiki/Learning_Clojure/Special_Forms)**.
 
 **Übungen**:
+
+TBD
+
+### Sichtbarkeit und Verschattung
+
+Zu was wertet diese Form aus?
+
+```
+(let [s 1
+      s 2]
+  s)      
+```
+
+Sie wertet zu **2** aus. Die Erklärung ist ganz einfach: das `let` baut einen
+**Scope** auf und in diesem **bindet** es den Wert **1** an den Namen `s`.
+Anschließend baut das `let` **unter** diesem ersten **Scope** einen zweiten auf
+und in diesem wird der Name `s` an den Wert **2** gebunden. Nun wird unter
+diesem zweiten Scope der Name `s` **ausgewertet**. Die REPL schaut nun **von
+unten** die geschachtelten Scopes **nach oben** und findet als erstes die
+Bindung von `s` an den Wert **2**. Die REPL sucht nicht weiter in dem oberen
+Scope, wo sie für den Namen `s` ja den Wert **1** finden würde.
+
+Wir sagen, dass die Bindung im unteren oder **inneren** Scope den Namen bzw. die
+Bindung im oberen/äußeren Scope **verschattet** oder **überlagert**. Die Bindung
+ist also nicht
+**[sichtbar](https://de.wikipedia.org/wiki/Sichtbarkeit_(Programmierung))**.
+
+**WICHTIG**: Oben haben wir gesagt, dass es **keine Variablen** in Clojure gibt.
+Auch das vorangegangene Beispiel ist **kein** Beispiel für eine **Variable**!!
+Hier wurde **nichts geändert**! Wenn ein Name in einem Scope einmal an einen
+Wert gebunden ist, dann ist diese Bindung **unveränderlich**.
+
+**Beispiel**:
+
+```
+(let [s 1]
+  (println "a: s =" s)
+  (let [s 2]
+    (println "b: s =" s))
+  (println "c: s =" s))
+```
+
+**Ausgabe**:
+
+```
+a: s = 1
+b: s = 2
+c: s = 1
+nil
+```
+
+An der Ausgabe kannst du gut erkennen, dass es sich bei `s` um **keine
+Variable** handelt. Das `let` ist **keine Wertzuweisung**. Andernfalls würde für
+den Fall "c:" der Wert **2** anstatt **1** ausgegeben.
+
+### Seiteneffekte
 
 TBD
 
@@ -1556,6 +1643,8 @@ aufgerufen.
 
 -------------------------------------------------------------------------------
 ## TBD: Meta-Programmierung / Makros
+
+* https://de.wikipedia.org/wiki/Homoikonizit%C3%A4t
 
 -------------------------------------------------------------------------------
 ## TBD: Transducer

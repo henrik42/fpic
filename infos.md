@@ -38,3 +38,7 @@ Programmier-AG hilfreich sein können.
 
 * https://clojurebridgelondon.github.io/community-docs/docs/curriculum/ : ein
   Clojure-Curriculum (Englisch)
+
+* http://www.clojure-buch.de/ : "Clojure - Grundlagen, Concurrent Programming, Java"
+
+* https://www.learn-clojurescript.com/ : "Learn ClojureScript"
