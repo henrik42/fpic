@@ -36,4 +36,5 @@ Programmier-AG hilfreich sein können.
 
 * https://livebook.manning.com/book/get-programming-with-clojure/
 
-
+* https://clojurebridgelondon.github.io/community-docs/docs/curriculum/ : ein
+  Clojure-Curriculum (Englisch)

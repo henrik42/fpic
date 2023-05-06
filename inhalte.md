@@ -206,7 +206,7 @@ Dies sind Beispiele für Zahlen in Clojure: `-5`, `0`, `1`, `2`, `42`, `1.56`,
 > Die Kommata zwischen den Zahlen gehören nicht zu den Zahlen. Ich nutze sie, um
 > die Zahlen von einander zu trennen und die Lesbarkeit zu erhöhen.
 
-Übungen:
+**Übungen**:
 
 * Starte einen Browser und navigiere zu https://tryclojure.org/
 * Gib dort die Zahlen (*Formen*) `1`, `2` und `234` ein. Nach jeder Form musst
@@ -229,7 +229,7 @@ Dies sind Beispiele für
 Zeichenfolgen werden inklusive der doppelten Anführungszeichen (`"`) am Anfang
 und am Ende eingegeben.
 
-Übungen:
+**Übungen**:
 
 * Gib die Zeichenfolge `"hallo"` ein. Wir sagen, dass diese Zeichenfolge aus 5
   Zeichen besteht. Die Zeichenfolge `"hallo"` hat die Länge 5.
@@ -255,7 +255,7 @@ Wir müssen also unterscheiden zwischen den **Werten** (Daten), die in unserem
 Programm vorhanden sind und der äußeren **Form**, mit der wir diese Werte
 eingeben können und mit der diese Werte auch wieder ausgegeben werden.
 
-Übungen:
+**Übungen**:
 
 * Welche Formen (unabhängig von Clojure) kennst du, mit denen du die Zahl (also
   den Wert) 12 ausdrücken kannst? 
@@ -299,7 +299,7 @@ Der Datentyp [**Boolean**](https://de.wikipedia.org/wiki/Boolean) (siehe auch
   [Wahrheitswerte](https://de.wikipedia.org/wiki/Wahrheitswert)) umfasst nur
   zwei mögliche Werte: *wahr* (`true`) und *falsch* (`false`).
 
-Übungen:
+**Übungen**:
 
 * Gibt den Boolean-**Wert** *wahr* ein? Welche **Form** musst du nutzen?
 * Welche Arten von Daten kennst du aus deinem Alltag? In welcher Form werden
@@ -393,7 +393,7 @@ Datenstrukturen zu erkennen ist.
 > besseren Lesbarkeit), in einem Vektor die Elemente durch Kommata zu trennen:
 > `[1,2,"x",true]`.
 
-Übungen:
+**Übungen**:
 
 * Zu was wertet die Form `,,,` aus? Wieso?
 * Zu was wertet die Form `,[,],` aus? Wieso?
@@ -431,7 +431,7 @@ Weitere Beispiele für Mengen:
 > können Vektoren auch Mengen enthalten und Mengen können Vektoren enthalten:
 > `[[1 2 3] #{1 2 #{"a"} 3 [true #{"TOLL!"}]}]`.
 
-Übungen:
+**Übungen**:
 
 * Zu was wertet die Form `#{,,,}` aus? 
 * Zu was wertet die Form `#{,"a",}` aus? 
@@ -466,7 +466,7 @@ Beispiele für Maps:
 * `{1 "eins" "zwei" 2}`
 * `{[1 2] 3 [5 6] 11 "nix" 0}`
 
-Übungen:
+**Übungen**:
 
 * Zu was wertet die Form `{"x" 1 "X" 1}` aus?
 * Zu was wertet die Form `{"x" 1, "X" 1}` aus?
@@ -630,7 +630,7 @@ Listen werden von der REPL auf eine **ganz besondere Weise behandelt**:
 
 > Don't Panic! Das schauen wir uns ganz in Ruhe nochmal an ;-)
 
-Übungen:
+**Übungen**:
 
 * Erkläre deinem Tischnachbarn, wieso `(inc 5)` zu dem Wert **6** auswertet.
 * Zu was wertet `inc` aus?
@@ -657,7 +657,7 @@ Listen-Formen (und auch andere zusammengesetzte Formen) sein können.
 Somit wird die REPL erst die eingebettete Liste auswerten und dann die
 **umschließende**. Die Auswertung erfolgt also **von innen nach außen**.
 
-Übungen:
+**Übungen**:
 * Zu was wertet `(inc (inc 4))` aus? Wieso?
 * Zu was wertet `(inc (inc (inc 4)))` aus?
 * Erkläre deiner Tischnachbarin, wieso die Form `((inc 4))` nicht ausgewertet
@@ -688,7 +688,7 @@ Für diesen Zugriff bietet Clojure eine Reihe von **Funktionen**:
 > Wir werden später sehen, dass diese Aussage nicht 100% korrekt ist. Du kannst
 > ja mal ausprobieren, zu was `(second "abc")` auswertet. Macht das Sinn?
 
-Übungen:
+**Übungen**:
 
 * Zu was wertet `(first [1 true "a"])` aus?
 * Zu was wertet `(first [[1 true "a"]])` aus?
@@ -780,7 +780,7 @@ Die Funktion `nth` kannst du mit __zwei__ oder __drei__ __Argumenten__ aufrufen.
   Collection. Falls n größer oder gleich der Anzahl der Elemente der Collection
   ist, wird der Nicht-Gefunden-Wert geliefert.
 
-Übungen:
+**Übungen**:
 
 * Zu was wertet `(nth [2020 2021 2022 2023] 0)` aus?
 * Zu was wertet `(nth [] 0)` aus?
@@ -822,7 +822,7 @@ werden, `nil` in dem Sinne *etwas ist nicht vorhanden* verwenden.
 > aber in Clojure. Mehr zu dem Thema findest du in dem [Wikipedia-Artikel
 > **Nullwert**](https://de.wikipedia.org/wiki/Nullwert).
 
-Übungen:
+**Übungen**:
 
 * Zu was wertet `nil` aus?
 * Zu was wertet `[nil]` aus?
@@ -868,7 +868,7 @@ kannst.
 > Wir werden später sehen, dass wir uns genau überlegen müssen, ob wir `next`
 > oder `rest` nutzen möchten/müssen.
 
-Übungen:
+**Übungen**:
 
 * Zu was wertet `(count)` aus? Macht das Sinn?
 * Zu was wertet `(count [])` aus? Macht das Sinn?
@@ -929,7 +929,7 @@ erzeugen.
 * `(list 1 "a" nil)` wertet zu `(1 "a" nil)` aus. Das ist das gleiche wie `'(1
   "a" nil)`
 
-Übungen: Versuche die Ergebnisse zusammen mit deinem Tischnachbarn zu verstehen.
+**Übungen**: Versuche die Ergebnisse zusammen mit deinem Tischnachbarn zu verstehen.
 Könnt ihr erklären, wieso die Auswertung jeweils genau so erfolgt?
 
 * Zu was wertet `inc` aus?
@@ -1010,7 +1010,7 @@ Die Präfixnotation hat aber einige Vorteile:
   nennen sie Argumente) aufgerufen werden.  
   In Clojure können wir also `(+ 1 2 3 4)` schreiben.
 
-Übungen:
+**Übungen**:
 
 * Zu was wertet `(+ 4)` aus? Macht das Sinn?
 * Zu was wertet `(+ 4 7)` aus?
@@ -1092,7 +1092,7 @@ anderen Datentypen, die wir schon kennen gelernt haben:
 > Variablen](https://de.wikipedia.org/wiki/Metasyntaktische_Variable) auch gerne
 > **bla**, **blubb**, **blabla**, **blablabla** und **blafasel** verwendet.
 
-Übungen:
+**Übungen**:
 
 * Ist die Zahl 0 positiv?
 * Zu was wertet `(even? 1.4)` aus? Macht das Sinn?
@@ -1254,7 +1254,7 @@ Wir können z.B. `+` nutzen:
 (map + [9 5 1] [3 6 8] [1 2 3]) ;=> (13 13 12)
 ```
 
-Übungen:
+**Übungen**:
 
 * Zu was wertet `(list? (filter even? [1 2 3 4]))` aus?
 * Zu was wertet `(seq? (filter even? [1 2 3 4]))` aus? 
@@ -1272,7 +1272,7 @@ Wir können z.B. `+` nutzen:
 -------------------------------------------------------------------------------
 ## Lokale Namen: `let`
 
-Aufgabe: erstelle einen Vektor, der als erstes Element die Summe von **5**,
+**Aufgabe**: erstelle einen Vektor, der als erstes Element die Summe von **5**,
 **3** und **54** hat, als zweites Element soll die Summe des ersten Elements und
 **42** enthalten sein und als drittes Element soll die Differenz von **100** und
 dem ersten Element im Vektor sein.
@@ -1280,29 +1280,39 @@ dem ersten Element im Vektor sein.
 Die Lösung könnte so aussehen:
 
 ```
-[(+ 5 3 54), (+ (+ 5 3 54) 42), (- 100 (+ 5 3 54))]
+[(+ 5 3 54), (+ (+ 5 3 54) 42), (- 100 (+ 5 3 54))] ;=> [62 104 38]
 ```
 
-Das ist aber doch sehr umständlich und wir müssen den gleiche Form mehrfach
+Das ist aber doch sehr umständlich und wir müssen die gleiche Form mehrfach
 wiederholen.
 
-> Dadurch entsteht zum einen die Gefahr, dass wir uns vertun und versehentlich
-> **45** anstatt **54** schreiben und zum anderen muss die Form `(+ 5 3 54)` ja
-> mehrfach berechnet werden und das ist ja völlig überflüssig.
+> Durch diese Wiederholung entsteht zum einen die Gefahr, dass wir uns vertun
+> und versehentlich **45** anstatt **54** schreiben und zum anderen muss die
+> Form `(+ 5 3 54)` ja mehrfach berechnet werden und das ist ja völlig
+> überflüssig.
 
-Mit `let` haben wir die Möglichkeit, einen Wert an einen **Namen zu binden**. 
+Mit `[let](https://clojuredocs.org/clojure.core/let)` haben wir die Möglichkeit,
+einen **Wert** an einen **Namen zu binden** und diesen Namen anschließend (ggf.
+mehrfach) zu verwenden.
+
+In dem folgenden Beispiel **binden** wir den **Wert** der Form `(+ 5 3 54)` ---
+also **62** -- an den Namen `s`. Die Form wird nur einmalig ausgewertet und an
+den Namen gebunden. Anschließend nutzen wir den **Namen** `s` mehrfach. Wir
+wiederholen in diesem Fall den **Namen** `s` mehrfach, aber es besteht nicht die
+Gefahr, dass wir uns vertun und der Wert wird nur einmal berechnet.
 
 ```
 (let [s (+ 5 3 54)]
-  [s (+ s 42) (- 100 s)]) ;=> [62 104 38]
+  [s, (+ s 42), (- 100 s)]) ;=> [62 104 38]
 ```
 
-Die Form `(let [<name-form-paare*>] <forms*>)` wertet dabei zu dem Wert der
+Die Form `(let [<name-form-paare*>] <forms*>)` wertet dabei zu dem **Wert** der
 letzten `<form>` aus. Die `name-form-paare` bestehen jeweils aus einem Namen
 (einem Symbol) und einer Form. `let` wertet die `form`s in dem Vektor der Reihe
-nach aus und **bindet** das jeweilige Ergebnis an den angegeben Namen/Symbol.
-Sobald ein Name gebunden ist, kann er anschließend sowohl in den folgenden
-`name-form`-Paaren verwendet werden als auch in den anschließenden `<forms*>`.
+nach aus und **bindet** das jeweilige Ergebnis/Wert an den angegeben
+Namen/Symbol. Sobald ein Name gebunden ist, kann er anschließend sowohl in den
+folgenden `name-form`-Paaren verwendet werden als auch in den anschließenden
+`<forms*>`.
 
 Du kannst also auch dies schreiben:
 
@@ -1314,25 +1324,28 @@ Du kannst also auch dies schreiben:
 ```
 
 Hier haben wir den Namen `m` an den Wert der Form `(+ s 42)` gebunden. Das
-konnten wir, weil der Name `s` in dem `let` schon an den Wert `62` gebunden war.
+konnten wir, weil der Name `s` in dem `let` zuvor schon an den Wert `62`
+gebunden war.
 
 > Oben hatten wir uns angeschaut, wie **Symbole** von der REPL ausgewertet
 > werden. Lies es dir gerne nochmal durch. Wir müssen nun hinzufügen, dass die
 > REPL bei der Auswertung eines Symbols (wie z.B. `m`) erst prüft, ob der Name
-> in einem `let` gebunden ist. Falls ja, wertet das Symbol zu diesem Wert aus.
-> Andernfalls wird wie oben erläutert in dem **Namespace** nachgeschaut.  
+> in einem **umschließenden** `let` gebunden ist. Falls ja, wertet das Symbol zu
+> diesem Wert aus. Andernfalls wird wie oben erläutert in dem **Namespace**
+> nachgeschaut.  
 > Wir sprechen in diesem Fall von einem **lexikalischen Scope** --- der
 > **Sichtbarkeit** des Namen. In dem Artikel zu
 > [Variablen](https://de.wikipedia.org/wiki/Variable_(Programmierung)#Sichtbarkeitsbereich_von_Variablen_(Scope))
 > findest du vielleicht ein paar hilfreiche Erläuterungen.  
-> WICHTIG: in vielen Programmiersprachen gibt es **Variablen** --- das sind
-> Namen, die über die Zeit ihren Wert durch eine **Wertzuweisung** ändern
+> **WICHTIG**: in vielen Programmiersprachen gibt es **Variablen** --- das sind
+> Namen, die über die Zeit ihren Wert durch eine **Wertzuweisung** **ändern**
 > können. Die Namen, die durch `let` an Werte gebunden werden, sind **keine**
-> Variablen. Wir schauen uns das später nochmal an. 
+> **Variablen**. Wir schauen uns das später nochmal an. 
 
-Die `let` Formen können auch geschachtelt sein. Die Jedes `let` baut seinen
-eigenen Sichtbarkeitsbereich auf: alls Formen **in** bzw. **unter** einem `let`
-kann die Namen dieses `lets` **sehen**.
+Die `let` Formen können auch geschachtelt sein. Jedes `let` baut seinen eigenen
+Sichtbarkeitsbereich auf: alle Formen **in** bzw. **unter** einem `let` können
+die Namen dieses `lets` **sehen** --- d.h., **unter** dem `let` kannst du die in
+dem `let` gebundenen Namen verwenden.
 
 ```
 (let [s (+ 5 3 54)]
@@ -1341,18 +1354,22 @@ kann die Namen dieses `lets` **sehen**.
       [s m q])))
 ```
 
-> Ist dir aufgefallen, dass das `let` ganz anders ausgewertet wird als alle
+> Ist dir aufgefallen, dass das `let` **ganz anders ausgewertet** wird als alle
 > anderen Forms, die wir bisher gesehen haben? Bisher hatten wir immer gesagt,
 > dass in einer Liste alle Formen in der Liste ausgewertet werden und dass das
-> erste Element zu einer Funktion auswerten muss und dann diese Funktion
-> aufgerufen wird. Im Fall von `let` wird aber der Vektor mit den
-> `<name-form-paare*>` nicht ausgewertet --- ansonsten müsste ja in dem Beispiel
-> oben das Symbol `s` ausgewertet werden und genau das passiert ja **nicht**.
-> Stattdessen wird ein Name definiert und an einen Wert gebunden.  
-> `let` ist eine **special form** und die **special forms** haben individuelle
-> Auswertungsregeln. Zum Glück gibt es nur wenige **special forms**.
+> erste Element zu einer **Funktion** auswerten muss und dann diese **Funktion
+> aufgerufen** wird. Im Fall von `let` wird aber der Vektor mit den
+> `<name-form-paare*>` nicht **ausgewertet** --- ansonsten müsste ja in dem
+> Beispiel oben das Symbol `s` **ausgewertet** werden und genau das passiert ja
+> gerade **nicht**. Stattdessen wird **ein Name definiert** und an einen Wert
+> gebunden (der durch die Auswertung der Form entsteht).   
+> `let` ist eine **[special
+> form](https://clojure.org/reference/special_forms#let)** und die **special
+> forms** haben individuelle Auswertungsregeln. Zum Glück gibt es nur wenige
+> **[special
+> forms](https://en.wikibooks.org/wiki/Learning_Clojure/Special_Forms)**.
 
-Übungen:
+**Übungen**:
 
 TBD
 
@@ -1471,7 +1488,7 @@ Argumenten aufrufen und anschließend auf dem Ergebnis der Division die Funktion
 (inc (- (/ 8 3))) ;=> -1.6666666666666665
 ```
 
-Übungen:
+**Übungen**:
 
 * Nutze `comp`, `inc` und `-` um eine Funktion zu konstruieren, die ihr Argument
   erst negiert und dann um eins erhöht: `((comp ,,,) 4) ;=> -3`
@@ -1501,7 +1518,7 @@ aufgerufen.
 ((partial (comp - /) 8) 3) ;=> -2.6666666666666665
 ```
 
-Übungen:
+**Übungen**:
 
 * Nutze `partial`, um eine Funktion zu definieren, die ihre Argumente mit
   **zwei** multipliziert und wende diese Funktion auf die Zahl **5** an:
