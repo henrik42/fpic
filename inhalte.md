@@ -323,7 +323,7 @@ Werte enthalten.
 
 Clojure kennt u.a. folgende zusammengesetzte Datentypen:
 
-* [Vektor]((https://de.wikipedia.org/wiki/Vektor)) : eine (ggf. leere) Folge von
+* [Vektor](https://de.wikipedia.org/wiki/Vektor) : eine (ggf. leere) Folge von
   Werten
 * [Liste](https://de.wikipedia.org/wiki/Liste_(Datenstruktur)) : eine (ggf.
   leere) Folge von Werten
