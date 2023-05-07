@@ -1322,11 +1322,11 @@ wiederholen.
 > Form `(+ 5 3 54)` ja mehrfach berechnet werden und das ist ja völlig
 > überflüssig.
 
-Mit `[let](https://clojuredocs.org/clojure.core/let)` haben wir die Möglichkeit,
+Mit [`let`](https://clojuredocs.org/clojure.core/let) haben wir die Möglichkeit,
 einen **Wert** an einen **Namen zu binden** und diesen Namen anschließend (ggf.
 mehrfach) zu verwenden.
 
-In dem folgenden Beispiel **binden** wir den **Wert** der Form `(+ 5 3 54)` ---
+In dem folgenden Beispiel **binden** wir den **Wert** der Form `(+ 5 3 54)` --
 also **62** -- an den Namen `s`. Die Form wird nur einmalig ausgewertet und an
 den Namen gebunden. Anschließend nutzen wir den **Namen** `s` mehrfach. Wir
 wiederholen in diesem Fall den **Namen** `s` mehrfach, aber es besteht nicht die
@@ -1346,6 +1346,15 @@ folgenden `name-form`-Paaren verwendet werden als auch in den anschließenden
 `<forms*>`.
 
 Du kannst also auch dies schreiben:
+
+> In dem folgenden Beispiel habe ich einige Zeilen **eingerückt**, um die
+> Lesbarkeit zu verbessern. Die Einrückungen helfen dir, zu verstehen, welche
+> Teile/Formen auf welche Weise zueinander gehören. Für die REPL sind die
+> Einrückungen völlig irrelevant. Wir könnten den Code auch so schreiben: `(let
+> [s (+ 5 3 54) m (+ s 42) q (- 100 s)] [s m q])`. Aber das wäre deutlich
+> schwerer zu verstehen. Es gibt auch
+> [Empfehlungen](https://github.com/bbatsov/clojure-style-guide#body-indentation),
+> wie Einrückungen erfolgen sollten. 
 
 ```
 (let [s (+ 5 3 54)
@@ -1386,7 +1395,7 @@ dem `let` gebundenen Namen verwenden.
 ```
 
 > Ist dir aufgefallen, dass das `let` **ganz anders ausgewertet** wird als alle
-> anderen Forms, die wir bisher gesehen haben? Bisher hatten wir immer gesagt,
+> anderen Formen, die wir bisher gesehen haben? Bisher hatten wir immer gesagt,
 > dass in einer Liste alle Formen in der Liste ausgewertet werden und dass das
 > erste Element zu einer **Funktion** auswerten muss und dann diese **Funktion
 > aufgerufen** wird. Im Fall von `let` wird aber der Vektor mit den
@@ -1402,7 +1411,23 @@ dem `let` gebundenen Namen verwenden.
 
 **Übungen**:
 
-TBD
+* Zu was wertet `(let [a 1])` aus? Macht das Sinn? 
+* Zu was wertet `(let [a 1] [a 1])` aus? Wieso?
+* Zu was wertet `(let [a 1] [a 1] [a 2])` aus? Wieso?
+* Zu was wertet die folgende Form aus? Wieso?
+```
+(let [a 1]
+  (let [a 2] 
+    a)
+  a)
+```
+* Zu was wertet die folgende Form aus? Wieso? Erkennst du die *Falle*?
+```
+(let [a 1]
+  (let [a 2] 
+    a
+  a))
+```
 
 ### Sichtbarkeit und Verschattung
 
@@ -1416,16 +1441,16 @@ Zu was wertet diese Form aus?
 
 Sie wertet zu **2** aus. Die Erklärung ist ganz einfach: das `let` baut einen
 **Scope** auf und in diesem **bindet** es den Wert **1** an den Namen `s`.
-Anschließend baut das `let` **unter** diesem ersten **Scope** einen zweiten auf
-und in diesem wird der Name `s` an den Wert **2** gebunden. Nun wird unter
-diesem zweiten Scope der Name `s` **ausgewertet**. Die REPL schaut nun **von
-unten** die geschachtelten Scopes **nach oben** und findet als erstes die
-Bindung von `s` an den Wert **2**. Die REPL sucht nicht weiter in dem oberen
-Scope, wo sie für den Namen `s` ja den Wert **1** finden würde.
+Anschließend baut das `let` **unter** (geschachtelt) diesem ersten **Scope**
+einen zweiten auf und in diesem wird der Name `s` an den Wert **2** gebunden.
+Nun wird unter diesem zweiten Scope der Name `s` **ausgewertet**. Die REPL
+schaut nun **von unten** die geschachtelten Scopes **nach oben** und findet als
+erstes die Bindung von `s` an den Wert **2**. Die REPL sucht nicht weiter in dem
+oberen Scope, wo sie für den Namen `s` ja den Wert **1** finden würde.
 
 Wir sagen, dass die Bindung im unteren oder **inneren** Scope den Namen bzw. die
-Bindung im oberen/äußeren Scope **verschattet** oder **überlagert**. Die Bindung
-ist also nicht
+Bindung im oberen/äußeren Scope **verschattet** oder **überlagert**. Die
+obere/äußere Bindung ist also aus dem inneren Scope heraus nicht
 **[sichtbar](https://de.wikipedia.org/wiki/Sichtbarkeit_(Programmierung))**.
 
 **WICHTIG**: Oben haben wir gesagt, dass es **keine Variablen** in Clojure gibt.
@@ -1456,9 +1481,168 @@ An der Ausgabe kannst du gut erkennen, dass es sich bei `s` um **keine
 Variable** handelt. Das `let` ist **keine Wertzuweisung**. Andernfalls würde für
 den Fall "c:" der Wert **2** anstatt **1** ausgegeben.
 
+Du kannst aber nicht nur lokal Namen verschatten, sondern auch Namen, die in
+Namespaces gebunden sind (wie z.B. die Funktion `+`).
+
+**Übungen**:
+
+* Zu was wertet die folgende Form aus? Wieso?
+
+> So etwas solltest du niemals tun! Das ist extrem verwirrend!
+
+```
+(let [+ -]
+  (+ 4 1))
+```
+
+* Zu was wertet die folgende Form aus? Wieso?
+
+```
+((let [+ -] +) 4 1)
+```
+
+* Zu was wertet die folgende Form aus? Wieso?
+
+```
+((let [* - - +] + - *) 4 1)
+```
+
 ### Seiteneffekte
 
-TBD
+Oben haben wir gesagt, dass die `let`-Special-Form folgende Syntax hat: `(let
+[<name-form-paare*>] <forms*>)`. D.h., nach dem Vektor mit den
+`<name-form>`-Paaren steht eine ggf. leere Folge von Formen `<forms*>`. Diese
+Formen werden alle der Reihe nach ausgewertet und der **Wert der letzten Form
+ist der Wert, zu dem die `let`-Form auswertet**.
+
+Wenn aber nur der Wert der **letzten** Form als Rückgabewert nach außen gegeben
+wird, welchen Sinn macht es dann, überhaupt mehrere Formen angeben zu können?!
+Diese können ja weder *etwas nach außen geben** noch können sie innerhalb der
+`let`-Form verwendet werden, weil sie ja nirgends als Argument auftreten
+können!?!?!?
+
+Die Antwort ist, dass wir mit diesen *unnützen* Formen *Dinge* tun können, die
+man **Seiteneffekte** nennt.
+
+> Die Bedeutung der Bezeichnung *Seiteneffekt* wird von verschiedenen Leuten
+> durchaus unterschiedlich gesehen. Wir wollen im Zusammenhang mit Clojure unter
+> der Bezeichnung *Seiteneffekt* alle Dinge verstehen, die nicht direkt etwas
+> mit der Auswertung von Formen zu tun hat. Wir werden davon einige wenige
+> kennenlernen.  
+> Falls dich das Thema interessiert, findest du
+> [hier](https://de.wikipedia.org/wiki/Wirkung_(Informatik)) und
+> [hier](https://de.wikipedia.org/wiki/Funktionale_Programmierung) noch
+> weiterführende Information.
+
+Die erste Art von Seiteneffekt ist die **Ausgabe** von Werten mit Hilfe der
+Funktion [`println`](https://clojuredocs.org/clojure.core/println). Wir haben
+die Funktion ja schon mehrfach verwendet, um Texte/Werte auszugeben. Nun wollen
+wir sie nutzen, um Werte auszugeben, die in einem `let` an Namen gebunden sind,
+aber nicht explizit über den Rückgabewert nach außen geliefert werden.
+
+**Beispiel**: die folgende Form wertet zu **78** aus. Wir können aber nicht
+direkt erkennen, welchen Wert die Namen `a` und `b` intern haben. Wir erfahren
+nur das Endergebnis.
+
+```
+(let [a (+ 4 8)
+      b (* a 3)]
+  (+ b 42)) ;=> 78
+```
+
+Wir könnten die Form ändern:
+
+```
+(let [a (+ 4 8)
+      b (* a 3)]
+  [a b (+ b 42)]) ;=> [12 36 78]
+```
+
+Oder so:
+
+```
+(let [a (+ 4 8)
+      b (* a 3)]
+  {"a" a "b" b "Ergebnis" (+ b 42)}) ;=> {"a" 12, "b" 36, "Ergebnis" 78}
+```
+
+> Aber beide *Lösungen* ändern ja unser Programm! Das ursprüngliche Programm hat
+> eine **Zahl** geliefert. Die beiden Alternativen liefern einen **Vektor** bzw.
+> eine **Map**. Falls also jemand unser Programm nutzt, um in ihrem/seinen
+> Programm eine Zahl zu berechnen und auch davon ausgeht, dass er eine Zahl von
+> unserem Programm geliefert bekommt, würde das Programm wohl nach unserer
+> Änderung **scheitern**. D.h., es würde nicht mehr funktionieren und zu einer
+> Fehlermeldung führen.
+> 
+> So eine Änderung wie jene, die wir oben gemacht haben, nennt man einen
+> *Breaking Change*. Also eine Programmänderung, die dazu führt, dass andere
+> Programme, die dieses Programm nutzen, nach der Änderung nicht mehr korrekt
+> funktionieren -- eben **scheitern**.
+
+Aber wir können `println` nutzen:
+
+> Ich schreibe `;a, b = 12 , 36` um zu verdeutlichen, dass es sich um eine
+> **Ausgabe** durch einen Seiteneffekt handelt. Die Schreibweise `;=> 78`
+> bedeutet, dass die REPL den Rückgabewert der Form **ausgibt** (was auch eine
+> Form von Seiteneffekt ist).
+
+```
+(let [a (+ 4 8)
+      b (* a 3)]
+  (println "a, b = " a "," b)
+  (+ b 42))
+;a, b = 12 , 36
+;=> 78  
+```
+
+Du kannst Seiteneffekte aber auch innerhalb des `<name-form-paare*>` Vektors
+nutzen:
+
+```
+(let [a (+ 4 8)
+      b (* a 3)
+      _ (println "a, b = " a "," b)]
+  (+ b 42))
+;a, b = 12 , 36
+;=> 78  
+```
+
+> Der **Unterstrichs** (`_`) (engl. *underscore*) ist in Clojure ein *ganz
+> normales Zeichen* und kann als Symbol/Name verwendet werden. Es gibt eine
+> Konvention in der Clojure-Community, den Underscore zu nutzen, um
+> auszudrücken, dass eine gewisse Stelle im Code zwar mit einem Namen oder Wert
+> versorgt/besetzt werden muss, dass wir uns für diesen Namen/Wert aber nicht
+> interessieren. Du kannst ihn aber genau so einsetzen wie den Namen `s` oder
+> `a`. Beispiel: `(let [_ 42] _) ;=> 42` Oder auch: `(let [_egal 42] _egal) ;=>
+> 42` oder `(let [ganz_egal 42] ganz_egal) ;=> 42`.
+>
+> Hinweis: in Clojure ist es üblich, als *Worttrenner* das Minuszeichen und
+> nicht den Underscore zu verwenden. Wir würden also nicht `ganz_egal`
+> (*snake_case*) sondern eher `ganz-egal`
+> ([*kebab-case*](https://juniortoexpert.com/de/namenskonvention-fur-variablen/))
+> oder von mir aus auch `_ganz-egal` schreiben.
+
+Oder auch:
+
+> Im folgenden Beispiel verschattet die zweite Bindung von `_` die erste. Da wir
+> aber weder an der ersten noch an der zweiten interessiert sind, ist das kein
+> Problem.
+
+```
+(let [a (+ 4 8)
+      _ (println "a = " a)
+      b (* a 3)
+      _ (println "b = " b)]
+  (+ b 42))
+;a = 12
+;b = 36
+;=> 78
+```
+
+**Übungen**:
+
+* Zu welchem **Wert** wertet `(println "foobar")` aus?
+* Zu welchem **Wert** wertet `[(println "foo") (println "bar")]` aus?
 
 -------------------------------------------------------------------------------
 ## Schleifen
