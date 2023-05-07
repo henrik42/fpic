@@ -1507,6 +1507,8 @@ Namespaces gebunden sind (wie z.B. die Funktion `+`).
 ((let [* - - +] + - *) 4 1)
 ```
 
+* Zu was wertet die Form `let` aus? Wie deutest du das Ergebnis?
+
 ### Seiteneffekte
 
 Oben haben wir gesagt, dass die `let`-Special-Form folgende Syntax hat: `(let
@@ -1645,6 +1647,11 @@ Oder auch:
 * Zu welchem **Wert** wertet `[(println "foo") (println "bar")]` aus?
 
 -------------------------------------------------------------------------------
+## Keywords
+
+TBD
+
+-------------------------------------------------------------------------------
 ## Schleifen
 
 > **[Schleifen](https://de.wikipedia.org/wiki/Schleife_(Programmierung))** sind
@@ -1658,8 +1665,8 @@ Oder auch:
 > i.d.R. **Anweisungen/Statements** --- diese beeinflussen zwar den
 > Programmfluss (d.h., die steuern, welche Codezeile als nächstes ausgeführt
 > wird), aber sie **haben keinen Wert**. Ihre *Wirkung* entfalten sie
-> ausschließlich durch **Seiteneffekte** --- d.h., sie setzen eine Variable oder
-> geben etwas aus etc. 
+> ausschließlich durch **Seiteneffekte** (vgl. oben) --- d.h., sie setzen eine
+> **Variable** oder geben etwas aus etc. 
 
 In vielen Fällen, in denen du in einer imperativen Programmiersprache eine
 Schleife nutzen würdest, kannst du in Clojure einfach HOFs verwenden (z.B. `map`
@@ -1672,31 +1679,152 @@ Schleifen-Konstrukt.
 
 ### `for`
 
-Mit `for` kannst du eine Liste erzeugen: 
+Mit [`for`](https://clojuredocs.org/clojure.core/for) kannst du eine Liste
+erzeugen:
 
 ```
-(for [x [1 2 3 4]] x) ;=> (for [x [1 2 3 4]] x)
+(for [x [1 2 3 4]] 
+  x) ;=> (1 2 3 4)
 ```
 
-Das ist noch so spannend 😉
+Das ist noch nicht soooo spannend 😉
 
-Aber schauen wir uns die Form genauer an --- sie (die Liste) hat **drei**
-Element: hinter dem ersten Element `for` steht als zweites Element ein
-**Vektor**, dessen **erstes** Element das **Symbol** `x` ist und dessen
-**zweites** Element ein Vektor mit Elementen (eine **Collection**) ist. 
+Aber schauen wir uns die Form genauer an --- sie (die Form/Liste) hat **drei**
+Element: hinter dem ersten Element (dem Symbol `for`) steht als zweites Element
+ein **Vektor**, dessen **erstes** Element das **Symbol** `x` ist und dessen
+**zweites** Element ein Vektor mit Elementen (eine **Collection**) ist
+(`name-collection`-Paar).
 
-Als drittes und letztes Element in der Form steht wieder das Symbol `x`.
+> Das erinnert dich vielleicht an die `name-form`-Paare von `let`. Bei `for`
+> muss der Wert der `form` aber eine Collection sein.
+
+Als drittes und letztes Element in der Form steht wieder das Symbol `x`. Diesen
+Teil der `for`-Form nennt man *Rumpf* bzw. *Body*. Also insgesamt:
+
+```
+(for [<name-collections*>] 
+  <body>)
+```
 
 Der **Wert** der `for`-Form (Auswertung) ergibt sich wie folgt: es wird eine
-Liste erzeugt, das erste Element des Vektors (hier der Wert `1`) wird an den
-Namen `x` gebunden und dann wird das dritte Element (`x`) als Form ausgewertet.
+Liste erzeugt, das erste Element des Vektors/Collection (hier der Wert `1`) wird
+an den Namen `x` gebunden (wie bei `let`) und dann wird das dritte Element (`x`)
+als Form ausgewertet (wie bei `let`). In diesem Fall erhalten wie also **1**.
+Dieser Wert wird nun der Ergebnisliste (am Ende) zugefügt. Damit erhalten wir
+als Zwischenergebnis die Liste mit dem Element `(1)`.
 
-TBD
+Nun wird der Name `x` an den zweiten Wert der Collection **2** gebunden, `x`
+wird zu **2** ausgewertet und dieser Wert wieder der Liste angehängt. Ergibt `(1
+2)`. So geht es weiter, bis alle Elemente der Collection auf diese Weise
+verarbeitet wurden.
+
+> Wir werden später lernen, dass `for` **keine** Liste erstellt, sondern dass
+> wir eine **Sequenz** erhalten. Das tolle an Sequenzen ist, dass sie sich
+> **lazy** verhalten und dadurch kann man z.B. **unendliche** Folgen bzw.
+> **beliebig lange** Folgen von Werten erzeugen. Aber dazu später mehr. Im
+> Moment können wir uns vorstellen, dass `for` wie beschrieben eine Liste
+> konstruiert.
+
+Natürlich können wir anstatt der einfachen Form `x` auch eine komplexere Form
+als Rumpf verwenden -- z.B. `(str "<" x ">")`
+
+```
+(for [x [1 2 3 4]] 
+  (str "<" x ">"))
+;=> ("<1>" "<2>" "<3>" "<4>")
+```
+
+> Bestimmt ist dir schon aufgefallen, dass `for` auch keine *normale* Funktion
+> sein kann. Denn dann müsste in dem obigen Beispiel die Form `[x [1 2 3 4]]` ja
+> ausgewertet werden und das geht ja nicht, weil das Symbol `x` sich ja gar
+> nicht auswerten lässt und ja auch gar nicht ausgewertet werden soll. `for` ist
+> ein **Makro** und Makros werden anders ausgewertet als Funktionen. Wir kommen
+> später noch zum Thema Makros.
+
+Anstatt den Vektor mit den Werten **1** bis **4** direkt als Literal
+hinzuschreiben, können wir die Collection/Liste auch mit Hilfe der Funktion
+`range` erzeugen:
+
+```
+(for [x (range 1 5)] 
+  (str "<" x ">"))
+;=> ("<1>" "<2>" "<3>" "<4>")
+```
+
+> Achtung: es muss wirklich `(range 1 5)` und nicht `(range 1 4)` lauten. Kannst
+> du dir vorstellen, wieso das Sinn machen könnte?
+
+Der Operator `for` wird auch als *Listen-Erzeuger* (engl. *list comprehension*)
+bezeichnet. Du kannst sogar mehrere `name-collection`-Paare angeben. Das
+Ergebnis ist, dass `for` alle Kombinationen der angegebenen Bindungen erzeugt
+und den Rumpf mit diesen ausführt und die Ergebnisse in der Liste liefert:
+
+```
+(for [x ['x 'y 'z] 
+      y (range 1 4)]
+  [x  y])
+;=> ([x 1] [x 2] [x 3] [y 1] [y 2] [y 3] [z 1] [z 2] [z 3])
+```
+
+> Achte darauf, dass erst *über* `y` hochgezählt/iteriert wird und dann *über*
+> `x`. Aus dem Mathematikunterricht kennst du vielleicht das [kartesische
+> Produkt](https://de.wikipedia.org/wiki/Kartesisches_Produkt): `for` erzeugt
+> eben dieses kartesische Produkt.
+
+Aber `for` hat noch weitere *coole* Features: du kannst `:when` (ggf. auch
+mehrfach) benutzen, um zu steuern, welche Elemente (nicht) durch den Rumpf
+verarbeitet und der Ergebnisliste hinzugefügt werden sollen. Im folgenden
+Beispiel wird der Body nur ausgewertet, falls `x` gerade ist.
+
+```
+(for [x (range 0 3)
+      y (range 0 3)
+      :when (even? x)]
+  [x y])
+;=> ([0 0] [0 1] [0 2] [2 0] [2 1] [2 2])
+```
+
+Und du kannst (wie bei `let`) Namen an Werte binden:
+
+```
+(for [x (range 0 3)
+      y (range 0 3)
+      :let [s (+ x y)
+            d (- x y)
+            _ (println "x,y,s,d" x y s d)]
+      :when (even? s)
+      :when (pos? d)]
+  [x y s d])
+;x,y,s,d 0 0 0 0
+;x,y,s,d 0 1 1 -1
+;x,y,s,d 0 2 2 -2
+;x,y,s,d 1 0 1 1
+;x,y,s,d 1 1 2 0
+;x,y,s,d 1 2 3 -1
+;x,y,s,d 2 0 2 2
+;x,y,s,d 2 1 3 1
+;x,y,s,d 2 2 4 0
+;=> ([2 0 2 2])
+```
+
+**Übungen**:
+
+* Zu was wertet `(for [x [1 2 3 4]] (println "x=" x) x)` aus? Was lernen wir
+  daraus?
+
+* Zu was wertet die Form `for` aus? Macht das Sinn?
+
+* Berechne mit Hilfe von `for`/`:when`, `range`, `=` und `mod` alle Zahlen
+  zwischen **1** und **28** (inklusive), die durch **7** teilbar sind. Überlege
+  dir zusammen mit deiner Tischnachbarin, wie ihr euch der Lösung *nähern*
+  könnt? Womit fangt ihr an? 
 
 ### `loop`/`recur`
 
+TBD
+
 -------------------------------------------------------------------------------
-## Funktionen, die Funktionen liefern (higher order functions)
+## Funktionen, die Funktionen liefern (nochmal "higher order functions")
 
 Oben haben wir Funktionen (HOFs) kennengelernt, denen wir beim Aufruf als
 Argument Funktionen übergeben. Während der Ausführung unseres Funktionsaufrufs
