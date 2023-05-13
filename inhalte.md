@@ -1656,19 +1656,78 @@ TBD
 -------------------------------------------------------------------------------
 ## Schleifen
 
+Manchmal möchtest du in deinem Programm bestimmte Dinge *immer wieder tun*. Du
+möchtest sie also **wiederholen**.
+
+Einige Dinge möchtest du vielleicht **endlos** häufig wiederholen oder zumindest
+so lange, bis dein Programm beendet wird und nicht mehr läuft.
+
+> Kennst du technische (digitale) Geräte/Computer, die *endlos* laufen und immer
+> wieder das gleiche oder zumindest etwas ähnliches tun?
+
+Andere Dinge möchtest du so häufig wiederholen, bis **alle Daten**, die deinem
+Programm übergeben wurden (z.B. die Elemente eines Vektors), **verarbeitet**
+sind. 
+
+> Fällt dir hierzu auch ein Beispiel ein? 
+
+Und es gibt Fälle, in denen du **vorab** gar nicht sagen kannst, wie häufig du
+sie wiederholen möchtest, denn die **Anzahl der Wiederholungen** ergibt sich
+erst **während der Wiederholung** selbst. Du brauchst also ein
+**Abbruchkriterium** (ein Prädikat), mit dem dein Programm **entscheidet**, ob
+die Wiederholung beendet oder fortgeführt wird.
+
+> Fällt dir hierzu auch ein Beispiel ein?
+
+In der Programmierung sprechen wir im Zusammenhang mit solchen Wiederholungen
+häufig von **Schleifen**. Bei jedem Durchlauf einer Schleife, wird mit dem
+**aktuellen Element** (also der Information, die du in diesem
+**Schleifendurchlauf** betrachten möchtest) etwas getan --- die Information (das
+*Datum*; Einzahl von *Daten*, nicht im Sinne von *Tagesdatum*) wird
+**verarbeitet**.
+
+Neben der **Anzahl** der Wiederholungen unterscheiden wir aber auch, was denn
+überhaupt das **Ergebnis** der wiederholten Ausführung sein soll? 
+
+Manchmal möchtest du bei jedem Schleifendurchlauf etwas bestimmtes mit dem
+aktuellen Element/Datum tun (z.B. mit `pos?` prüfen, ob eine Zahl positiv ist)
+und das **Ergebnis** der **Schleife** ist eine **Folge** (z.B. ein Vektor) von
+Maps der Form `[{"Z:" <zahl> "P:" <boolean>},,,]`. In diesem Fall liefert deine
+Schleife also eine **Folge** von Werten und die Anzahl der Element der Folge
+entspricht der Anzahl der Schleifendurchläufe.
+
+> Fällt dir dazu auch ein Beispiel ein?
+
+Es kann aber auch sein, dass du in jedem Schleifendurchlauf prüfst, ob das
+aktuelle Element eine positive Zahl ist und falls ja, soll diese Zahl als
+Element in der Ergebnisfolge enthalten sein. Falls die Zahl jedoch nicht positiv
+ist, soll diese Zahl eben nicht in der Ergebnisfolge enthalten sein. Die
+Ergebnisfolge hat also u.U. weniger Element als die Anzahl der
+Schleifendurchläufe.
+
+> Fällt dir dazu auch ein Beispiel ein?
+
+In wieder anderen Fällen möchtest du etwas berechnen, wobei du bei jedem
+Schleifendurchlauf das aktuelle Element/Datum in deine Berechnung mit
+einbeziehst, das Ergebnis deiner Berechnung ergibt sich aber erst am Ende, wenn
+der letzte Schleifendurchlauf erfolgt ist. 
+
+> Fällt dir dazu auch ein Beispiel ein?
+
 > **[Schleifen](https://de.wikipedia.org/wiki/Schleife_(Programmierung))** sind
-> in der Informatik ein sehr umfangreiches Thema. Wir wollen das Thema hier aber
-> eher pragmatisch/praktisch betrachten und ignorieren den theoretischen Teil.  
+> in der Informatik ein sehr umfangreiches Thema. Wir schauen uns einfach
+> mehrere Beispiele an, um Schleifen besser zu verstehen.  
 > Ein sehr wichtiger Unterschied zwischen Clojures Schleifen-Konstrukten und
-> jenen aus den [imperativen
-> Programmiersprachen](https://de.wikipedia.org/wiki/Imperative_Programmierung)
+> jenen aus den **[imperativen
+> Programmiersprachen](https://de.wikipedia.org/wiki/Imperative_Programmierung)**
 > ist, dass Clojures Schleifen **Ausdrücke/Expressions** sind --- sie also
 > **einen Wert haben**. In den imperativen Programmiersprachen sind Schleifen
 > i.d.R. **Anweisungen/Statements** --- diese beeinflussen zwar den
 > Programmfluss (d.h., die steuern, welche Codezeile als nächstes ausgeführt
-> wird), aber sie **haben keinen Wert**. Ihre *Wirkung* entfalten sie
-> ausschließlich durch **Seiteneffekte** (vgl. oben) --- d.h., sie setzen eine
-> **Variable** oder geben etwas aus etc. 
+> wird und wie häufig die Schleife durchlaufen wird), aber sie **haben keinen
+> Wert**. Ihre *Wirkung* entfalten sie ausschließlich durch **Seiteneffekte**
+> (vgl. oben) --- d.h., sie setzen eine **Variable** (um z.B. eine Summe zu
+> bilden) oder geben etwas aus etc. 
 
 In vielen Fällen, in denen du in einer imperativen Programmiersprache eine
 Schleife nutzen würdest, kannst du in Clojure einfach HOFs verwenden (z.B. `map`
