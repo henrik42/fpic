@@ -1649,9 +1649,70 @@ Oder auch:
 * Zu welchem **Wert** wertet `[(println "foo") (println "bar")]` aus?
 
 -------------------------------------------------------------------------------
-## Keywords
+## Funktionen definieren
 
 TBD
+
+-------------------------------------------------------------------------------
+## Keywords
+
+Bisher haben wir schon einige **einfache** (d.h., **unstrukturierte**)
+Datentypen kennengelernt (z.B. Zahlen, Strings, Symbole). Nun kommt ein weiterer
+Datentyp hinzu: Keywords.
+
+Keywords haben die Form `:<name>`, z.B. `:foo`, `:foobar`, `:_`. Keywords werten
+(genau wie Zahlen) **zu sich selbst aus**. D.h., `:foobar ;=> :foobar`
+
+Du kannst Keywords einfach über ihre Form als Literal hinschreiben und du kannst
+sie aus einem String konstruieren: `(keyword "bar") ;=> :bar`
+
+Keywords werden in Clojure vor allem als Schlüssel in Maps verwendet.
+
+**Beispiel**: `{:vorname "Lena" :nachname "Schmidt" :größe-in-cm 174}`
+
+Du kannst nun mit Keywords auf den Wert in der Map zugreifen:
+
+```
+(get {:vorname "Lena" :nachname "Schmidt" :größe-in-cm 174} :nachname) ;=> "Schmidt"
+```
+
+```
+(get {:vorname "Lena" :nachname "Schmidt" :größe-in-cm 174} :foo) ;=> nil
+```
+
+Aber Keywords haben ein **spezielles Feature**: das Keyword `<keyword>`
+**verhält** sich wie eine **Funktion mit einem Parameter**: `(fn [m] ,,,)`.
+Diese Funktion geht davon aus, dass das Argument, das du bei einem **Aufruf**
+übergibst, eine **Map** ist. Die Funktion zu `<keyword>` liefert dann den Wert
+`(get m <keyword>)`.
+
+Die Funktion zum Keyword `:foo` sieht also etwa so aus:
+
+```
+(fn [m]
+  (get m :foo))
+```
+
+Dadurch kannst du noch kompakteren Code schreiben:
+
+```
+(:nachname {:vorname "Lena" :nachname "Schmidt" :größe-in-cm 174}) ;=> "Schmidt"
+```
+
+Die anderen Datentypen (wie Strings und Zahlen) kannst du natürlich auch als
+Schlüssel in deiner Map verwenden, nur verhalten sich diese nicht wie eine
+Funktion.
+
+```
+(get {"foo" 42 "bar" 23} "bar") ;=> 23
+("bar" {"foo" 42 "bar" 23}) ---> Cannot call "bar" as a function.
+```
+
+**Übungen**:
+
+* Zu was wertet `(fn? inc)` aus? Was macht das Prädikat `fn?`?
+* Zu was wertet `(fn? :foobar)` aus? Macht das Sinn? Wie interpretierst du das
+  Ergebnis?
 
 -------------------------------------------------------------------------------
 ## Schleifen
@@ -1692,10 +1753,10 @@ Neben der **Anzahl** der Wiederholungen unterscheiden wir aber auch, was denn
 Manchmal möchtest du bei jedem Schleifendurchlauf etwas bestimmtes mit dem
 aktuellen Element/Datum tun (z.B. mit `pos?` prüfen, ob eine Zahl positiv ist)
 und das **Ergebnis** der **Schleife** ist eine **Folge** (z.B. ein Vektor) von
-Maps der Form `[{"Z:" <zahl> "P:" <boolean>},,,]` (also der betrachteten Zahl
-und dem Prüfungsergebnis). In diesem Fall liefert deine Schleife also eine
-**Folge** von Werten (die Maps) und die Anzahl der Element der Folge entspricht
-der Anzahl der Schleifendurchläufe.
+Maps der Form `[{:z <zahl> :p <boolean>},,,]` (also der betrachteten Zahl und
+dem Prüfungsergebnis). In diesem Fall liefert deine Schleife also eine **Folge**
+von Werten (die Maps) und die Anzahl der Element der Folge entspricht der Anzahl
+der Schleifendurchläufe.
 
 > Fällt dir dazu auch ein Beispiel ein?
 
@@ -1938,6 +1999,22 @@ bestimmten Element **beenden**.
   [x y])
 ```
 
+## `reduce`/`reduced`
+
+Falls du die Elemente während der Schleifendurchläufe nicht einzeln/isoliert
+betrachten möchtest sondern sie auf ein bestimmte Weise **zusammenfassen**
+möchtest, benötigst du eine Möglichkeit, dir etwas zu **merken**.
+
+> Mit `for` geht das nicht. Du kannst dir von einem zum anderen
+> Schleifendurchlauf nichts merken.
+
+Die Funktion `(reduce <f> <val> <coll>)` erlaubt dir, über eine Collection/Folge
+zu **schleifen** und dabei von einem Schleifendurchlauf zum jeweils nächsten
+Schleifendurchlauf einen **Wert** zu liefern. **Dieser Wert** ist das
+*Gedächtnis*, das uns z.B. Erlaubt, Zahlen zu summieren.
+
+TBD
+
 ### `loop`/`recur`
 
 TBD
@@ -2044,9 +2121,6 @@ aufgerufen.
 * Nutze `filter` und `partial`, um aus dem Vektor mit den Zahlen 0, 1, 2, 3 und
   4 alle Element zu entfernen, die **kleiner 2** sind: `(,,, [0 1 2 3 4]) ;=> (2
   3 4)`
-
--------------------------------------------------------------------------------
-## Funktionen definieren
 
 -------------------------------------------------------------------------------
 ## TBD: Wahrheit und nochmal Prädikate
