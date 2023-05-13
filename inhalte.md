@@ -1692,9 +1692,10 @@ Neben der **Anzahl** der Wiederholungen unterscheiden wir aber auch, was denn
 Manchmal möchtest du bei jedem Schleifendurchlauf etwas bestimmtes mit dem
 aktuellen Element/Datum tun (z.B. mit `pos?` prüfen, ob eine Zahl positiv ist)
 und das **Ergebnis** der **Schleife** ist eine **Folge** (z.B. ein Vektor) von
-Maps der Form `[{"Z:" <zahl> "P:" <boolean>},,,]`. In diesem Fall liefert deine
-Schleife also eine **Folge** von Werten und die Anzahl der Element der Folge
-entspricht der Anzahl der Schleifendurchläufe.
+Maps der Form `[{"Z:" <zahl> "P:" <boolean>},,,]` (also der betrachteten Zahl
+und dem Prüfungsergebnis). In diesem Fall liefert deine Schleife also eine
+**Folge** von Werten (die Maps) und die Anzahl der Element der Folge entspricht
+der Anzahl der Schleifendurchläufe.
 
 > Fällt dir dazu auch ein Beispiel ein?
 
@@ -1702,7 +1703,7 @@ Es kann aber auch sein, dass du in jedem Schleifendurchlauf prüfst, ob das
 aktuelle Element eine positive Zahl ist und falls ja, soll diese Zahl als
 Element in der Ergebnisfolge enthalten sein. Falls die Zahl jedoch nicht positiv
 ist, soll diese Zahl eben nicht in der Ergebnisfolge enthalten sein. Die
-Ergebnisfolge hat also u.U. weniger Element als die Anzahl der
+Ergebnisfolge hat also u.U. weniger Elemente als die Anzahl der
 Schleifendurchläufe.
 
 > Fällt dir dazu auch ein Beispiel ein?
@@ -1738,28 +1739,34 @@ Schleifen-Konstrukt.
 > Abbruchkriterien falsch, [so dass die Schleife einen Durchlauf zu viel oder zu
 > wenig macht](https://de.wikipedia.org/wiki/Off-by-one-Error#Beispiele).
 
+Bevor wir uns Beispiele zu Schleifen anschauen, lernen wir einige neue Clojure
+Funktionen/Makros kennen, die wir anschließend verwenden werden.
+
+* `for`
+* `reduce`
+* `loop`/`recur`
+
 ### `for`
 
-Mit [`for`](https://clojuredocs.org/clojure.core/for) kannst du eine Liste
-erzeugen:
+Mit [`for`](https://clojuredocs.org/clojure.core/for) kannst du über eine Folge
+**schleifen**. Das Ergebnis (der Wert der `for`-Form) ist wiederum eine
+Folge/Liste.
 
 ```
-(for [x [1 2 3 4]] 
-  x) ;=> (1 2 3 4)
+(for [x [3 7 9]] 
+  (inc x)) ;=> (4 8 10)
 ```
 
-Das ist noch nicht soooo spannend 😉
-
-Aber schauen wir uns die Form genauer an --- sie (die Form/Liste) hat **drei**
+Schauen wir uns die Form genauer an --- sie (die Form/Liste) hat **drei**
 Element: hinter dem ersten Element (dem Symbol `for`) steht als zweites Element
 ein **Vektor**, dessen **erstes** Element das **Symbol** `x` ist und dessen
-**zweites** Element ein Vektor mit Elementen (eine **Collection**) ist
-(`name-collection`-Paar).
+**zweites** Element ein Vektor mit Elementen/Werten (eine **Collection**/Folge)
+ist (`name-collection`-Paar).
 
 > Das erinnert dich vielleicht an die `name-form`-Paare von `let`. Bei `for`
 > muss der Wert der `form` aber eine Collection sein.
 
-Als drittes und letztes Element in der Form steht wieder das Symbol `x`. Diesen
+Als drittes und letztes Element in der Form steht die Form `(inc x)`. Diesen
 Teil der `for`-Form nennt man *Rumpf* bzw. *Body*. Also insgesamt:
 
 ```
@@ -1767,44 +1774,43 @@ Teil der `for`-Form nennt man *Rumpf* bzw. *Body*. Also insgesamt:
   <body>)
 ```
 
-Der **Wert** der `for`-Form (Auswertung) ergibt sich wie folgt: es wird eine
-Liste erzeugt, das erste Element des Vektors/Collection (hier der Wert `1`) wird
-an den Namen `x` gebunden (wie bei `let`) und dann wird das dritte Element (`x`)
-als Form ausgewertet (wie bei `let`). In diesem Fall erhalten wie also **1**.
-Dieser Wert wird nun der Ergebnisliste (am Ende) zugefügt. Damit erhalten wir
-als Zwischenergebnis die Liste mit dem Element `(1)`.
+> Anders als bei `let` muss der `<body>` im Fall von `for` jedoch aus genau
+> einer Form bestehen.
 
-Nun wird der Name `x` an den zweiten Wert der Collection **2** gebunden, `x`
-wird zu **2** ausgewertet und dieser Wert wieder der Liste angehängt. Ergibt `(1
-2)`. So geht es weiter, bis alle Elemente der Collection auf diese Weise
-verarbeitet wurden.
+Der **Wert** der `for`-Form (Auswertung) ergibt sich wie folgt: es wird eine
+**leere** Liste erzeugt, das erste Element des Vektors/Collection (hier der Wert
+**3**) wird an den Namen `x` gebunden (wie bei `let`) und dann wird das dritte
+Element `(inc x)` als Form mit der aktuellen Bindung für `x` ausgewertet (wie
+bei `let`). In diesem Fall erhalten wir also **4**. Dieser Wert wird nun der
+Ergebnisliste (am Ende) zugefügt. Damit erhalten wir nach dem ersten
+**Schleifendurchlauf** als **Zwischenergebnis** die Liste `(4)`.
+
+Nun erfolgt der zweite Schleifendurchlauf und der Name `x` wird an den zweiten
+Wert der Collection **7** gebunden, `(inc x)` wird zu **8** ausgewertet und
+dieser Wert wieder der Liste angehängt. Ergibt `(4 8)`.
+
+So geht es weiter, bis alle Elemente der Collection auf diese Weise verarbeitet
+wurden. Damit endet die Ausführung der Schleife. Die Anzahl der
+Schleifendurchläufe entspricht der Anzahl der Elemente der
+Eingabe-Collection/Folge.
 
 > Wir werden später lernen, dass `for` **keine** Liste erstellt, sondern dass
 > wir eine **Sequenz** erhalten. Das tolle an Sequenzen ist, dass sie sich
-> **lazy** verhalten und dadurch kann man z.B. **unendliche** Folgen bzw.
-> **beliebig lange** Folgen von Werten erzeugen. Aber dazu später mehr. Im
+> **lazy** (*faul*) verhalten und dadurch kann man z.B. **unendliche** Folgen
+> bzw. **beliebig lange** Folgen von Werten erzeugen. Aber dazu später mehr. Im
 > Moment können wir uns vorstellen, dass `for` wie beschrieben eine Liste
 > konstruiert.
 
-Natürlich können wir anstatt der einfachen Form `x` auch eine komplexere Form
-als Rumpf verwenden -- z.B. `(str "<" x ">")`
-
-```
-(for [x [1 2 3 4]] 
-  (str "<" x ">"))
-;=> ("<1>" "<2>" "<3>" "<4>")
-```
-
 > Bestimmt ist dir schon aufgefallen, dass `for` auch keine *normale* Funktion
-> sein kann. Denn dann müsste in dem obigen Beispiel die Form `[x [1 2 3 4]]` ja
-> ausgewertet werden und das geht ja nicht, weil das Symbol `x` sich ja gar
-> nicht auswerten lässt und ja auch gar nicht ausgewertet werden soll. `for` ist
-> ein **Makro** und Makros werden anders ausgewertet als Funktionen. Wir kommen
-> später noch zum Thema Makros.
+> sein kann (genau so wenig wie `let`). Denn dann müsste in dem obigen Beispiel
+> die Form `[x [3 7 9]]` ja **ausgewertet** werden und das geht ja nicht, weil
+> das Symbol `x` sich ja gar nicht auswerten lässt und ja auch gar nicht
+> ausgewertet werden soll. `for` ist ein **Makro** und Makros werden anders
+> ausgewertet als Funktionen. Wir kommen später noch zum Thema Makros.
 
-Anstatt den Vektor mit den Werten **1** bis **4** direkt als Literal
-hinzuschreiben, können wir die Collection/Liste auch mit Hilfe der Funktion
-`range` erzeugen:
+Anstatt den Vektor mit den Werten direkt als Literal `[3 7 9]` hinzuschreiben,
+können wir die Collection/Liste auch mit Hilfe der Funktion `range` erzeugen
+(falls wir eine solche aufsteigende Folge von Zahlen verarbeiten wollen)
 
 ```
 (for [x (range 1 5)] 
@@ -1817,18 +1823,24 @@ hinzuschreiben, können wir die Collection/Liste auch mit Hilfe der Funktion
 
 Der Operator `for` wird auch als *Listen-Erzeuger* (engl. *list comprehension*)
 bezeichnet. Du kannst sogar mehrere `name-collection`-Paare angeben. Das
-Ergebnis ist, dass `for` alle Kombinationen der angegebenen Bindungen erzeugt
-und den Rumpf mit diesen ausführt und die Ergebnisse in der Liste liefert:
+Ergebnis ist, dass `for` **alle Kombinationen** der angegebenen Bindungen
+erzeugt und den Rumpf mit diesen ausführt und die Ergebnisse in der Liste
+liefert:
 
 ```
-(for [x ['x 'y 'z] 
+(for [x '[x y z] 
       y (range 1 4)]
   [x  y])
 ;=> ([x 1] [x 2] [x 3] [y 1] [y 2] [y 3] [z 1] [z 2] [z 3])
 ```
 
-> Achte darauf, dass erst *über* `y` hochgezählt/iteriert wird und dann *über*
-> `x`. Aus dem Mathematikunterricht kennst du vielleicht das [kartesische
+Es handelt sich dabei um zwei **ineinander geschachtelte Schleifen**, wobei die
+**äußere** Schleife über `'[x y z]` schleift und die **innere** Schleife über
+`(range 1 4)` schleift.
+
+> Achte darauf, dass erst *über* `y` hochgezählt/iteriert wird (innere Schleife)
+> und dann *über* `x` (äußere Schleife). Aus dem Mathematikunterricht kennst du
+> vielleicht das [kartesische
 > Produkt](https://de.wikipedia.org/wiki/Kartesisches_Produkt): `for` erzeugt
 > eben dieses kartesische Produkt.
 
@@ -1839,13 +1851,17 @@ Beispiel wird der Body nur ausgewertet, falls `x` gerade ist.
 
 ```
 (for [x (range 0 3)
-      y (range 0 3)
-      :when (even? x)]
+      :when (even? x)
+      y (range 0 3)]
   [x y])
 ;=> ([0 0] [0 1] [0 2] [2 0] [2 1] [2 2])
 ```
 
-Und du kannst (wie bei `let`) Namen an Werte binden:
+> Wir hatten oben erwähnt, dass wir bei Schleifen vielleicht nicht zu jedem
+> Eingabe-Element auch ein Ausgabe-Element liefern möchten. Mit `:when` kannst
+> du genau dies umsetzen. Beachte, wo wir das `:when` hingeschrieben haben.
+
+Und du kannst (wie bei `let`) mit `:let` Namen an Werte binden:
 
 ```
 (for [x (range 0 3)
@@ -1872,8 +1888,7 @@ Mit `:while <condition>` kannst du steuern, *wie lange* (also bis zu welchem
 Element) eine Schleife durchlaufen wird. Mit `:when` konntest du Elemente zwar
 *herausfiltern*, aber die Schleife wurde dann mit dem nächsten Element
 fortgesetzt. Mit `:while` kannst du die Verarbeitung der Schleife(n) an einem
-bestimmten Element beenden. Beachte, dass diese Logik sich auf jedes Binding
-bezieht.
+bestimmten Element **beenden**. 
 
 **Beispiel**: 
 
@@ -1882,15 +1897,6 @@ bezieht.
       y (range 1 10) :while (< y x)]
   [x y])
 ```
-
-(for [x (range 1 10) 
-      y (range 1 10) 
-      :let [_ (println x y)]
-      :while (< x 6) 
-      :when (even? x)
-      :while (< y x)]
-  [x y])
-
 
 **Übungen**:
 
@@ -1902,7 +1908,35 @@ bezieht.
 * Berechne mit Hilfe von `for`/`:when`, `range`, `=` und `mod` alle Zahlen
   zwischen **1** und **28** (inklusive), die durch **7** teilbar sind. Überlege
   dir zusammen mit deiner Tischnachbarin, wie ihr euch der Lösung *nähern*
-  könnt? Womit fangt ihr an? 
+  könnt? Womit fangt ihr an? Tipp: ihr schleift über die Zahlen 1 bis 28.
+
+* Berechne mit Hilfe von `for`/`:when`/`let`/`while`, `range`, `*`, `pos?` und
+  `<=` alle Zahlen zwischen **1** und **28** (inklusive), die durch **7**
+  teilbar sind. Überlege dir zusammen mit deiner Tischnachbarin, wie ihr euch
+  der Lösung *nähern* könnt? Womit fangt ihr an? Tipp: ihr schleift über die
+  Zahlen 1 bis unendlich und brecht die Schleife ab, sobald ihr das passende
+  Abbruchkriterium erreicht habt.
+
+* Schaue dir die beiden folgenden Beispiele an. Was fällt dir auf? Liefern die
+  beiden Programm das gleiche Ergebnis? Tun die beiden Programm das gleiche? Was
+  könnte der Unterschied sein? Wie könntest du die Programme so erweitern, dass
+  du deine Vermutung bestätigen/widerlegen kannst?
+
+```
+(for [x (range 1 5)
+      y (range 1 5) 
+      :while (< x 3) 
+      :while (< y x)]
+  [x y])
+```
+
+```
+(for [x (range 1 5)
+      :while (< x 3) 
+      y (range 1 5) 
+      :while (< y x)]
+  [x y])
+```
 
 ### `loop`/`recur`
 
