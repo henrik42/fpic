@@ -1303,10 +1303,10 @@ Wir können z.B. `+` nutzen:
 -------------------------------------------------------------------------------
 ## Lokale Namen: `let`
 
-**Aufgabe**: erstelle einen Vektor, der als erstes Element die Summe von **5**,
-**3** und **54** hat, als zweites Element soll die Summe des ersten Elements und
-**42** enthalten sein und als drittes Element soll die Differenz von **100** und
-dem ersten Element im Vektor sein.
+**Aufgabe**: erstelle einen Vektor mit drei Elementen, der als erstes Element
+die Summe von **5**, **3** und **54** enthält. Das zweite Element des Vektors
+soll die Summe des ersten Elements und **42** sein. Und als drittes Element soll
+der Vektor die Differenz von **100** und dem ersten Element enthalten.
 
 Die Lösung könnte so aussehen:
 
@@ -1314,12 +1314,12 @@ Die Lösung könnte so aussehen:
 [(+ 5 3 54), (+ (+ 5 3 54) 42), (- 100 (+ 5 3 54))] ;=> [62 104 38]
 ```
 
-Das ist aber doch sehr umständlich und wir müssen die gleiche Form mehrfach
-wiederholen.
+Das ist aber doch sehr umständlich und wir müssen die gleiche Form `(+ 5 3 54)`
+mehrfach wiederholen.
 
 > Durch diese Wiederholung entsteht zum einen die Gefahr, dass wir uns vertun
-> und versehentlich **45** anstatt **54** schreiben und zum anderen muss die
-> Form `(+ 5 3 54)` ja mehrfach berechnet werden und das ist ja völlig
+> und versehentlich vielleicht **45** anstatt **54** schreiben und zum anderen
+> muss die Form `(+ 5 3 54)` ja mehrfach berechnet werden und das ist ja völlig
 > überflüssig.
 
 Mit [`let`](https://clojuredocs.org/clojure.core/let) haben wir die Möglichkeit,
@@ -1338,12 +1338,12 @@ Gefahr, dass wir uns vertun und der Wert wird nur einmal berechnet.
 ```
 
 Die Form `(let [<name-form-paare*>] <forms*>)` wertet dabei zu dem **Wert** der
-letzten `<form>` aus. Die `name-form-paare` bestehen jeweils aus einem Namen
-(einem Symbol) und einer Form. `let` wertet die `form`s in dem Vektor der Reihe
-nach aus und **bindet** das jeweilige Ergebnis/Wert an den angegeben
-Namen/Symbol. Sobald ein Name gebunden ist, kann er anschließend sowohl in den
-folgenden `name-form`-Paaren verwendet werden als auch in den anschließenden
-`<forms*>`.
+letzten `<form>` aus. Die `name-form-paare` bestehen jeweils aus einem **Namen**
+(einem **Symbol**) und einer **Form**. `let` wertet die `form` der
+`<name-form-paare*>` in dem Vektor der Reihe nach aus und **bindet** das
+jeweilige Ergebnis/Wert an den angegeben Namen/Symbol. Sobald ein Name gebunden
+ist, kann er anschließend sowohl in den folgenden `name-form`-Paaren verwendet
+werden als auch in den anschließenden `<forms*>`.
 
 Du kannst also auch dies schreiben:
 
@@ -1364,15 +1364,15 @@ Du kannst also auch dies schreiben:
 ```
 
 Hier haben wir den Namen `m` an den Wert der Form `(+ s 42)` gebunden. Das
-konnten wir, weil der Name `s` in dem `let` zuvor schon an den Wert `62`
-gebunden war.
+können wir, weil wir den Namen `s` in dem `let` **zuvor** schon an den Wert `62`
+gebunden haben.
 
 > Oben hatten wir uns angeschaut, wie **Symbole** von der REPL ausgewertet
 > werden. Lies es dir gerne nochmal durch. Wir müssen nun hinzufügen, dass die
 > REPL bei der Auswertung eines Symbols (wie z.B. `m`) erst prüft, ob der Name
 > in einem **umschließenden** `let` gebunden ist. Falls ja, wertet das Symbol zu
-> diesem Wert aus. Andernfalls wird, wie oben erläutert, in dem **Namespace**
-> nachgeschaut.  
+> diesem Wert dieser Bindung aus. Andernfalls wird, wie oben erläutert, in dem
+> **Namespace** nachgeschaut.  
 > Wir sprechen in diesem Fall von einem **lexikalischen Scope** --- der
 > **Sichtbarkeit** des Namen. In dem Artikel zu
 > [Variablen](https://de.wikipedia.org/wiki/Variable_(Programmierung)#Sichtbarkeitsbereich_von_Variablen_(Scope))
@@ -1442,11 +1442,12 @@ Zu was wertet diese Form aus?
 Sie wertet zu **2** aus. Die Erklärung ist ganz einfach: das `let` baut einen
 **Scope** auf und in diesem **bindet** es den Wert **1** an den Namen `s`.
 Anschließend baut das `let` **unter** (geschachtelt) diesem ersten **Scope**
-einen zweiten auf und in diesem wird der Name `s` an den Wert **2** gebunden.
-Nun wird unter diesem zweiten Scope der Name `s` **ausgewertet**. Die REPL
-schaut nun **von unten** die geschachtelten Scopes **nach oben** und findet als
-erstes die Bindung von `s` an den Wert **2**. Die REPL sucht nicht weiter in dem
-oberen Scope, wo sie für den Namen `s` ja den Wert **1** finden würde.
+einen **zweiten** Scope auf und in **diesem** wird der Name `s` an den Wert
+**2** gebunden. Nun wird **unter** diesem zweiten Scope der Name `s`
+**ausgewertet**. Die REPL schaut nun **von unten** die geschachtelten Scopes
+**nach oben** und findet als erstes die Bindung von `s` an den Wert **2** im
+zweiten Scope. Die REPL sucht nun nicht weiter in dem oberen Scope, wo sie für
+den Namen `s` ja den Wert **1** finden würde.
 
 Wir sagen, dass die Bindung im unteren oder **inneren** Scope den Namen bzw. die
 Bindung im oberen/äußeren Scope **verschattet** oder **überlagert**. Die
@@ -1481,8 +1482,8 @@ An der Ausgabe kannst du gut erkennen, dass es sich bei `s` um **keine
 Variable** handelt. Das `let` ist **keine Wertzuweisung**. Andernfalls würde für
 den Fall "c:" der Wert **2** anstatt **1** ausgegeben.
 
-Du kannst aber nicht nur lokal Namen verschatten, sondern auch Namen, die in
-Namespaces gebunden sind (wie z.B. die Funktion `+`).
+Du kannst aber nicht nur **lokale** Namen verschatten, sondern auch Namen, die
+in Namespaces gebunden sind (wie z.B. die Funktion `+`).
 
 **Übungen**:
 
@@ -1518,10 +1519,11 @@ Formen werden alle der Reihe nach ausgewertet und der **Wert der letzten Form
 ist der Wert, zu dem die `let`-Form auswertet**.
 
 Wenn aber nur der Wert der **letzten** Form als Rückgabewert nach außen gegeben
-wird, welchen Sinn macht es dann, überhaupt mehrere Formen angeben zu können?!
-Diese können ja weder *etwas nach außen geben** noch können sie innerhalb der
-`let`-Form verwendet werden, weil sie ja nirgends als Argument auftreten
-können!?!?!?
+wird, welchen Sinn macht es dann überhaupt, mehrere Formen angeben zu können?!
+Diese können ja weder **etwas nach außen geben** (da ja nur der Wert der letzten
+Form als Wert des `let` geliefert wird), noch können sie innerhalb der
+`let`-Form **verwendet** werden, weil sie ja nirgends als Argument auftreten
+können, da sie ja nicht an einen Namen gebunden sind!?!?!?
 
 Die Antwort ist, dass wir mit diesen *unnützen* Formen *Dinge* tun können, die
 man **Seiteneffekte** nennt.
@@ -1577,16 +1579,16 @@ Oder so:
 > Fehlermeldung führen.
 > 
 > So eine Änderung wie jene, die wir oben gemacht haben, nennt man einen
-> *Breaking Change*. Also eine Programmänderung, die dazu führt, dass andere
-> Programme, die dieses Programm nutzen, nach der Änderung nicht mehr korrekt
-> funktionieren -- eben **scheitern**.
+> *Breaking Change* (eine *brechende Änderung*). Also eine Programmänderung, die
+> dazu führt, dass andere Programme, die dieses Programm nutzen, nach der
+> Änderung nicht mehr korrekt funktionieren -- eben **zerbrechen**.
 
 Aber wir können `println` nutzen:
 
 > Ich schreibe `;a, b = 12 , 36` um zu verdeutlichen, dass es sich um eine
 > **Ausgabe** durch einen Seiteneffekt handelt. Die Schreibweise `;=> 78`
-> bedeutet, dass die REPL den Rückgabewert der Form **ausgibt** (was auch eine
-> Form von Seiteneffekt ist).
+> bedeutet, dass die REPL den **Rückgabewert** der Form **ausgibt** (was auch
+> eine Form von Seiteneffekt ist).
 
 ```
 (let [a (+ 4 8)
@@ -1771,9 +1773,9 @@ und den Rumpf mit diesen ausführt und die Ergebnisse in der Liste liefert:
 > Produkt](https://de.wikipedia.org/wiki/Kartesisches_Produkt): `for` erzeugt
 > eben dieses kartesische Produkt.
 
-Aber `for` hat noch weitere *coole* Features: du kannst `:when` (ggf. auch
-mehrfach) benutzen, um zu steuern, welche Elemente (nicht) durch den Rumpf
-verarbeitet und der Ergebnisliste hinzugefügt werden sollen. Im folgenden
+Aber `for` hat noch weitere *coole* Features: du kannst `:when <condition>`
+(ggf. auch mehrfach) benutzen, um zu steuern, welche Elemente (nicht) durch den
+Rumpf verarbeitet und der Ergebnisliste hinzugefügt werden sollen. Im folgenden
 Beispiel wird der Body nur ausgewertet, falls `x` gerade ist.
 
 ```
@@ -1806,6 +1808,30 @@ Und du kannst (wie bei `let`) Namen an Werte binden:
 ;x,y,s,d 2 2 4 0
 ;=> ([2 0 2 2])
 ```
+
+Mit `:while <condition>` kannst du steuern, *wie lange* (also bis zu welchem
+Element) eine Schleife durchlaufen wird. Mit `:when` konntest du Elemente zwar
+*herausfiltern*, aber die Schleife wurde dann mit dem nächsten Element
+fortgesetzt. Mit `:while` kannst du die Verarbeitung der Schleife(n) an einem
+bestimmten Element beenden. Beachte, dass diese Logik sich auf jedes Binding
+bezieht.
+
+**Beispiel**: 
+
+```
+(for [x (range 1 10) :while (< x 6) :when (even? x)
+      y (range 1 10) :while (< y x)]
+  [x y])
+```
+
+(for [x (range 1 10) 
+      y (range 1 10) 
+      :let [_ (println x y)]
+      :while (< x 6) 
+      :when (even? x)
+      :while (< y x)]
+  [x y])
+
 
 **Übungen**:
 
