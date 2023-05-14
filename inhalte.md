@@ -1665,8 +1665,143 @@ Oder auch:
 -------------------------------------------------------------------------------
 ## Funktionen definieren
 
+Bisher haben wir viele Funktionen kennengelernt und wir wissen, wie wir diese
+Funktionen **ausführen** und dabei Daten/Werte als **Argumente** übergeben
+können und wie wir den **Rückgabewert** der Funktionen weiterverarbeiten können.
+All das wird durch die **Auswertungsregeln** der REPL festgelegt.
 
+Aber bisher konnte wir selber noch keine **neue Funktion erschaffen** --- wir
+konnten sie nur nutzen.
 
+### `fn`
+
+Um eine Funktion zu erschaffen nutzen wir `(fn [<parameter*>] <forms*>)`.
+
+> Klar -- um eine Funktion zu definieren, nutzen wir eine Funktion ....
+
+> `fn` ist keine Funktion, sondern eine special form. `fn` bietet sehr viele
+> verschiedene Features, die dir helfen, deine Funktionen zu definieren. Wir
+> führen hier erstmal nur wenige auf. Später kommt dann mehr.
+
+Wir können z.B. eine Funktion definieren, die zu einer Zahl `x` das Quadrat `(*
+x x)` liefert: `(fn [x] (* x x)) ;=> #object[Function]`
+
+Der Parameter-Vektor `[<parameter*>]` beschreibt, an welche **lokale Namen**
+(vgl. `let`) beim Aufruf der Funktion die **Argumentwerte** gebunden werden. Das
+`fn` macht also (genau wie `let`) einen Scope auf, in dem die angegebenen
+Namen/Symbole an die übergebenen Werte/Argumente gebunden sind.
+
+Die Formen `<forms*>` beschreiben, was deine Funktion tun soll. Dabei kannst du
+auf die gebundenen Namen, d.h. Argumentwerte, zugreifen. Der Wert der **letzten
+Form** ist jener Wert, der von deiner Funktion als **Rückgabewert** geliefert
+wird (genau so wie bei `let`).
+
+OK, jetzt haben wir zwar eine Funktion definiert, aber wie rufen wir sie auf?
+
+> Lies dir nochmal den Abschnitt mit der Auswertungsregel durch.
+
+Wir setzen sie an die **erste Stelle einer Form** --- so wie wir es die ganze
+Zeit schon getan haben.
+
+```
+((fn [x] (* x x)) 5) ;=> 25
+```
+
+Du kannst natürlich auch eine Funktion mit mehr als einem Parameter definieren.
+
+```
+((fn [x y] (+ x y)) 5 3) ;=> 8
+```
+
+Du kannst der Funktion aber auch einen lokalen Namen geben, dann wird
+deutlicher, was die Funktion tut (bzw. tun **soll**).
+
+```
+(let [plus (fn [x y] 
+             (+ x y))]
+  [(plus 3 5) (plus 7 8)])
+;=> [8 15]
+```
+
+**Übungen:**
+
+* Zu was wertet `fn` aus? Macht das Sinn?
+* Zu was wertet `(fn)` aus? Macht das Sinn?
+* Zu was wertet `((fn [x x] x) 1 2)` aus? Macht das Sinn? Könnte das mit `let`
+  zusammenhängen?
+* Zu was wertet `((fn [x _] x) 1 2)` aus? Macht das Sinn?
+* Zu was wertet `(fn [] *)` aus? Wieso?
+* Zu was wertet `((fn [] *))` aus? Wieso?
+* Zu was wertet `(((fn [] *)))` aus? Wieso?
+* Zu was wertet `((((fn [] *))))` aus? Wieso?
+
+### `defn`
+
+Mit `fn` kannst du zwar Funktionen definieren und aufrufen, aber du musst die
+Funktion immer **lokal definieren**, um sie verwenden zu können. Die anderen
+Funktionen, die wir die ganze Zeit schon nutzen (wie z.B. `inc` und `pos?`),
+können wir scheinbar nutzen, ohne sie zuvor lokal definieren zu müssen. Wieso?
+
+Der Grund ist, dass diese Symbole (`inc`, `pos?`) in einem **Namespace** an die
+jeweilige Funktion **gebunden** sind. Oben hatte wir schon darüber gesprochen,
+dass die REPL bei der **Auswertung von Symbolen** erst in den lokalen `let`/`fn`
+Scopes nach den Bindungen der Symbole sucht und am Ende noch im Namespace, falls
+in den lokalen Scopes keine Bindung gefunden wird.
+
+> Wir sagen hier auch *gebunden* wie bei `let` und `fn`, aber der Mechanismus
+> funktioniert ganz anders. Wir schauen uns das später noch genauer an.
+
+Daher können wir sie von überall her nutzen.
+
+Mit `(defn <name> [<parameter*>] <forms*>)` kannst du **deine eigenen
+Funktionen** auch in diesen Namespace hinterlegen, so dass die REPL deine
+Funktionsnamen anschließend ebenfalls dort findet.
+
+Im Vergleich zu `fn` ist hier nur der Name der Funktion `<name>` hinzugekommen.
+
+```
+(defn plus [x y]
+  (+ x y))
+;=> #'user/plus
+
+plus
+;=> #object[Function]
+
+(plus 4 6)
+;=> 10
+```
+
+> Ich hatte schon mehrfach gesagt, dass es in Clojure keine **Variablen** gäbe.
+> Das ist im Prinzip auch richtig, aber es gibt dennoch Dinge, die sich
+> **ändern** können. Die Namespaces sind so ein Ding.  
+> Mit `defn` tust du **zwei** Dinge.  
+> 1) Du konstruierst eine Funktion (so wie mit `fn`)  
+> 2) Du bindest diese Funktion im Namespace `user` (dazu später mehr) an den
+>    angegebenen Namen/Symbol.  
+> Und dies kannst du **beliebig häufig wiederholen**. Und jedes Mal, **nachdem**
+> du mit `defn` die Funktion definiert/gebunden hast, **ändert** sich vielleicht
+> das, was diese Funktion tut. Man könnte also der Meinung sein, es handelt sich
+> um eine **Variable**.
+
+**Beispiel:** Wir `defn` erst die Funktion `plus` und rufen sie auf: `(plus 4 6)
+;=> 10`. Anschließend `defn` wir erneut die Funktion `plus` und nun liefert die
+gleiche Form `(plus 4 6) ;=> 24` einen **anderen Wert**.
+
+```
+(defn plus [x y]
+  (+ x y))
+;=> #'user/plus
+
+(plus 4 6)
+;=> 10
+
+(defn plus [x y]
+  (* x y))
+;=> #'user/plus
+
+(plus 4 6)
+;=> 24
+```
 
 -------------------------------------------------------------------------------
 ## TBD: Wahrheit und nochmal Prädikate
@@ -2044,7 +2179,7 @@ bestimmten Element **beenden**.
   [x y])
 ```
 
-## `reduce`/`reduced`
+### `reduce`/`reduced`
 
 Falls du die Elemente während der Schleifendurchläufe nicht einzeln/isoliert
 betrachten möchtest sondern sie auf ein bestimmte Weise **zusammenfassen**

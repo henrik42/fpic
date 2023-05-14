@@ -42,3 +42,5 @@ Programmier-AG hilfreich sein können.
 * http://www.clojure-buch.de/ : "Clojure - Grundlagen, Concurrent Programming, Java"
 
 * https://www.learn-clojurescript.com/ : "Learn ClojureScript"
+
+* https://de.wikipedia.org/wiki/Rosetta_Code
