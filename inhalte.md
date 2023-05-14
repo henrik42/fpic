@@ -1723,6 +1723,41 @@ deutlicher, was die Funktion tut (bzw. tun **soll**).
 ;=> [8 15]
 ```
 
+Neben der *ausführlichen* Definitionsform einer Funktion mit Hilfe von `fn` gibt
+es noch eine **Kurzform**: `#(<form-mit-%>)`
+
+> Diese Kurzform fügt **keine neue Funktionalität hinzu**. Wir brauchen sie
+> eigentlich nicht, denn wir könnten immer `fn` anstatt der Kurzform nutzen.
+> Aber die Kurzform erspart uns etwas Schreibarbeit und der Code wird noch
+> kompakter. Wir mögen sie --- vielleicht, wie ein Stück Schokolade. Daher nennt
+> man solche Kurzformen allgemein auch [syntaktischen
+> Zucker](https://de.wikipedia.org/wiki/Syntaktischer_Zucker).
+
+In der Kurzform kannst du das Prozentzeichen (`%`) zusammen mit einer Zahl (1,
+2, ...) nutzen, um auf die Argumentwerte zuzugreifen. Dabei ist `%1` das erste
+Argument, `%2` das zweite Argument u.s.w.
+
+Wir können also anstatt `((fn [x y] (+ x y)) 5 3) ;=> 8` folgendes schreiben:
+
+```
+(#(+ %1 %2) 5 3) ;=> 8
+```
+
+Die Kurzform `#(+ %1 %2)` anspricht der Langform `(fn [x y] (+ x y))`.
+
+> Schau dir die Kurzform und die Form in der `fn` an: siehst du die Ähnlichkeit?
+
+Die Kurzform wird häufig im Zusammenhang mit anderen HOFs genutzt.
+
+**Beispiele:**
+
+> Die Angabe `%` ohne Zahl ist gleichbedeutend mit `%1`.
+
+```
+(filter #(> % 3) (range 10)) ;=> (4 5 6 7 8 9)
+(map #(* %1 %1) (range 5)) ;=> (0 1 4 9 16)
+```
+
 **Übungen:**
 
 * Zu was wertet `fn` aus? Macht das Sinn?
@@ -1783,9 +1818,10 @@ plus
 > das, was diese Funktion tut. Man könnte also der Meinung sein, es handelt sich
 > um eine **Variable**.
 
-**Beispiel:** Wir `defn` erst die Funktion `plus` und rufen sie auf: `(plus 4 6)
-;=> 10`. Anschließend `defn` wir erneut die Funktion `plus` und nun liefert die
-gleiche Form `(plus 4 6) ;=> 24` einen **anderen Wert**.
+**Beispiel:** Wir `defn` erst die Funktion `plus`, rufen sie auf und erhalten
+den Wert **10**: `(plus 4 6) ;=> 10`. Anschließend `defn` wir **erneut** die
+Funktion `plus` und nun liefert die gleiche Form `(plus 4 6) ;=> 24` einen
+**anderen Wert** (**24**).
 
 ```
 (defn plus [x y]
@@ -1802,6 +1838,17 @@ gleiche Form `(plus 4 6) ;=> 24` einen **anderen Wert**.
 (plus 4 6)
 ;=> 24
 ```
+
+> Die Erklärung ist ganz einfach: beim zweiten `plus` Aufruf wird jene Funktion
+> aufgerufen, die wir mit dem zweiten `defn` definiert und an den Namen `plus`
+> in dem Namespace gebunden haben. D.h., es kommt nun darauf an, **wann** bzw.
+> in welchem **Zustand des Namespaces** wir die Funktion `plus` aufrufen.  
+> Das ist nicht gut! In der Funktionalen Programmierung möchte man sich gerne
+> darauf verlassen, dass ein Ausdruck wie `(plus 4 6)` **immer den gleichen
+> Wert** liefert, egal wann oder wie häufig man ihn aufruft.  
+> Daher werden wir `defn` (und später auch `def`) nicht dazu nutzen, während
+> unseres Programmlaufs Dinge zu verändern, sondern wir nutzen die Möglichkeit
+> zur Veränderung nur **während wir programmieren**.
 
 -------------------------------------------------------------------------------
 ## TBD: Wahrheit und nochmal Prädikate
