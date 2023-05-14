@@ -689,6 +689,10 @@ Somit wird die REPL erst die eingebettete Liste auswerten und dann die
 * Und `inc 4)`?
 
 -------------------------------------------------------------------------------
+
+> An dieser Stelle kannst du auch erstmal den Abschnitte "Mathematische
+> Operatoren" lesen und anschließend zu dieser Stelle zurückkehren.
+
 ## Zugriff auf die Elemente zusammengesetzter Datentypen
 
 Bisher haben wir die Werte zusammengesetzter Datentypen als Form zwar
@@ -708,6 +712,16 @@ Für diesen Zugriff bietet Clojure eine Reihe von **Funktionen**:
 
 > Wir werden später sehen, dass diese Aussage nicht 100% korrekt ist. Du kannst
 > ja mal ausprobieren, zu was `(second "abc")` auswertet. Macht das Sinn?
+
+Für den Zugriff auf Vektoren, Maps und Sets kannst du die Funktion `get` nutzen.
+
+* Zugriff auf Vektoren: `(get ["foo" "bar" "foobar"] 2) ;=> "foobar"`
+* Zugriff auf Maps: `(get {"a" "foo" "b" "bar" "c" "foobar"} "b") ;=> "bar"`
+* Zugriff auf Sets: `(get #{"foo" "bar" "foobar"} "foo") ;=> "foo"`
+
+> Der Zugriff auf Vektoren erfolgt über den **Index**, wobei das **erste**
+> Element des Vektors dem Index **0** entspricht (dazu im folgenden Abschnitt
+> mehr).  
 
 **Übungen**:
 
@@ -1651,7 +1665,11 @@ Oder auch:
 -------------------------------------------------------------------------------
 ## Funktionen definieren
 
-TBD
+
+
+
+-------------------------------------------------------------------------------
+## TBD: Wahrheit und nochmal Prädikate
 
 -------------------------------------------------------------------------------
 ## Keywords
@@ -1700,12 +1718,39 @@ Dadurch kannst du noch kompakteren Code schreiben:
 ```
 
 Die anderen Datentypen (wie Strings und Zahlen) kannst du natürlich auch als
-Schlüssel in deiner Map verwenden, nur verhalten sich diese nicht wie eine
+Schlüssel in deiner Map verwenden, nur verhalten sich diese **nicht** wie eine
 Funktion.
 
 ```
 (get {"foo" 42 "bar" 23} "bar") ;=> 23
 ("bar" {"foo" 42 "bar" 23}) ---> Cannot call "bar" as a function.
+```
+
+Da sich Keywords wie eine Funktion verhalten, kannst du sie auch zusammen mit
+higher-order-functions als Funktions-Argument verwenden:
+
+**Beispiele**: 
+
+* Wir nutzen `:foo`, um alle jene Map-Elemente aus der Collection zu liefern,
+  die einen `:foo` Eintrag haben.
+
+> `:foo` ist in diesem Fall **kein** **Prädikat** (weil es ja nicht `true` oder
+> `false` liefert), sondern eine Truthy-Falsy-Funktion.
+
+```
+(filter :foo [{:bar 2 :foobar 4} {:bar 1 :foo 2} {:foo 5}]) ;=> ({:bar 1, :foo 2} {:foo 5})
+```
+
+* Und hier wenden wir `:foo` auf Mengen an: `(:foo #{:bar :foo}) ;=> :foo`
+
+```
+(filter :foo [#{42 :bar :foo} #{:foobar :foo} #{:bar}]) ;=> (#{42 :bar :foo} #{:foobar :foo})
+```
+
+```
+(map :name [{:name "Peter" :nachname "Pan"}
+            {:name "Emma" :nachname "Frost"}])
+;=> ("Peter" "Emma")
 ```
 
 **Übungen**:
@@ -2122,8 +2167,6 @@ aufgerufen.
   4 alle Element zu entfernen, die **kleiner 2** sind: `(,,, [0 1 2 3 4]) ;=> (2
   3 4)`
 
--------------------------------------------------------------------------------
-## TBD: Wahrheit und nochmal Prädikate
 
 -------------------------------------------------------------------------------
 ## TBD: Was ist der Unterschied zwischen einem Datentyp und einer Sequenz?
