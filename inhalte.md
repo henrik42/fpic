@@ -1851,7 +1851,71 @@ Funktion `plus` und nun liefert die gleiche Form `(plus 4 6) ;=> 24` einen
 > zur Veränderung nur **während wir programmieren**.
 
 -------------------------------------------------------------------------------
-## TBD: Wahrheit und nochmal Prädikate
+## Wahrheit und nochmal Prädikate
+
+Wir haben gesagt, dass Prädikate Funktionen sind, die `true` oder `false`
+liefern. Also Werte des **Boolean** Datentyps. Und diese Prädikate kannst du
+nutzen, um z.B. die Elemente einer Collection zu filtern.
+
+In diesem Beispiel ist `#(> % 3)` ein Prädikat.
+
+```
+(filter #(> % 3) (range 10)) ;=> (4 5 6 7 8 9)
+(#(> % 3) 4) ;=> true
+(#(> % 3) 2) ;=> false
+```
+
+Für den Boolean-Datentyp gibt es einige Operatoren/Funktionen/Makros, mit denen
+wir **Boolean-Werte** verknüpfen können. Wir nennen diese Operatoren logische
+bzw. [boolsche Operatoren](https://de.wikipedia.org/wiki/Boolescher_Operator):
+`and`, `or` und `not`.
+
+```
+(and true true) ;=> true
+(and true false) ;=> false
+(or true true) ;=> true
+(or true false) ;=> true
+(or false false) ;=> false
+(not true) ;=> false
+(not false) ;=> true
+```
+
+In Clojure unterscheiden wir jedoch zwischen **Boolean** (`true` und `false`)
+und **logisch wahr** und **logisch falsch**. Es gibt genau zwei Werte, die
+**logisch falsch** sind: `false` und `nil`. **Alle anderen Werte sind logisch
+wahr**.
+
+Da die Bezeichnungen **logisch wahr** und **logisch falsch** etwas umständlich
+und vielleicht auch irreführend sind, wollen wir stattdessen die Bezeichnungen
+**truthy** und **falsy** verwenden.
+
+Wenn wir von nun an über **Prädikate** sprechen, meinen wir grundsätzlich
+Funktionen, die **truthy** oder **falsy** liefern und nicht unbedingt **true**
+oder **false**.
+
+Die boolschen Operatoren berücksichtigen diese **erweiterte** Sichtweise von
+**Wahrheit**:
+
+```
+(and "foo" true) ;=> true
+(and true "foo") ;=> "foo"
+(or true "foo") ;=> true
+(or "foo" true) ;=> "foo"
+(not nil) ;=> true
+(not "foo") ;=> false
+```
+
+Falls du zu einem **truthy** oder **falsy** Wert den zugehörigen Boolean-Wert
+`true` oder `false` haben möchtest, kannst du die Funktion `(boolean x)` nutzen:
+
+```
+(boolean "foo") ;=> true
+(boolean []) ;=> true
+(boolean #{42}) ;=> true
+(boolean nil) ;=> false
+```
+
+> Beachte: `(boolean 0) ;=> true`
 
 -------------------------------------------------------------------------------
 ## Keywords
@@ -1916,14 +1980,44 @@ higher-order-functions als Funktions-Argument verwenden:
 * Wir nutzen `:foo`, um alle jene Map-Elemente aus der Collection zu liefern,
   die einen `:foo` Eintrag haben.
 
-> `:foo` ist in diesem Fall **kein** **Prädikat** (weil es ja nicht `true` oder
-> `false` liefert), sondern eine Truthy-Falsy-Funktion.
+```
+(filter :foo [{:bar 2 :foobar 4} {:bar 1 :foo 2} {:foo 5}])
+;=> ({:bar 1, :foo 2} {:foo 5})
+```
+
+> Das müssen wir uns nochmal in Ruhe anschauen: wir wollen aus einer Folge von
+> Maps jene Maps erhalten, die den Schlüssel `:foo` enthalten. Dafür müssten wir
+> eigentlich ein Prädikat schreiben: `(fn [x] (contains? x :foo))` bzw.
+> `#(contains? % :foo)`
 
 ```
-(filter :foo [{:bar 2 :foobar 4} {:bar 1 :foo 2} {:foo 5}]) ;=> ({:bar 1, :foo 2} {:foo 5})
+(filter #(contains? % :foo) [{:bar 2 :foobar 4} {:bar 1 :foo 2} {:foo 5}])
+;=> ({:bar 1, :foo 2} {:foo 5})
+```
+
+> Aber wir können die Tatsache ausnutzen, dass uns `:foo` ja den **Wert**
+> liefert, der zu dem Schlüssel `:foo` gehört und falls der Schlüssel `:foo`
+> nicht enthalten ist, erhalten wir `nil` und das ist **falsy**.  
+> Allerdings hat unser Idee eine gemeine Lücke (einen Bug!): es könnte ja sein,
+> das zu dem Schlüssel `:foo` der Wert `nil` oder `false` in der Map steht. Und
+> dann würde unser *Trick* nicht funktionieren.  
+> In dem folgenden Beispiel habe ich die Werte `nil` und `false` anstatt der
+> Werte `2` und `5` eingesetzt. Wir sehen, dass das Programm, das `contains?`
+> verwendet, weiterhin korrekt arbeitet. Unser Trick mit `:foo` scheitert aber,
+> weil eben `(:foo {:bar 1 :foo nil})` ist --- also **falsy**: `(boolean (:foo
+> {:bar 1 :foo nil})) ;=> false` ist.
+
+```
+(filter #(contains? % :foo) [{:bar 2 :foobar 4} {:bar 1 :foo nil} {:foo false}])
+({:bar 1, :foo nil} {:foo false})
+
+(filter :foo [{:bar 2 :foobar 4} {:bar 1 :foo nil} {:foo false}])
+;=> ()
 ```
 
 * Und hier wenden wir `:foo` auf Mengen an: `(:foo #{:bar :foo}) ;=> :foo`
+
+> In diesem Fall haben wir nicht das Problem mit `nil` und `false` (vgl. oben).
 
 ```
 (filter :foo [#{42 :bar :foo} #{:foobar :foo} #{:bar}]) ;=> (#{42 :bar :foo} #{:foobar :foo})
