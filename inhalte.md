@@ -1692,10 +1692,16 @@ Der Parameter-Vektor `[<parameter*>]` beschreibt, an welche **lokale Namen**
 `fn` macht also (genau wie `let`) einen Scope auf, in dem die angegebenen
 Namen/Symbole an die übergebenen Werte/Argumente gebunden sind.
 
+> Allerdings haben wir bei `let` Name-**Wert**-Paare. Das ist ja auch klar, weil
+> das `let` ja die Bindung der Werte an die Namen übernimmt. Bei `fn` geben wir
+> nur die **Namen** an. Die Bindung an die konkreten Werte erfolgt dann ja durch
+> den **Funktionsaufruf**, bei dem die **Argument-Werte** an die
+> **Funktions-Parameter** gebunden werden.
+
 Die Formen `<forms*>` beschreiben, was deine Funktion tun soll. Dabei kannst du
-auf die gebundenen Namen, d.h. Argumentwerte, zugreifen. Der Wert der **letzten
-Form** ist jener Wert, der von deiner Funktion als **Rückgabewert** geliefert
-wird (genau so wie bei `let`).
+auf die gebundenen Namen (und damit auf die Argumentwerte) zugreifen. Der Wert
+der **letzten Form** ist jener Wert, der von deiner Funktion als
+**Rückgabewert** geliefert wird (genau so wie bei `let`).
 
 OK, jetzt haben wir zwar eine Funktion definiert, aber wie rufen wir sie auf?
 
@@ -1704,11 +1710,28 @@ OK, jetzt haben wir zwar eine Funktion definiert, aber wie rufen wir sie auf?
 Wir setzen sie an die **erste Stelle einer Form** --- so wie wir es die ganze
 Zeit schon getan haben.
 
+> Schau dir die Form genau an: die Form `(fn ,,,)` **liefert eine Funktion** ---
+> sie wertet die Funktion **nicht** aus! Erst die **umschließend Form** (die
+> Liste/Klammern) `((fn ,,,) ,,,)` wertet die Funktion aus bzw. ruft die
+> Funktion auf.
+
 ```
 ((fn [x] (* x x)) 5) ;=> 25
 ```
 
 Du kannst natürlich auch eine Funktion mit mehr als einem Parameter definieren.
+Das erste Argument (in diesem Fall **5**) wird an den ersten Parameter/Namen (in
+diesem Fall `x`) gebunden, das zweite Argument an den zweiten Parameter usw.
+Diese Art der Parameterübergabe nennt man
+[**Positionsparameter**](https://de.wikipedia.org/wiki/Parameter_(Informatik)#Unterschiedliche_Parameter-Begriffe).
+
+> Positionsparameter haben den Nachteil, dass du an der Stelle, an der du die
+> Funktion aufrufst, nicht direkt erkennen kannst, an welchen Namen die von dir
+> übergebenen Werte in der Funktion gebunden werden. Z.B. kann es vorkommen,
+> dass du anstatt `(map inc [1 2 3])` zu schreiben, versehentlich `(map [1 2 3]
+> inc)` schreibst, weil du irrtümlich denkst, dass bei `map` erst die Collection
+> und dann die Funktion übergeben wird. Wir werden später sehen, dass es andere
+> Arten der Parameterübergabe gibt, die dieses Problem nicht haben.
 
 ```
 ((fn [x y] (+ x y)) 5 3) ;=> 8
@@ -1716,6 +1739,9 @@ Du kannst natürlich auch eine Funktion mit mehr als einem Parameter definieren.
 
 Du kannst der Funktion aber auch einen lokalen Namen geben, dann wird
 deutlicher, was die Funktion tut (bzw. tun **soll**).
+
+> Niemand kann garantieren, dass eine Funktion mit dem Namen `plus` wirklich
+> eine Addition durchführt.
 
 ```
 (let [plus (fn [x y] 
@@ -1730,7 +1756,7 @@ es noch eine **Kurzform**: `#(<form-mit-%>)`
 > Diese Kurzform fügt **keine neue Funktionalität hinzu**. Wir brauchen sie
 > eigentlich nicht, denn wir könnten immer `fn` anstatt der Kurzform nutzen.
 > Aber die Kurzform erspart uns etwas Schreibarbeit und der Code wird noch
-> kompakter. Wir mögen sie --- vielleicht, wie ein Stück Schokolade. Daher nennt
+> kompakter. Wir mögen sie --- vielleicht wie ein Stück Schokolade. Daher nennt
 > man solche Kurzformen allgemein auch [syntaktischen
 > Zucker](https://de.wikipedia.org/wiki/Syntaktischer_Zucker).
 
@@ -1744,6 +1770,12 @@ Wir können also anstatt `((fn [x y] (+ x y)) 5 3) ;=> 8` folgendes schreiben:
 (#(+ %1 %2) 5 3) ;=> 8
 ```
 
+Du könntest aber auch folgendes schreiben:
+
+```
+(#(+ %2 %1) 5 3) ;=> 8
+```
+
 Die Kurzform `#(+ %1 %2)` anspricht der Langform `(fn [x y] (+ x y))`.
 
 > Schau dir die Kurzform und die Form in der `fn` an: siehst du die Ähnlichkeit?
@@ -1752,7 +1784,8 @@ Die Kurzform wird häufig im Zusammenhang mit anderen HOFs genutzt.
 
 **Beispiele:**
 
-> Die Angabe `%` ohne Zahl ist gleichbedeutend mit `%1`.
+> Die Angabe `%` ohne Zahl ist gleichbedeutend mit `%1`. Das `%` darf auch
+> mehrfach vorkommen: `(#(+ % %) 2) ;=> 4`
 
 ```
 (filter #(> % 3) (range 10)) ;=> (4 5 6 7 8 9)
@@ -1784,14 +1817,15 @@ dass die REPL bei der **Auswertung von Symbolen** erst in den lokalen `let`/`fn`
 Scopes nach den Bindungen der Symbole sucht und am Ende noch im Namespace, falls
 in den lokalen Scopes keine Bindung gefunden wird.
 
-> Wir sagen hier auch *gebunden* wie bei `let` und `fn`, aber der Mechanismus
-> funktioniert ganz anders. Wir schauen uns das später noch genauer an.
+> Wir sagen im Falle der Namespaces auch *gebunden* wie bei `let` und `fn`, aber
+> der Mechanismus funktioniert ganz anders. Wir schauen uns das später noch
+> genauer an.
 
 Daher können wir sie von überall her nutzen.
 
 Mit `(defn <name> [<parameter*>] <forms*>)` kannst du **deine eigenen
-Funktionen** auch in diesen Namespace hinterlegen, so dass die REPL deine
-Funktionsnamen anschließend ebenfalls dort findet.
+Funktionen** auch in diesen Namespace hinterlegen/binden, so dass die REPL deine
+Funktionsnamen **anschließend** ebenfalls dort findet.
 
 Im Vergleich zu `fn` ist hier nur der Name der Funktion `<name>` hinzugekommen.
 
@@ -1812,12 +1846,16 @@ plus
 > **ändern** können. Die Namespaces sind so ein Ding.  
 > Mit `defn` tust du **zwei** Dinge.  
 > 1) Du konstruierst eine Funktion (so wie mit `fn`)  
-> 2) Du bindest diese Funktion im Namespace `user` (dazu später mehr) an den
->    angegebenen Namen/Symbol.  
+> 2) Du bindest diese Funktion im Namespace (mit dem Namen `user`; dazu später
+>    mehr) an den angegebenen Namen/Symbol.  
 > Und dies kannst du **beliebig häufig wiederholen**. Und jedes Mal, **nachdem**
 > du mit `defn` die Funktion definiert/gebunden hast, **ändert** sich vielleicht
 > das, was diese Funktion tut. Man könnte also der Meinung sein, es handelt sich
-> um eine **Variable**.
+> um eine **Variable**. Wir müssen also erkennen, dass es in Clojure zwar keine
+> **änderbaren** **Variablen** wie in vielen anderen Programmiersprachen gibt,
+> aber dennoch gibt es sog. **Vars**, die ähnlich funktionieren. Wir lernen
+> später noch die Vars kennen und werden dann aber sehen, dass sie viel mehr
+> können, als gewöhnliche Variablen.
 
 **Beispiel:** Wir `defn` erst die Funktion `plus`, rufen sie auf und erhalten
 den Wert **10**: `(plus 4 6) ;=> 10`. Anschließend `defn` wir **erneut** die
@@ -1847,8 +1885,8 @@ Funktion `plus` und nun liefert die gleiche Form `(plus 4 6) ;=> 24` einen
 > Das ist nicht gut! In der Funktionalen Programmierung möchte man sich gerne
 > darauf verlassen, dass ein Ausdruck wie `(plus 4 6)` **immer den gleichen
 > Wert** liefert, egal wann oder wie häufig man ihn aufruft.  
-> Daher werden wir `defn` (und später auch `def`) nicht dazu nutzen, während
-> unseres Programmlaufs Dinge zu verändern, sondern wir nutzen die Möglichkeit
+> Daher werden wir `defn` (und später auch `def`) nicht dazu nutzen, **während
+> unseres Programmlaufs** Dinge zu verändern, sondern wir nutzen die Möglichkeit
 > zur Veränderung nur **während wir programmieren**.
 
 -------------------------------------------------------------------------------
@@ -1890,12 +1928,14 @@ Da die Bezeichnungen **logisch wahr** und **logisch falsch** etwas umständlich
 und vielleicht auch irreführend sind, wollen wir stattdessen die Bezeichnungen
 **truthy** und **falsy** verwenden.
 
-Wenn wir von nun an über **Prädikate** sprechen, meinen wir grundsätzlich
-Funktionen, die **truthy** oder **falsy** liefern und nicht unbedingt **true**
-oder **false**.
+Wir wollen aber weiterhin nur Funktionen, die `true` oder `false` liefern, als
+Prädikat bezeichnen. Funktionen, die wir im Sinn von einem **Entscheider**
+verwenden (und wir können im Prinzip ja **jede** Funktion in diesem Sinn
+verwenden, weil **jeder** Wert entweder **truthy** oder **falsy** ist!), nennen
+wir Ja-Nein-Funktion.
 
 Die boolschen Operatoren berücksichtigen diese **erweiterte** Sichtweise von
-**Wahrheit**:
+**Wahrheit** und sind somit Ja-Nein-Funktionen:
 
 ```
 (and "foo" true) ;=> true
@@ -1918,12 +1958,23 @@ Falls du zu einem **truthy** oder **falsy** Wert den zugehörigen Boolean-Wert
 
 > Beachte: `(boolean 0) ;=> true`
 
+**Übungen**:
+
+* Versuche eine Funktion `(und [x y] ,,,)` zu definieren, die sich wie `and`
+  verhält. Du darfst dabei gerne `and` verwenden. Teste deine Funktion mit
+  folgenden Testfällen: `(und false false)`, `(und false true)`, `(und true
+  false)` und `(und true true)`. Liefert deine Funktion immer die richtigen
+  Ergebnisse?
+* Zu was wertet `(and false 2)` aus? Zu was wertet `(und false 2)`?
+* Zu was wertet `(and false (println "oops"))` aus? Zu was wertet `(und false
+  (println "oops"))`? Was passiert genau? Kannst du dir erklären?
+
 -------------------------------------------------------------------------------
 ## Keywords
 
 Bisher haben wir schon einige **einfache** (d.h., **unstrukturierte**)
 Datentypen kennengelernt (z.B. Zahlen, Strings, Symbole). Nun kommt ein weiterer
-Datentyp hinzu: Keywords.
+Datentyp hinzu: **Keywords**
 
 Keywords haben die Form `:<name>`, z.B. `:foo`, `:foobar`, `:_`. Keywords werten
 (genau wie Zahlen) **zu sich selbst aus**. D.h., `:foobar ;=> :foobar`
@@ -1935,7 +1986,7 @@ Keywords werden in Clojure vor allem als Schlüssel in Maps verwendet.
 
 **Beispiel**: `{:vorname "Lena" :nachname "Schmidt" :größe-in-cm 174}`
 
-Du kannst nun mit Keywords auf den Wert in der Map zugreifen:
+Du kannst nun mit `get` und den Keywords auf den Wert in der Map zugreifen:
 
 ```
 (get {:vorname "Lena" :nachname "Schmidt" :größe-in-cm 174} :nachname) ;=> "Schmidt"
@@ -1946,10 +1997,11 @@ Du kannst nun mit Keywords auf den Wert in der Map zugreifen:
 ```
 
 Aber Keywords haben ein **spezielles Feature**: das Keyword `<keyword>`
-**verhält** sich wie eine **Funktion mit einem Parameter**: `(fn [m] ,,,)`.
-Diese Funktion geht davon aus, dass das Argument, das du bei einem **Aufruf**
-übergibst, eine **Map** ist. Die Funktion zu `<keyword>` liefert dann den Wert
-`(get m <keyword>)`.
+**verhält** sich (wenn es an der ersten Position einer Liste steht; also dort,
+wo normalerweise immer eine Funktion stehen muss) wie eine **Funktion mit einem
+Parameter**: `(fn [m] ,,,)`. Diese (gedachte) Funktion geht davon aus, dass das
+Argument, das du bei einem **Aufruf** übergibst, eine **Map** ist. Die Funktion
+zu `<keyword>` liefert dann den Wert `(get m <keyword>)`.
 
 Die Funktion zum Keyword `:foo` sieht also etwa so aus:
 
@@ -1974,7 +2026,7 @@ Funktion.
 ```
 
 Da sich Keywords wie eine Funktion verhalten, kannst du sie auch zusammen mit
-higher-order-functions als Funktions-Argument verwenden:
+higher-order-functions als **Funktions-Argument** verwenden:
 
 **Beispiele**: 
 
@@ -1998,15 +2050,16 @@ higher-order-functions als Funktions-Argument verwenden:
 
 > Aber wir können die Tatsache ausnutzen, dass uns `:foo` ja den **Wert**
 > liefert, der zu dem Schlüssel `:foo` gehört und falls der Schlüssel `:foo`
-> nicht enthalten ist, erhalten wir `nil` und das ist **falsy**.  
-> Allerdings hat unser Idee eine gemeine Lücke (einen Bug!): es könnte ja sein,
-> das zu dem Schlüssel `:foo` der Wert `nil` oder `false` in der Map steht. Und
-> dann würde unser *Trick* nicht funktionieren.  
+> nicht enthalten ist, erhalten wir `nil` und das ist **falsy**. Das Keyword
+> `:foo` verhält sich also wie eine **Ja-Nein-Funktion** (vgl. oben).  
+> Allerdings hat unser Idee eine gemeine Lücke (einen **Bug!**): es könnte ja
+> sein, das zu dem Schlüssel `:foo` der Wert `nil` oder `false` in der Map
+> steht. Und dann würde unser *Trick* nicht funktionieren.  
 > In dem folgenden Beispiel habe ich die Werte `nil` und `false` anstatt der
 > Werte `2` und `5` eingesetzt. Wir sehen, dass das Programm, das `contains?`
-> verwendet, weiterhin korrekt arbeitet. Unser Trick mit `:foo` scheitert aber,
-> weil eben `(:foo {:bar 1 :foo nil})` ist --- also **falsy**: `(boolean (:foo
-> {:bar 1 :foo nil})) ;=> false` ist.
+> verwendet, **weiterhin korrekt arbeitet**. Unser Trick mit `:foo`
+> **scheitert** aber, weil eben `(:foo {:bar 1 :foo nil}) ;=> nil` ist --- also
+> **falsy**: `(boolean (:foo {:bar 1 :foo nil})) ;=> false` ist.
 
 ```
 (filter #(contains? % :foo) [{:bar 2 :foobar 4} {:bar 1 :foo nil} {:foo false}])
@@ -2018,7 +2071,7 @@ higher-order-functions als Funktions-Argument verwenden:
 
 * Und hier wenden wir `:foo` auf Mengen an: `(:foo #{:bar :foo}) ;=> :foo`
 
-> In diesem Fall haben wir nicht das Problem mit `nil` und `false` (vgl. oben).
+> In diesem Fall haben wir nicht das Problem mit `nil` und `false` (vgl. oben)
 
 ```
 (filter :foo [#{42 :bar :foo} #{:foobar :foo} #{:bar}]) ;=> (#{42 :bar :foo} #{:foobar :foo})
@@ -2035,6 +2088,12 @@ higher-order-functions als Funktions-Argument verwenden:
 * Zu was wertet `(fn? inc)` aus? Was macht das Prädikat `fn?`?
 * Zu was wertet `(fn? :foobar)` aus? Macht das Sinn? Wie interpretierst du das
   Ergebnis?
+
+-------------------------------------------------------------------------------
+## TBD: Bedingte Verzweigung (`if`, `when`, `cond`)
+
+
+
 
 -------------------------------------------------------------------------------
 ## Schleifen
@@ -2077,24 +2136,26 @@ aktuellen Element/Datum tun (z.B. mit `pos?` prüfen, ob eine Zahl positiv ist)
 und das **Ergebnis** der **Schleife** ist eine **Folge** (z.B. ein Vektor) von
 Maps der Form `[{:z <zahl> :p <boolean>},,,]` (also der betrachteten Zahl und
 dem Prüfungsergebnis). In diesem Fall liefert deine Schleife also eine **Folge**
-von Werten (die Maps) und die Anzahl der Element der Folge entspricht der Anzahl
-der Schleifendurchläufe.
+von Werten (die Maps) und die **Anzahl der Element** der Folge entspricht der
+**Anzahl der Schleifendurchläufe**.
 
 > Fällt dir dazu auch ein Beispiel ein?
 
 Es kann aber auch sein, dass du in jedem Schleifendurchlauf prüfst, ob das
 aktuelle Element eine positive Zahl ist und falls ja, soll diese Zahl als
 Element in der Ergebnisfolge enthalten sein. Falls die Zahl jedoch nicht positiv
-ist, soll diese Zahl eben nicht in der Ergebnisfolge enthalten sein. Die
-Ergebnisfolge hat also u.U. weniger Elemente als die Anzahl der
-Schleifendurchläufe.
+ist, soll diese Zahl eben **nicht in der Ergebnisfolge enthalten sein**. Die
+**Ergebnisfolge** hat also u.U. **weniger Elemente** als die **Anzahl der
+Schleifendurchläufe**.
 
 > Fällt dir dazu auch ein Beispiel ein?
 
 In wieder anderen Fällen möchtest du etwas berechnen, wobei du bei jedem
-Schleifendurchlauf das aktuelle Element/Datum in deine Berechnung mit
-einbeziehst, das Ergebnis deiner Berechnung ergibt sich aber erst am Ende, wenn
-der letzte Schleifendurchlauf erfolgt ist. 
+Schleifendurchlauf das aktuelle Element/Datum in deine Berechnung **mit
+einbeziehst**, das Ergebnis deiner Berechnung ergibt sich aber erst am Ende,
+wenn der letzte Schleifendurchlauf erfolgt ist. Das Ergebnis könnte z.B. die
+Summe über die Elemente sein. In diesem Fall wäre das Ergebnis auch **keine**
+Folge sondern nur ein Wert.
 
 > Fällt dir dazu auch ein Beispiel ein?
 
@@ -2115,15 +2176,16 @@ der letzte Schleifendurchlauf erfolgt ist.
 
 In vielen Fällen, in denen du in einer imperativen Programmiersprache eine
 Schleife nutzen würdest, kannst du in Clojure einfach HOFs verwenden (z.B. `map`
-und `filter`). D.h., du brauchst überhaupt kein eigenständiges/explizites
-Schleifen-Konstrukt.
+und `filter`). D.h., du **brauchst für diese Fälle überhaupt kein
+eigenständiges/explizites Schleifen-Konstrukt**.
 
 > Das ist eine *gute Sache*. Schleifen können tückisch sein. Häufig wählt man
 > Abbruchkriterien falsch, [so dass die Schleife einen Durchlauf zu viel oder zu
 > wenig macht](https://de.wikipedia.org/wiki/Off-by-one-Error#Beispiele).
 
 Bevor wir uns Beispiele zu Schleifen anschauen, lernen wir einige neue Clojure
-Funktionen/Makros kennen, die wir anschließend verwenden werden.
+Schleifen-artige-Funktionen/Makros kennen, die wir anschließend verwenden
+werden.
 
 * `for`
 * `reduce`
@@ -2132,8 +2194,8 @@ Funktionen/Makros kennen, die wir anschließend verwenden werden.
 ### `for`
 
 Mit [`for`](https://clojuredocs.org/clojure.core/for) kannst du über eine Folge
-**schleifen**. Das Ergebnis (der Wert der `for`-Form) ist wiederum eine
-Folge/Liste.
+von Werten **schleifen**. Das Ergebnis (der Wert der `for`-Form) ist wiederum
+eine Folge/Liste.
 
 ```
 (for [x [3 7 9]] 
@@ -2157,25 +2219,26 @@ Teil der `for`-Form nennt man *Rumpf* bzw. *Body*. Also insgesamt:
   <body>)
 ```
 
-> Anders als bei `let` muss der `<body>` im Fall von `for` jedoch aus genau
-> einer Form bestehen.
+> Anders als bei `let` muss der `<body>` im Fall von `for` jedoch aus **genau
+> einer** Form bestehen.
 
 Der **Wert** der `for`-Form (Auswertung) ergibt sich wie folgt: es wird eine
 **leere** Liste erzeugt, das erste Element des Vektors/Collection (hier der Wert
 **3**) wird an den Namen `x` gebunden (wie bei `let`) und dann wird das dritte
 Element `(inc x)` als Form mit der aktuellen Bindung für `x` ausgewertet (wie
 bei `let`). In diesem Fall erhalten wir also **4**. Dieser Wert wird nun der
-Ergebnisliste (am Ende) zugefügt. Damit erhalten wir nach dem ersten
-**Schleifendurchlauf** als **Zwischenergebnis** die Liste `(4)`.
+Ergebnisliste (am Ende; zu Beginn ist sie ja noch leer) zugefügt. Damit erhalten
+wir nach dem ersten **Schleifendurchlauf** als **Zwischenergebnis** die Liste
+`(4)`.
 
 Nun erfolgt der zweite Schleifendurchlauf und der Name `x` wird an den zweiten
 Wert der Collection **7** gebunden, `(inc x)` wird zu **8** ausgewertet und
 dieser Wert wieder der Liste angehängt. Ergibt `(4 8)`.
 
 So geht es weiter, bis alle Elemente der Collection auf diese Weise verarbeitet
-wurden. Damit endet die Ausführung der Schleife. Die Anzahl der
-Schleifendurchläufe entspricht der Anzahl der Elemente der
-Eingabe-Collection/Folge.
+wurden. Damit endet die Ausführung der Schleife. Die **Anzahl der
+Schleifendurchläufe** entspricht der **Anzahl der Elemente der
+Eingabe-Collection/Folge**.
 
 > Wir werden später lernen, dass `for` **keine** Liste erstellt, sondern dass
 > wir eine **Sequenz** erhalten. Das tolle an Sequenzen ist, dass sie sich
@@ -2223,8 +2286,8 @@ Es handelt sich dabei um zwei **ineinander geschachtelte Schleifen**, wobei die
 
 > Achte darauf, dass erst *über* `y` hochgezählt/iteriert wird (innere Schleife)
 > und dann *über* `x` (äußere Schleife). Aus dem Mathematikunterricht kennst du
-> vielleicht das [kartesische
-> Produkt](https://de.wikipedia.org/wiki/Kartesisches_Produkt): `for` erzeugt
+> vielleicht das [**kartesische
+> Produkt**](https://de.wikipedia.org/wiki/Kartesisches_Produkt): `for` erzeugt
 > eben dieses kartesische Produkt.
 
 Aber `for` hat noch weitere *coole* Features: du kannst `:when <condition>`
@@ -2241,8 +2304,9 @@ Beispiel wird der Body nur ausgewertet, falls `x` gerade ist.
 ```
 
 > Wir hatten oben erwähnt, dass wir bei Schleifen vielleicht nicht zu jedem
-> Eingabe-Element auch ein Ausgabe-Element liefern möchten. Mit `:when` kannst
-> du genau dies umsetzen. Beachte, wo wir das `:when` hingeschrieben haben.
+> Eingabe-Element (die die 2-Tupel des kartesischen Produkts) auch ein
+> Ausgabe-Element liefern möchten. Mit `:when` kannst du genau dies umsetzen.
+> Beachte, wo wir das `:when` hingeschrieben haben.
 
 Und du kannst (wie bei `let`) mit `:let` Namen an Werte binden:
 
@@ -2270,8 +2334,8 @@ Und du kannst (wie bei `let`) mit `:let` Namen an Werte binden:
 Mit `:while <condition>` kannst du steuern, *wie lange* (also bis zu welchem
 Element) eine Schleife durchlaufen wird. Mit `:when` konntest du Elemente zwar
 *herausfiltern*, aber die Schleife wurde dann mit dem nächsten Element
-fortgesetzt. Mit `:while` kannst du die Verarbeitung der Schleife(n) an einem
-bestimmten Element **beenden**. 
+**fortgesetzt**. Mit `:while` kannst du die Verarbeitung der Schleife(n) an
+einem bestimmten Element **beenden**. 
 
 **Beispiel**: 
 
@@ -2340,6 +2404,10 @@ TBD
 ### `loop`/`recur`
 
 TBD
+
+-------------------------------------------------------------------------------
+## TBD: Rekursion, der Stack, Endrekursion
+
 
 -------------------------------------------------------------------------------
 ## Funktionen, die Funktionen liefern (nochmal "higher order functions")
@@ -2444,27 +2512,20 @@ aufgerufen.
   4 alle Element zu entfernen, die **kleiner 2** sind: `(,,, [0 1 2 3 4]) ;=> (2
   3 4)`
 
+-------------------------------------------------------------------------------
+## TBD: Datentypen als Funktion
 
 -------------------------------------------------------------------------------
-## TBD: Was ist der Unterschied zwischen einem Datentyp und einer Sequenz?
-
--------------------------------------------------------------------------------
-## TBD: Bedingte Verzweigung
-
--------------------------------------------------------------------------------
-## TBD: Rekursion, der Stack, Endrekursion
+## TBD: Destructuring
 
 -------------------------------------------------------------------------------
 ## TBD: Threading
 
 -------------------------------------------------------------------------------
-## TBD: Datentypen als Funktion
+## TBD: Was ist der Unterschied zwischen einem Datentyp und einer Sequenz?
 
 -------------------------------------------------------------------------------
 ## TBD: Gleichheit
-
--------------------------------------------------------------------------------
-## TBD: Destructuring
 
 -------------------------------------------------------------------------------
 ## TBD: Meta-Programmierung / Makros
