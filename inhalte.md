@@ -824,6 +824,7 @@ Die Funktion `nth` kannst du mit __zwei__ oder __drei__ __Argumenten__ aufrufen.
 * Zu was wertet `(nth [2020 2021 2022 2023] 4)` aus?
 * Zu was wertet `(nth [2020 2021 2022 2023] 4 99)` aus?
 * Zu was wertet `(nth [2020 2021 2022 2023] -3)` aus?
+* Zu was wertet `(nth [2020 2021 2022 2023] 2 (println "oops"))` aus? Wieso?
 * Zu was wertet `(nth [2020 2021 2022 2023] -3 99)` aus? Macht das Sinn? Was
   hättest du erwartet? Zu was wertet `(nth [2020 2021 2022 2023] 3 (nth [] 0))`
   aus? Macht das Sinn? Was hättest du erwartet? Schau dir nochmal genau an, wie
@@ -1186,8 +1187,8 @@ Nur im Gegensatz zu den Prädikaten (wie z.B. `even?`), die wir bisher
 kennengelernt haben, weiß `every?` aber nicht, **welche** Aussage bzgl. der
 Elemente denn betrachtet/entschieden werden soll. Das Prädikat `even?` hingegen
 *weiß*, dass es prüfen soll, ob der übergebene Wert **gerade** ist. Der Funktion
-`every?` müssen wir dies beim Aufruf mit Hilfe einer **Funktion (Prädikat!) als
-Argument** mitteilen.
+`every?` müssen wir den zu **prüfenden Aspekt/Sachverhalt** beim Aufruf mit
+Hilfe einer **Funktion (Prädikat!) als Argument mitteilen**.
 
 > Kennst du aus dem Mathematikunterricht den
 > **[Allquantor](https://de.wikipedia.org/wiki/Quantor#Schreib-_und_Sprechweise)**
