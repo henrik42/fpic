@@ -1476,6 +1476,9 @@ Wert gebunden ist, dann ist diese Bindung **unveränderlich**.
 
 **Beispiel**:
 
+> Wir nutzen hier die Tatsache aus, dass wir im `let` mehrere Formen angeben
+> können. Dazu kommen wir gleich im folgenden Abschnitt noch im Detail.
+
 ```
 (let [s 1]
   (println "a: s =" s)
@@ -1662,6 +1665,41 @@ Oder auch:
 
 * Zu welchem **Wert** wertet `(println "foobar")` aus?
 * Zu welchem **Wert** wertet `[(println "foo") (println "bar")]` aus?
+
+-------------------------------------------------------------------------------
+## `prn` und `println`
+
+Wir werden beim Debuggen regelmäßig `println` nutzen, um nachvollziehen zu
+können, was unser Programm eigentlich tut. 
+
+Dabei musst du berücksichtigen, dass `println` für Strings den **Wert** aber
+nicht die **Form** ausgibt.
+
+In dem folgenden Beispiel können wir in der `println` Ausgabe nicht erkennen,
+dass es sich bei `42` um einen String handelt und nicht um eine Zahl (wie bei
+`4711`).
+
+```
+(println ["42" 4711])
+;[42 4711]
+;=> nil
+```
+
+Wir sollten uns daher angewöhnen, für Debug-Ausgaben `prn` anstatt `println` zu
+verwenden. `prn` gibt die Werte als **Form** aus, so wie es auch die REPL tut.
+Damit können wir dann auch Strings von Zahlen unterscheiden.
+
+```
+(let [v ["42" 4711]] (println v) (prn v) v)
+;[42 4711]
+;["42" 4711]
+;=> ["42" 4711]
+
+(let [x #{1 2 3} y #{"1" "2" "3"}] (println x y) (prn x y))
+;#{1 2 3} #{1 2 3}
+;#{1 2 3} #{"1" "2" "3"}
+;=> nil
+```
 
 -------------------------------------------------------------------------------
 ## Funktionen definieren
