@@ -2580,3 +2580,154 @@ aufgerufen.
 ## TBD: Vars und Namensräume
 
 -------------------------------------------------------------------------------
+
+## Experimente im Browser
+
+### ClojureScript und der Browser
+
+Wenn du https://tryclojure.org/ aufrufst, erhältst du eine Seite, in der du
+Clojure bzw. [**ClojureScript**](https://clojurescript.org/) Formen auswerten
+kannst. 
+
+> ClojureScript ist im Prinzip "Clojure im Browser". Wir wollen auf den
+> Unterschied und die Details hier im Moment aber nicht eingehen. Du solltest
+> aber wissen, dass ClojureScript im Browser zu
+> [JavaScript](https://de.wikipedia.org/wiki/JavaScript) **übersetzt** wird und
+> der Browser auch **nur JavaScript** direkt ausführen kann. Daher verwundert es
+> nicht, dass viele Dinge, die du übers Programmieren im Zusammenhang mit
+> Browsern findest, JavaScript-Beispiele enthalten. Wir werden aber sehen, dass
+> es ziemlich einfach ist, die Beispiele für ClojureScript anzupassen.
+
+Du kannst aber nicht nur Formen auswerten, sondern du kannst durch ClojureScript
+**auf den Browser zugreifen**. D.h., du kannst **lesend** auf die Daten im
+Browser zugreifen, aber du kannst auch aktiv Dinge im Browser **tun**. Und genau
+das wollen wir jetzt machen.
+
+Mit `js/document` greifst du auf die aktuelle Seite zu: [das
+Dokument](https://wiki.selfhtml.org/wiki/JavaScript/DOM#Allgemeines). Dieses
+**Dokument** ist aus Sicht von ClojureScript eine verschachtelte Map. Allerdings
+handelt es sich um eine Map, die du **verändern** kannst. Und diesmal meinen wir
+**wirklich verändern**: d.h., es wir nicht wie bei Clojure-Maps immer eine
+**neue Map** erzeugt, sondern es wird wirklich eine Map **manipuliert**.
+
+> Das nennen wir einen **Seiteneffekt**. Dies Art der Manipulation ist typisch
+> für imperative und viele Objekt-orientierten Sprachen. Der Browser
+> funktioniert auch auf diese Weise. Und wir sprechen in diesem Fall nicht von
+> Maps sondern von (änderbaren) **Objekten**.
+
+```
+js/document ;=> #object[HTMLDocument [object HTMLDocument]]
+```
+
+Im Fall von Maps haben wir immer von deren Schlüsseln gesprochen und wir konnten
+mit Hilfe von `get` auf die Werte der Schlüssel zugreifen und wir konnten
+ausnutzen, dass sich **Keywords** und **Maps** wie **Zugriffsfunktionen**
+verhalten.
+
+```
+(get {"foo" "bar" "foobar" "quox"} "foobar") ;=> "quox"
+(:foobar {:foo "bar" :foobar "quox"})        ;=> "quox"
+({"foo" "bar" "foobar" "quox"} "foobar")     ;=> "quox"
+
+```
+
+Die "Schlüssel" von Objekten werden **Eigenschaften** bzw. **Properties**
+(Einzahl **Property**) genannt. Um auf die Properties von Objekten zuzugreifen,
+nutzen wir die Funktion `.` (Punkt). So greifst du auf die Property `title` des
+Objekts `js/document` zu:
+
+> `.` ist nicht wirklich eine Funktion. Es handelt sich um die [**dot special
+> form**](https://cljs.github.io/api/cljs.core/DOT). Beim Zugriff auf
+> Properties, müssen wir dem Namen der Property ein Minus (`-`) voranstellen.
+
+```
+(. js/document -title) ;=> "Try Clojure"
+```
+
+Es gibt aber auch noch syntaktischen Zucker: du kannst den Punkt und den
+Property-Namen gemeinsam voranstellen:
+
+```
+(.-title js/document) ;=> "Try Clojure"
+```
+
+Du kannst sogar den Punkt und den Property-Namen (ohne vorangestelltes `-`) an
+das Objekt anhängen (diese Form wird aber nicht empfohlen).
+
+```
+js/document.title ;=> "Try Clojure"
+```
+
+Du kannst dir mit `js-keys` zu einem Objekt die Namen aller Properties holen.
+Als Rückgabewert erhältst du ein JavaScript-Array (das erkennst du an `#js
+[,,,]`). Du kannst das JavaScript-Array aber ganz einfach in einen
+ClojureScript-Vektor umformen.
+
+```
+(js-keys js/document)
+;=> #js ["location" "__reactEvents$0r167g6smgt" "getElementsByTagName" "getElementsByTagNameNS" "getElementsByClassName" "getElementById" "createElement" "createElementNS" "createDocumentFragment" "createTextNode" "createComment" "createProcessingInstruction" "importNode" "adoptNode" "createEvent" "createRange" "createNodeIterator" "createTreeWalker" "createCDATASection" "createAttribute" ...]
+
+(js->clj (js-keys js/document))
+;=> ["location" "__reactEvents$0r167g6smgt" "getElementsByTagName" "getElementsByTagNameNS" "getElementsByClassName" "getElementById" "createElement" "createElementNS" "createDocumentFragment" "createTextNode" "createComment" "createProcessingInstruction" "importNode" "adoptNode" "createEvent" "createRange" "createNodeIterator" "createTreeWalker" "createCDATASection" "createAttribute" ...]
+```
+
+Anschließend können wir dann wieder auf die Werte der Properties zugreifen. Dazu
+kannst du auch [`aget`](https://cljs.github.io/api/cljs.core/aget) nutzen. Für
+den *geschachtelten Zugriff** hilft dir die [**dot-dot special
+form**](https://cljs.github.io/api/cljs.core/DOTDOT).
+
+```
+(aget js/document "location") ;=> #object[Location https://tryclojure.org/]
+(aget js/document 'location)  ;=> #object[Location https://tryclojure.org/]
+(.-location js/document)      ;=> #object[Location https://tryclojure.org/]
+js/document.location          ;=> #object[Location https://tryclojure.org/]
+
+(js-keys js/document.location)
+;=> #js ["href" "origin" "protocol" "host" "hostname" "port" "pathname" "search" "hash" "assign" "replace" "reload" "toString"]
+
+(. (. js/document -location) -hostname) ;=> "tryclojure.org"
+(.. js/document -location -hostname)    ;=> "tryclojure.org"
+(aget js/document 'location 'hostname)  ;=> "tryclojure.org"
+js/document.location.hostname           ;=> "tryclojure.org"
+```
+
+Vielleicht ist dir schon aufgefallen, dass einige der Properties von
+`js/document` Namen haben, die sich wie Funktionsnamen anhören (z.B.
+`getElementsByTagName`). Tatsächlich ist es in JavaScript so, dass die Objekte
+sog. **Methoden** besitzen. Dabei handelt es sich einfach um **Funktionen** als
+Wert von Properties. Du kannst diese Methode auch von ClojureScript aus
+aufrufen. Allerdings können wir das nicht so machen, wie wir es von Clojure aus
+kennen:
+
+```
+(. js/document -getElementById) ;=> #object[getElementById]
+(.-getElementById js/document)  ;=> #object[getElementById]
+((.-getElementById js/document) "app") ;--> 'getElementById' called on an object that does not implement interface Document.
+```
+
+Stattdessen müssen wir bei Methoden den Namen der Property **ohne vorangestellte
+Minus-Zeichen** angeben. Auch in diesem Fall kannst du `..` verwenden.
+
+```
+(. js/document getElementById "app") ;=> #object[HTMLDivElement [object HTMLDivElement]]
+(.getElementById js/document "app")  ;=> #object[HTMLDivElement [object HTMLDivElement]]
+(.. js/document (getElementById "app") (getElementsByTagName "script")) ;=> #object[HTMLCollection [object HTMLCollection]]
+```
+
+### Die Seite manipulieren
+
+### Einen Kreis malen
+
+```
+(def canvas (.createElement js/document "canvas"))
+(.prepend (.-body js/document) canvas)
+(doto canvas
+  (.setAttribute 'width 800)
+  (.setAttribute 'height 300))
+(def ctx (.getContext canvas "2d"))
+(doto ctx
+  (aset 'fillStyle "rgb(0,255,0)")
+  (.beginPath)
+  (.arc 160 120 72 0.0 (* 2.0 js/Math.PI) false)
+  (.fill))
+```

@@ -44,3 +44,9 @@ Programmier-AG hilfreich sein können.
 * https://www.learn-clojurescript.com/ : "Learn ClojureScript"
 
 * https://de.wikipedia.org/wiki/Rosetta_Code
+
+* https://lwhorton.github.io/2018/10/20/clojurescript-interop-with-javascript.html
+
+* https://cljs.info/cheatsheet/
+
+* https://www.learn-clojurescript.com/
