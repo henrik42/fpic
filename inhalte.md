@@ -2603,7 +2603,7 @@ kannst.
 > [ClojureScript](https://github.com/clojure/clojurescript)-[Compiler](https://de.wikipedia.org/wiki/Compiler)
 > sondern der
 > ClojureScript-[Interpreter](https://de.wikipedia.org/wiki/Interpreter)
-> [sci](https://github.com/babashka/sci) verwendet. 
+> [SCI](https://github.com/babashka/sci) verwendet. 
 
 Du kannst aber nicht nur Formen auswerten, sondern du kannst durch ClojureScript
 **auf den Browser zugreifen**. D.h., du kannst **lesend** auf die Daten im
@@ -2614,8 +2614,8 @@ Mit `js/document` greifst du auf die aktuelle Seite zu: [das
 Dokument](https://wiki.selfhtml.org/wiki/JavaScript/DOM#Allgemeines). 
 
 > Mit `js/` greifst du auf den [Namespace
-> `js`](https://cljs.github.io/api/syntax/js-namespace) zu. So kannst du auf
-> alle globalen
+> `js`](https://cljs.github.io/api/syntax/js-namespace) zu. Über diesen
+> Namensraum kannst du auf alle globalen
 > JavaScript-[Objekte](https://wiki.selfhtml.org/wiki/JavaScript/Tutorials/OOP/Objekte_und_ihre_Eigenschaften)
 > zugreifen.  
 > Die Form `js/document` wertet zu dem Wert aus, der an den Namen (das Symbol)
@@ -2655,7 +2655,7 @@ zuzugreifen, nutzen wir die Funktion `.` (Punkt). So greifst du auf die Property
 
 > `.` ist nicht wirklich eine **Funktion**. Es handelt sich um die [**dot
 > special form**](https://cljs.github.io/api/cljs.core/DOT). Beim Zugriff auf
-> Properties müssen wir dem Namen der Property ein Minus (`-`) voranstellen.
+> Properties müssen wir dem Namen der Property **ein Minus (`-`) voranstellen**.
 
 ```
 (. js/document -title) ;=> "Try Clojure"
@@ -2678,6 +2678,8 @@ Property-Namen gemeinsam voranstellen:
 
 Du kannst sogar den Punkt und den Property-Namen (ohne vorangestelltes `-`) an
 das Objekt anhängen (diese Form wird aber nicht empfohlen).
+
+> HINWEIS: in diesem Fall darfst du **keine Klammern verwenden**! 
 
 ```
 js/document.title ;=> "Try Clojure"
@@ -2744,6 +2746,41 @@ Minus-Zeichen** angeben. Auch in diesem Fall kannst du `..` verwenden.
 (.getElementById js/document "app")  ;=> #object[HTMLDivElement [object HTMLDivElement]]
 (.. js/document (getElementById "app")) ;=> #object[HTMLDivElement [object HTMLDivElement]]
 (.. js/document (getElementById "app") (getElementsByTagName "script")) ;=> #object[HTMLCollection [object HTMLCollection]]
+```
+
+Die `.`-Form sieht also so aus: `(. <object> <method-name> <args*>)`
+
+Um die Form auszuwerten, greift die REPL auf die Property `<method-name>` des
+Objects `<object>` zu und erwartet, dass dieser Wert eine **Funktion** ist.
+Diese Funktion wird nun mit den Argumenten `<args*>` aufgerufen. Der
+Rückgabewert dieses Funktionsaufrufs ist der Wert, zu dem die `.`-Form
+auswertet.
+
+Die `..`-Form sieht so aus: `(.. <object> <method-name-args-lists*>)`
+
+Um die Form auszuwerten, führt die REPL zuerst die erste Method mit den
+angegebenen Argumenten auf dem Object `<object>` aus (so wie es für die `.`-Form
+beschrieben wurde). Der Wert dieser Auswertung muss wiederum ein Objekt sein.
+Und auf diesem Objekt wird nun die zweite Methode mit den angegebenen Argumenten
+aufgerufen usw. Die `..`-Form wertet zu jenem Wert aus, der als Ergebnis der
+letzten Methodenanwendung geliefert wurde.
+
+**Beispiel**: wir rufen auf dem Objekt `js/document` die Funktion/Methode
+`getElementById` mit dem Argument `"app"` auf und erhalten ein Objekt (ein
+**[`div`-Element](https://wiki.selfhtml.org/wiki/HTML/Elemente/div)**).
+
+```
+(.. js/document (getElementById "app")) ;=> #object[HTMLDivElement [object HTMLDivElement]]
+```
+
+Durch eine weitere `<method-name-args-list>` (`(getElementsByTagName "script")`)
+können wir nun auf diesem Objekt eine weitere Funktion aufrufen. In diesem Fall
+erhalten wir ein
+**[`script`-Element](https://wiki.selfhtml.org/wiki/HTML/Elemente/script)**.
+
+```
+(.. js/document (getElementById "app") (getElementsByTagName "script"))
+;=> #object[HTMLCollection [object HTMLCollection]]
 ```
 
 ### Die Seite manipulieren
