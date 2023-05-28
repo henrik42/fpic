@@ -2582,21 +2582,28 @@ aufgerufen.
 -------------------------------------------------------------------------------
 
 ## Experimente im Browser
-
 ### ClojureScript und der Browser
 
 Wenn du https://tryclojure.org/ aufrufst, erhältst du eine Seite, in der du
 Clojure bzw. [**ClojureScript**](https://clojurescript.org/) Formen auswerten
 kannst. 
 
-> ClojureScript ist im Prinzip "Clojure im Browser". Wir wollen auf den
-> Unterschied und die Details hier im Moment aber nicht eingehen. Du solltest
-> aber wissen, dass ClojureScript im Browser zu
-> [JavaScript](https://de.wikipedia.org/wiki/JavaScript) **übersetzt** wird und
-> der Browser auch **nur JavaScript** direkt ausführen kann. Daher verwundert es
-> nicht, dass viele Dinge, die du übers Programmieren im Zusammenhang mit
-> Browsern findest, JavaScript-Beispiele enthalten. Wir werden aber sehen, dass
-> es ziemlich einfach ist, die Beispiele für ClojureScript anzupassen.
+> ClojureScript ist im Prinzip "Clojure im Browser". Wir wollen auf die
+> Unterschiede zwischen Clojure und ClojureScript und viele Details hier im
+> Moment aber nicht eingehen. Du solltest aber wissen, dass ClojureScript zu
+> [JavaScript](https://de.wikipedia.org/wiki/JavaScript) **übersetzt**
+> ([transpiliert](https://de.wikipedia.org/wiki/Compiler#Sonderformen)) wird und
+> der Browser auch **nur JavaScript** (und
+> [WASM](https://de.wikipedia.org/wiki/WebAssembly)) direkt ausführen kann.
+> Daher verwundert es nicht, dass viele Dinge, die du übers Programmieren im
+> Zusammenhang mit Browsern findest, JavaScript-Beispiele enthalten. Wir werden
+> aber sehen, dass es ziemlich einfach ist, die Beispiele für ClojureScript
+> anzupassen.  
+> Für `tryclojure` wird allerdings nicht ein
+> [ClojureScript](https://github.com/clojure/clojurescript)-[Compiler](https://de.wikipedia.org/wiki/Compiler)
+> sondern der
+> ClojureScript-[Interpreter](https://de.wikipedia.org/wiki/Interpreter)
+> [sci](https://github.com/babashka/sci) verwendet. 
 
 Du kannst aber nicht nur Formen auswerten, sondern du kannst durch ClojureScript
 **auf den Browser zugreifen**. D.h., du kannst **lesend** auf die Daten im
@@ -2604,13 +2611,23 @@ Browser zugreifen, aber du kannst auch aktiv Dinge im Browser **tun**. Und genau
 das wollen wir jetzt machen.
 
 Mit `js/document` greifst du auf die aktuelle Seite zu: [das
-Dokument](https://wiki.selfhtml.org/wiki/JavaScript/DOM#Allgemeines). Dieses
-**Dokument** ist aus Sicht von ClojureScript eine verschachtelte Map. Allerdings
-handelt es sich um eine Map, die du **verändern** kannst. Und diesmal meinen wir
-**wirklich verändern**: d.h., es wir nicht wie bei Clojure-Maps immer eine
-**neue Map** erzeugt, sondern es wird wirklich eine Map **manipuliert**.
+Dokument](https://wiki.selfhtml.org/wiki/JavaScript/DOM#Allgemeines). 
 
-> Das nennen wir einen **Seiteneffekt**. Dies Art der Manipulation ist typisch
+> Mit `js/` greifst du auf den [Namespace
+> `js`](https://cljs.github.io/api/syntax/js-namespace) zu. So kannst du auf
+> alle globalen
+> JavaScript-[Objekte](https://wiki.selfhtml.org/wiki/JavaScript/Tutorials/OOP/Objekte_und_ihre_Eigenschaften)
+> zugreifen.  
+> Die Form `js/document` wertet zu dem Wert aus, der an den Namen (das Symbol)
+> `document` im Namespace `js` gebunden ist.
+
+Dieses **Dokument** ist aus Sicht von ClojureScript eine verschachtelte Map.
+Allerdings handelt es sich um eine Map, die du **verändern** kannst. Und diesmal
+meinen wir **wirklich verändern**: d.h., es wird nicht wie bei Clojure-Maps
+immer eine **neue Map** erzeugt, sondern es wird wirklich eine Map
+**manipuliert**.
+
+> Das nennen wir einen **Seiteneffekt**. Diese Art der Manipulation ist typisch
 > für imperative und viele Objekt-orientierten Sprachen. Der Browser
 > funktioniert auch auf diese Weise. Und wir sprechen in diesem Fall nicht von
 > Maps sondern von (änderbaren) **Objekten**.
@@ -2619,10 +2636,10 @@ handelt es sich um eine Map, die du **verändern** kannst. Und diesmal meinen wi
 js/document ;=> #object[HTMLDocument [object HTMLDocument]]
 ```
 
-Im Fall von Maps haben wir immer von deren Schlüsseln gesprochen und wir konnten
-mit Hilfe von `get` auf die Werte der Schlüssel zugreifen und wir konnten
-ausnutzen, dass sich **Keywords** und **Maps** wie **Zugriffsfunktionen**
-verhalten.
+Im Fall von Maps haben wir immer von deren **Schlüsseln** gesprochen und wir
+konnten mit Hilfe von `get` auf die Werte der Schlüssel zugreifen und wir
+konnten ausnutzen, dass sich **Keywords** und **Maps** wie
+**Zugriffsfunktionen** verhalten.
 
 ```
 (get {"foo" "bar" "foobar" "quox"} "foobar") ;=> "quox"
@@ -2631,20 +2648,28 @@ verhalten.
 
 ```
 
-Die "Schlüssel" von Objekten werden **Eigenschaften** bzw. **Properties**
-(Einzahl **Property**) genannt. Um auf die Properties von Objekten zuzugreifen,
-nutzen wir die Funktion `.` (Punkt). So greifst du auf die Property `title` des
-Objekts `js/document` zu:
+Die "Schlüssel" von **Objekten** werden **Eigenschaften** bzw. **Properties**
+(Einzahl **Property**) genannt. Um auf die Properties von JavaScript-Objekten
+zuzugreifen, nutzen wir die Funktion `.` (Punkt). So greifst du auf die Property
+`title` des Objekts `js/document` zu:
 
-> `.` ist nicht wirklich eine Funktion. Es handelt sich um die [**dot special
-> form**](https://cljs.github.io/api/cljs.core/DOT). Beim Zugriff auf
-> Properties, müssen wir dem Namen der Property ein Minus (`-`) voranstellen.
+> `.` ist nicht wirklich eine **Funktion**. Es handelt sich um die [**dot
+> special form**](https://cljs.github.io/api/cljs.core/DOT). Beim Zugriff auf
+> Properties müssen wir dem Namen der Property ein Minus (`-`) voranstellen.
 
 ```
 (. js/document -title) ;=> "Try Clojure"
 ```
 
-Es gibt aber auch noch syntaktischen Zucker: du kannst den Punkt und den
+> Du kannst im Firefox mit der Taste F12 die [Entwickler
+> Werkzeuge](https://de.wikipedia.org/wiki/Entwicklerwerkzeuge_in_Webbrowsern)
+> öffnen. Dort findest du auch die [Web
+> Console](https://firefox-source-docs.mozilla.org/devtools-user/web_console/).
+> Auf diese Konsole kannst du mit `(js/console.log js/document)` das Objekt
+> ausgeben. Anschließend kannst du dich durch das Objekt *klicken* und so sehen,
+> welche Eigenschaften und Werte das Objekt hat. Probiere es einfach mal aus.
+
+Es gibt aber auch noch *syntaktischen Zucker*: du kannst den Punkt und den
 Property-Namen gemeinsam voranstellen:
 
 ```
@@ -2658,10 +2683,14 @@ das Objekt anhängen (diese Form wird aber nicht empfohlen).
 js/document.title ;=> "Try Clojure"
 ```
 
-Du kannst dir mit `js-keys` zu einem Objekt die Namen aller Properties holen.
-Als Rückgabewert erhältst du ein JavaScript-Array (das erkennst du an `#js
-[,,,]`). Du kannst das JavaScript-Array aber ganz einfach in einen
-ClojureScript-Vektor umformen.
+Du kannst dir mit `js-keys` zu einem Objekt **die Namen aller Properties**
+holen. Als Rückgabewert erhältst du ein
+**[JavaScript-Array](https://www.mediaevent.de/javascript/array.html)** (das
+erkennst du an `#js [,,,]`). Du kannst das JavaScript-Array mit Hilfe von
+`js->clj` in einen ClojureScript-Vektor umformen.
+
+> Du kannst von ClojureScript aus ohne Probleme [auf JavaScript-Arrays
+> zugreifen](https://www.learn-clojurescript.com/section-2/lesson-13-interacting-with-javascript-data/#using-arrays).
 
 ```
 (js-keys js/document)
@@ -2673,7 +2702,7 @@ ClojureScript-Vektor umformen.
 
 Anschließend können wir dann wieder auf die Werte der Properties zugreifen. Dazu
 kannst du auch [`aget`](https://cljs.github.io/api/cljs.core/aget) nutzen. Für
-den *geschachtelten Zugriff** hilft dir die [**dot-dot special
+den **geschachtelten Zugriff** hilft dir die [**dot-dot special
 form**](https://cljs.github.io/api/cljs.core/DOTDOT).
 
 ```
@@ -2685,24 +2714,26 @@ js/document.location          ;=> #object[Location https://tryclojure.org/]
 (js-keys js/document.location)
 ;=> #js ["href" "origin" "protocol" "host" "hostname" "port" "pathname" "search" "hash" "assign" "replace" "reload" "toString"]
 
-(. (. js/document -location) -hostname) ;=> "tryclojure.org"
-(.. js/document -location -hostname)    ;=> "tryclojure.org"
-(aget js/document 'location 'hostname)  ;=> "tryclojure.org"
-js/document.location.hostname           ;=> "tryclojure.org"
+(. (. js/document -location) -hostname)  ;=> "tryclojure.org"
+(.. js/document -location -hostname)     ;=> "tryclojure.org"
+(aget js/document "location" "hostname") ;=> "tryclojure.org"
+(aget js/document 'location 'hostname)   ;=> "tryclojure.org"
+js/document.location.hostname            ;=> "tryclojure.org"
 ```
 
 Vielleicht ist dir schon aufgefallen, dass einige der Properties von
-`js/document` Namen haben, die sich wie Funktionsnamen anhören (z.B.
+`js/document` Namen haben, die sich wie **Funktionsnamen** anhören (z.B.
 `getElementsByTagName`). Tatsächlich ist es in JavaScript so, dass die Objekte
-sog. **Methoden** besitzen. Dabei handelt es sich einfach um **Funktionen** als
-Wert von Properties. Du kannst diese Methode auch von ClojureScript aus
-aufrufen. Allerdings können wir das nicht so machen, wie wir es von Clojure aus
-kennen:
+sog. **Methoden** besitzen. Dabei handelt es sich einfach um [**Funktionen** als
+**Wert von
+Properties**](https://www.mediaevent.de/javascript/Javascript-Objekte-3.html).
+Du kannst diese Methoden/Funktionen auch von ClojureScript aus aufrufen.
+Allerdings können wir das nicht so machen, wie wir es von Clojure aus kennen:
 
 ```
 (. js/document -getElementById) ;=> #object[getElementById]
 (.-getElementById js/document)  ;=> #object[getElementById]
-((.-getElementById js/document) "app") ;--> 'getElementById' called on an object that does not implement interface Document.
+((.-getElementById js/document) "app") ;=> 'getElementById' called on an object that does not implement interface Document.
 ```
 
 Stattdessen müssen wir bei Methoden den Namen der Property **ohne vorangestellte
@@ -2711,6 +2742,7 @@ Minus-Zeichen** angeben. Auch in diesem Fall kannst du `..` verwenden.
 ```
 (. js/document getElementById "app") ;=> #object[HTMLDivElement [object HTMLDivElement]]
 (.getElementById js/document "app")  ;=> #object[HTMLDivElement [object HTMLDivElement]]
+(.. js/document (getElementById "app")) ;=> #object[HTMLDivElement [object HTMLDivElement]]
 (.. js/document (getElementById "app") (getElementsByTagName "script")) ;=> #object[HTMLCollection [object HTMLCollection]]
 ```
 
