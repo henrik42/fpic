@@ -2732,6 +2732,9 @@ Properties**](https://www.mediaevent.de/javascript/Javascript-Objekte-3.html).
 Du kannst diese Methoden/Funktionen auch von ClojureScript aus aufrufen.
 Allerdings können wir das nicht so machen, wie wir es von Clojure aus kennen:
 
+> Details findest du
+> [hier](https://lwhorton.github.io/2018/10/20/clojurescript-interop-with-javascript.html#pitfalls).
+
 ```
 (. js/document -getElementById) ;=> #object[getElementById]
 (.-getElementById js/document)  ;=> #object[getElementById]
@@ -2746,6 +2749,15 @@ Minus-Zeichen** angeben. Auch in diesem Fall kannst du `..` verwenden.
 (.getElementById js/document "app")  ;=> #object[HTMLDivElement [object HTMLDivElement]]
 (.. js/document (getElementById "app")) ;=> #object[HTMLDivElement [object HTMLDivElement]]
 (.. js/document (getElementById "app") (getElementsByTagName "script")) ;=> #object[HTMLCollection [object HTMLCollection]]
+```
+
+Du kannst aber auch direkt auf die Funktion als Property-Wert zugreifen
+(`js/document.getElementById`) und die Funktion dann auch aufrufen:
+
+```
+(js/document.getElementById "app") ;=> #object[HTMLDivElement [object HTMLDivElement]]
+(.. (js/document.getElementById "app") (getElementsByTagName "script"))
+;=> #object[HTMLCollection [object HTMLCollection]]
 ```
 
 Die `.`-Form sieht also so aus: `(. <object> <method-name> <args*>)`
@@ -2784,6 +2796,80 @@ erhalten wir ein
 ```
 
 ### Die Seite manipulieren
+
+Du kannst aber nicht nur *lesend* auf die Eigenschaften der Objekte im Browser
+zugreifen, sondern auch *schreibend* bzw. *ändernd*.
+
+Dazu kannst du zum einen ändernde Methoden der Objekte verwenden und zum anderen
+die ClojureScript-Funktion `set!`.
+
+Um das auszuprobieren, suchen wir uns auf der Seite das
+[`blockquote`](https://wiki.selfhtml.org/wiki/HTML/Elemente/blockquote)-Objekt
+(mit dem Zitat "If you want everything to be familiar, you'll never learn
+anything new." von Rich Hickey, dem Erfinder von Clojure).
+
+```
+(js/document.getElementsByTagName 'blockquote) ;=> #object[HTMLCollection [object HTMLCollection]]
+```
+
+Wir erhalten kein JavaScript-Array, sondern eine
+[`HTMLCollection`](https://wiki.selfhtml.org/wiki/JavaScript/DOM/HTMLElement#Zugriff_auf_Elementobjekte).
+Das macht aber nichts, weil wir daraus via `seq` eine Liste bzw. Sequenz machen
+können. So erhalten wir eine Liste mit einem
+[`HTMLQuoteElement`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLQuoteElement)-Objekt.
+
+```
+(seq (js/document.getElementsByTagName 'blockquote)) ;=> (#object[HTMLQuoteElement [object HTMLQuoteElement]])
+```
+
+Und da `first` intern `seq` aufruft, können wir uns wie folgt via `def` das
+`HTMLQuoteElement` unter dem Namen `bq` merken:
+
+```
+(def bq (first (js/document.getElementsByTagName "blockquote"))) ;=> #'user/bq
+bq ;=> #object[HTMLQuoteElement [object HTMLQuoteElement]]
+```
+
+Nun möchten wir die Hintergrundfarbe ändern. Die Hintergrundfarbe
+(`background-color`) eines Elements kann über das [Attribut
+`style`](https://wiki.selfhtml.org/wiki/HTML/Attribute/style) gesteuert werden.
+Dieses Attribut können wir über die Methode
+[`setAttribute`](https://wiki.selfhtml.org/wiki/JavaScript/DOM/Element/setAttribute)
+setzen. Mit Hilfe von `getAttribute` können wir auf den aktuellen Attribut-Wert
+zugreifen (wir erhalten als Wert einen String!).
+
+```
+(.setAttribute bq "style" "background-color: red") ;=> nil
+(.getAttribute bq "style") ;=> "background-color: red"
+```
+
+Anstatt der Methode `getAttribute` kannst du auch `.` verwenden, um auf das
+`style`-Attribute zuzugreifen. In diesem Fall erhalten wir jedoch ein
+`CSS2Properties`-**Objekt** und nicht einen String! 
+
+```
+(. bq -style) ;=> #object[CSS2Properties [object CSS2Properties]]
+(.. bq -style -background-color) ;=> "red"
+```
+
+Mit der ClojureScript-Funktion `set!` kannst du diese Eigenschaft setzen:
+
+> Hinweis: die Form `(.. bq -style -background-color)` wird also auf **zwei ganz
+> unterschiedliche Weisen verwendet**. Zum einen wertet die Form zu dem
+> Property-**Wert** des Objekts aus (z.B. dem String `"red"`). Wenn die Form
+> allerdings als Argument zu `set!` verwendet wird, steuert sie, welche
+> Object-**Property** gesetzt werden soll. Das entspricht den [R-Werten und
+> L-Werten von
+> Variablen](https://de.wikipedia.org/wiki/Variable_(Programmierung)#L-Wert_und_R-Wert_von_Variablen),
+> die du vielleicht schon aus einer imperativen Programmiersprache kennst.
+
+```
+(set! (.. bq -style -background-color) "greenyellow") ;=> nil
+```
+
+> Don't panic! Dieses Kapitel hat es wirklich in sich! Das Zusammenspiel
+> zwischen ClojureScript, JavaScript und den Objekten des Browsers ist sehr
+> verwirrend und schwer zu durchschauen. Lass dich nicht entmutigen!!!  
 
 ### Einen Kreis malen
 
