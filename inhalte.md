@@ -2696,10 +2696,10 @@ das `js/document`-Objekt binden kannst. Du kannst aber nicht via `x.title` auf
 die Eigenschaft `js/document.title` zugreifen.
 
 ```
-(def x js/document) ;=> #'user/x
-x ;=> #object[HTMLDocument [object HTMLDocument]]
-[(. x -title) (.-title x) js/document.title] ;=> ["Try Clojure" "Try Clojure" "Try Clojure"]
-x.title ;=> Could not resolve symbol: x.title
+(def x js/document)                           ;=> #'user/x
+x                                             ;=> #object[HTMLDocument [object HTMLDocument]]
+[(. x -title) (.-title x) js/document.title]  ;=> ["Try Clojure" "Try Clojure" "Try Clojure"]
+x.title                                       ;=> Could not resolve symbol: x.title
 ```
 
 Du kannst dir mit `js-keys` zu einem Objekt **die Namen aller Properties**
@@ -2842,6 +2842,14 @@ können. So erhalten wir eine Liste mit einem
 Und da `first` intern `seq` aufruft, können wir uns wie folgt via `def` das
 `HTMLQuoteElement` unter dem Namen `bq` merken:
 
+> Bitte bedenke, dass die folgenden Beispiele den Namen `bq` verwenden. Und das
+> funktioniert nur, wenn du **zuvor** den Namen via `(def bq ,,,)` `def`iniert
+> hast. Falls du also F5/Reload in deinem Browser drückst und dann **ohne** `bq`
+> erneut zu `def`inieren den Namen `bq` verwendest, wirst du die Fehlermeldung
+> `Could not resolve symbol: bq` erhalten. Unsere `tryclojure`-Sitzung ist also
+> **zustandsbehaftet**: wir müssen **erst** den Namen definieren, bevor wir ihn
+> **anschließend** verwenden können. Probiere es doch einfach mal aus!
+
 ```
 (def bq (first (js/document.getElementsByTagName "blockquote"))) ;=> #'user/bq
 bq ;=> #object[HTMLQuoteElement [object HTMLQuoteElement]]
@@ -2890,15 +2898,136 @@ Mit der ClojureScript-Funktion `set!` kannst du diese Eigenschaft setzen:
 
 ### Einen Kreis malen
 
+Wir wollen nun geometrische Figuren *malen*. 
+
+> In den folgenden Beispielen nutze ich das HTML-Canvas-Element. Eine bessere
+> Alternative wären wohl [Scalable Vector Graphics
+> (SVG)](https://de.wikipedia.org/wiki/Scalable_Vector_Graphics). Vielleicht
+> machen wir das später noch.
+
+Dazu nutzen wir ein
+[`Canvas`](https://wiki.selfhtml.org/wiki/JavaScript/Canvas)-Element/Objekt, das
+wir via
+[`js/document.createElement`](https://wiki.selfhtml.org/wiki/JavaScript/DOM/Document/createElement)
+erzeugen und an den Namen `canvas` binden, damit wir anschließend auf das Objekt
+zugreifen können. Wir legen fest, wie
+[breit](https://wiki.selfhtml.org/wiki/HTML/Attribute/width) und wie
+[hoch](https://wiki.selfhtml.org/wiki/HTML/Attribute/height) der Zeichenbereich
+sein soll und fügen das Objekt dem
+[`body`](https://wiki.selfhtml.org/wiki/HTML/Tutorials/Grundger%C3%BCst#Der_body:_sichtbarer_und_strukturierter_Aufbau)
+der Seite zu.
+
 ```
-(def canvas (.createElement js/document "canvas"))
-(.prepend (.-body js/document) canvas)
-(doto canvas
-  (.setAttribute 'width 800)
-  (.setAttribute 'height 300))
+(def canvas (js/document.createElement "canvas"))
+(set! (.-width canvas) 800)
+(set! (.-height canvas) 300)
+(.prepend js/document.body canvas)
+```
+
+> Das ist cool! Wir nutzen ein HTML-Dokument, das einen
+> ClojureScript-Interpreter enthält, um eben dieses HTML-Objekt interaktiv zu
+> verändern 🤯
+
+Um aber wirklich etwas auf dem Canvas malen zu können, benötigen wir den
+[`CanvasRenderingContext2D`](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D)
+zu dem Canvas. Wir binden den Kontext an `ctx` und setzen den
+[Füllstil](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/fillStyle),
+[starten](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/beginPath)
+einen
+[Pfad](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Drawing_shapes?retiredLocale=de#drawing_paths),
+zeichnen einen
+[Kreis](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/arc)
+und
+[füllen](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/fill)
+diesen.
+
+```
 (def ctx (.getContext canvas "2d"))
-(doto ctx
-  (aset 'fillStyle "rgb(0,255,0)")
+(set! (.-fillStyle ctx) "green")
+(.beginPath ctx)
+(.arc ctx 160 120 72 0.0 (* 2.0 js/Math.PI) false)
+(.fill ctx)
+```
+
+> Vielleicht ist es dir schon aufgefallen: als wir angefangen haben, Clojure zu
+> lernen, haben wir die ganze Zeit **Funktionen auf Werte (Argumente)
+> angewendet** und haben **Werte** als Rückgabewert/**Ergebnis** erhalten. Die
+> Argumente/Werte konnten wir mit Hilfe der Funktion **nicht ändern**. Wir haben
+> grundsätzlich **neue Werte als Ergebnis** erhalten.  
+> Beim Zugriff auf den [DOM](https://wiki.selfhtml.org/wiki/JavaScript/DOM)
+> rufen wir vor allem **Funktionen/Methoden** auf **änderbaren Objekten** auf,
+> um bestimmte **Effekte** zu bewirken. Dadurch **ändern** wir den **Zustand der
+> Objekte** (und damit den Seiteninhalt). Als Rückgabewert erhalten wir häufig
+> `nil`. Wir erhalten also weder ein neues Objekt noch das jenige Objekt, auf
+> dem wir die Methode aufgerufen haben.  
+> Diese unterschiedliche Weise mit **Werten und (änderbaren) Objekten**
+> umzugehen ist charakteristisch für den Unterschied zwischen
+> objekt-orientierten Programmiersprachen (OO-Sprachen wie z.B. Java und C++)
+> und funktionalen Programmiersprachen (wie z.B. Clojure).  
+> Du solltest aber wissen, dass es in OO-Sprachen auch möglich ist, funktional
+> zu programmieren und in Clojure ist es auch möglich, objekt-orientiert zu
+> programmieren. Die Sprachen haben nur jeweils einen anderen Fokus/Schwerpunkt.
+
+Oben link auf der Seite, müsste nun ein grüner Kreis erschienen sein. OK, das
+sieht schon ganz gut aus.
+
+Wir können den Code aber noch etwas kompakter schreiben. Dazu nutzen wir das
+[`doto`](https://clojuredocs.org/clojure.core/doto)-Makro.
+
+
+`(doto <form-x> <forms*>)` erspart uns, immer wieder den Namen `canvas`
+schreiben zu müssen. Als erstes wird `<form-x>` ausgewertet. Anschließen werden
+die folgenden `<forms*>` der Reihe nach ausgewertet, jedoch wird jeweils an die
+**zweite** Stelle der Form der Wert (das **Objekt**!) von `<form-x>` gesetzt.
+Ganz am Ende liefert `doto` den **geänderten** Wert/Objekt von `<form-x>`.
+
+Wir können damit also an Stelle von `<form-x>` das Canvas-Objekt via
+`(.createElement js/document "canvas")` erzeugen und anschließend via
+`setAttribute` die Eigenschaften des Canvas-Objekts ändern und erhalten
+schließlich das Canvas-Objekt.
+
+**Übung**: besprich mit deiner Tischnachbarin, wieso wir in diesem Fall die
+Funktion/Methode `setAttribute` anstatt `set!` nutzen müssen. Lest euch nochmal
+durch, was `doto` genau macht!
+
+Das sieht kompakter aus.
+
+```
+(def canvas 
+  (doto (.createElement js/document "canvas")
+    (.setAttribute 'width 800)
+    (.setAttribute 'height 300)))
+(.prepend js/document.body canvas)
+```
+
+Mit Hilfe von `let` kannst du etwas ähnliches schreiben, nur musst du in diesem
+Fall den Namen `x` eben mehrmals wiederholen.
+
+```
+(def canvas 
+  (let [x (.createElement js/document "canvas")]
+    (.setAttribute x 'width 800)
+    (.setAttribute x 'height 300)
+    x))
+(.prepend js/document.body canvas)
+```
+
+Für den zweiten Teil unseres kurzen Programms können wir ebenfalls `doto`
+nutzen:
+
+**Übung**: besprich mit deinem Tischnachbarn, wieso wir in diesem Fall `aset`
+anstatt `set!` nutzen müssen. Gibt es eine Alternative?
+
+> Lies dir nochmal durch, was
+> [hier](https://lwhorton.github.io/2018/10/20/clojurescript-interop-with-javascript.html#setters)
+> zum Thema [`aset`](https://clojuredocs.org/clojure.core/aset) steht. Wir
+> sollten es nicht nutzen, da die Funktion für den Zugriff auf **Arrays**
+> gedacht ist und nicht, um auf **Objekt-Eigenschaften** zuzugreifen. Aber es
+> ist an dieser Stelle eben sehr praktisch.
+
+```
+(doto (.getContext canvas "2d")
+  (aset 'fillStyle "green")
   (.beginPath)
   (.arc 160 120 72 0.0 (* 2.0 js/Math.PI) false)
   (.fill))
