@@ -2582,6 +2582,7 @@ aufgerufen.
 -------------------------------------------------------------------------------
 
 ## Experimente im Browser
+
 ### ClojureScript und der Browser
 
 Wenn du https://tryclojure.org/ aufrufst, erhältst du eine Seite, in der du
@@ -2677,12 +2678,28 @@ Property-Namen gemeinsam voranstellen:
 ```
 
 Du kannst sogar den Punkt und den Property-Namen (ohne vorangestelltes `-`) an
-das Objekt anhängen (diese Form wird aber nicht empfohlen).
+das Objekt anhängen (diese Form wird aber **nicht empfohlen**). 
 
 > HINWEIS: in diesem Fall darfst du **keine Klammern verwenden**! 
 
 ```
 js/document.title ;=> "Try Clojure"
+```
+
+Diese Form ist an die [Dot-Property-Schreibweise von
+JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Property_accessors)
+angelehnt. Diese Form funktioniert aber **nicht mit lokalen/globalen Namen**,
+sondern nur mit Namen im `js/` Namespace.
+
+Das folgende Beispiel zeigt, dass du zwar den Namen `x` im Namespace `user` an
+das `js/document`-Objekt binden kannst. Du kannst aber nicht via `x.title` auf
+die Eigenschaft `js/document.title` zugreifen.
+
+```
+(def x js/document) ;=> #'user/x
+x ;=> #object[HTMLDocument [object HTMLDocument]]
+[(. x -title) (.-title x) js/document.title] ;=> ["Try Clojure" "Try Clojure" "Try Clojure"]
+x.title ;=> Could not resolve symbol: x.title
 ```
 
 Du kannst dir mit `js-keys` zu einem Objekt **die Namen aller Properties**
