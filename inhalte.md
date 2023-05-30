@@ -3092,10 +3092,9 @@ fügen ihn in unsere Seite ein. Das `doto` schreiben wir nun in eine Funktion
 
 ```
 (def canvas 
-  (let [x (.createElement js/document "canvas")]
-    (.setAttribute x 'width 800)
-    (.setAttribute x 'height 300)
-    x))
+  (doto (.createElement js/document "canvas")
+    (.setAttribute 'width 800)
+    (.setAttribute 'height 300)))
 (.prepend js/document.body canvas)
 
 (defn draw []
@@ -3139,6 +3138,8 @@ der Kreis gezeichnet wird. Anschließend nutzt sie
 ```
 
 Nun kannst du `(draw-loop)` aufrufen.
+
+**Et voilà -- du hast eine Animation!**
 
 **Übungen**:
 
