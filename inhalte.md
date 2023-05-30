@@ -3032,3 +3032,126 @@ anstatt `set!` nutzen müssen. Gibt es eine Alternative?
   (.arc 160 120 72 0.0 (* 2.0 js/Math.PI) false)
   (.fill))
 ```
+
+### Eine Animation
+
+> Die Idee zu dieser Aufgabe/Lösung habe ich von
+> [hier](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Basic_animations).  
+> Dieser Abschnitt ist ziemlich schwer. Du wirst beim ersten Mal wahrscheinlich
+> nicht alles verstehen. Lass dir Zeit, sprich mit deinem Tischnachbarn.
+> Gemeinsam könnt ihr es euch gegenseitig erklären.
+
+Nachdem du nun weißt, wie du einen (ganzen) Kreis zeichnen kannst, möchten wir
+nun eine kleine **Animation** programmieren: anstatt immer einen ganzen Kreis zu
+zeichnen, möchten wir nur **einen Teil des Kreises** zeichnen und dieser Teil
+wird dann immer größer, bis schließlich der ganze Kreis zu sehen ist. Danach
+beginnt die Animation von vorne.
+
+Es gibt viele verschiedene Möglichkeiten, diese Aufgabe umzusetzen. Ich stelle
+hier eine von ihnen vor. 
+
+Die Grundidee ist, dass wir die **voranschreitende Zeit messen** und damit eine
+**Zahl** haben, die **gleichmäßig (bezogen auf die Zeit) immer größer wird**
+(eine Uhr).
+
+> Bei dieser speziellen Zahl handelt es sich um die [Anzahl der Millisekunden,
+> die seit dem 1.1.1970 vergangen
+> sind](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getTime).
+
+```
+(.getTime (js/Date.)) ;=> 1685483934165
+(.getTime (js/Date.)) ;=> 1685483935569
+(.getTime (js/Date.)) ;=> 1685483936593
+```
+
+Diese Zahl taugt direkt aber noch nicht für unsere Animation. Wir brauchen ja
+eine Zahl, mit der wir beschreiben können, dass erst ganz wenig von dem Kreis
+gezeichnet wird, dann mehr und schließlich der ganze Kreis. Die Zahl, die wir
+suchen, könnte z.B. bei 0 beginnen, dann immer größer werden und dann bei 100
+enden und dann wieder bei 0 anfangen. So eine Zahl kannst du mit Hilfe der
+Funktion [`mod`](https://cljs.github.io/api/cljs.core/mod) erzeugen, die dir den
+[ganzzahligen Rest einer
+Division](https://de.wikipedia.org/wiki/Division_mit_Rest#Modulo) liefert.
+
+```
+(mod (.getTime (js/Date.)) 100) ;=> 58
+```
+
+Damit haben wir einen Ausdruck, den wir nutzen können, um 0..100 Prozent vom
+Kreis zu zeichnen. Den ganzen Kreis zeichnen wir mit `(* 2.0 js/Math.PI)` (vgl.
+[Kreisumfang](https://de.wikipedia.org/wiki/Kreis#Umfang)). Nun teilen wir
+diesen Umfang in 100 Teile und multiplizieren mit unserem 0-100-Faktor: 
+
+```
+(* 2.0 js/Math.PI 1/100 (mod (.getTime (js/Date.)) 100)) ;=> 4.775220833456486
+```
+
+OK, nun schreiben wir unser Programm. Wie zuvor definieren wir den Canvas und
+fügen ihn in unsere Seite ein. Das `doto` schreiben wir nun in eine Funktion
+`draw`:
+
+```
+(def canvas 
+  (let [x (.createElement js/document "canvas")]
+    (.setAttribute x 'width 800)
+    (.setAttribute x 'height 300)
+    x))
+(.prepend js/document.body canvas)
+
+(defn draw []
+  (doto (.getContext canvas "2d")
+    (.clearRect 0 0 800 300)
+    (aset 'fillStyle "green")
+    (.beginPath)
+    (.arc 160 120 72 0.0 (* 2.0 js/Math.PI 1/100 (mod (.getTime (js/Date.)) 100)) false)
+    (.fill)))
+```
+
+Nun kannst du die Funktion `draw` aufrufen. Jedes Mal wenn du die Funktion
+ausrufst, wird der Kreis zu einem bestimmten Anteil gezeichnet.
+
+```
+(draw) ;=> #object[CanvasRenderingContext2D [object CanvasRenderingContext2D]]
+(draw) ;=> #object[CanvasRenderingContext2D [object CanvasRenderingContext2D]]
+(draw) ;=> #object[CanvasRenderingContext2D [object CanvasRenderingContext2D]]
+```
+
+Nun möchten wir aber, dass die Funktion `draw` **automatisch immer wieder
+ausgeführt wird**. 
+
+> An dieser Stelle denken wir sofort an Schleifen. Leider funktioniert das in
+> diesem Fall nicht. Wir kommen noch dazu, warum das so ist.
+
+Wir nutzen dazu die Funktion/Methode
+[`js/window.requestAnimationFrame`](https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame).
+Mit dieser können wir dem Browser den **Auftrag** geben, eine Funktion, die wir
+ihm mitgeben, **bei der nächsten Gelegenheit aufzurufen**. 
+
+Wir definieren jetzt die Funktion `draw-loop`. Diese ruft erst `draw` auf, damit
+der Kreis gezeichnet wird. Anschließend nutzt sie
+`js/window.requestAnimationFrame` um **sich selbst** für die erneute Ausführung
+**anzumelden**. Und das führt dann zu .....
+
+```
+(defn draw-loop []
+  (draw)
+  (js/window.requestAnimationFrame draw-loop))
+```
+
+Nun kannst du `(draw-loop)` aufrufen.
+
+**Übungen**:
+
+* Besprich mit deinem Tischnachbarn, wie der *Trick* mit dem
+  `js/window.requestAnimationFrame` funktioniert. Ist euch aufgefallen, dass der
+  Aufruf von `(draw-loop)` sofort einem Wert liefert, obwohl doch der Kreis die
+  ganze Zeit immer wieder gezeichnet wird. D.h., ihr könnt in der REPL **weiter
+  arbeiten**, während **gleichzeitig** euer Programm ausgeführt wird.
+
+* Anstatt den Kreis in 100 Schritte zu teilen, nutze einen globalen Namen
+  `resolution`, um die Anzahl der Teile darüber steuern zu können. Wie muss dann
+  die Formel für die Kreisberechnung aussehen.
+
+* Anstatt die `resolution` als globalen Namen zu führen, nutze einen Parameter
+  für `draw-loop` und `draw`, um die Anzahl der Teile als Argument beim Aufruf
+  von `draw-loop` angeben zu können: `(draw-loop 5000)`
