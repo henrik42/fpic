@@ -3129,7 +3129,7 @@ fügen ihn in unsere Seite ein. Das `doto` schreiben wir nun in eine Funktion
 ```
 
 Nun kannst du die Funktion `draw` aufrufen. Jedes Mal wenn du die Funktion
-ausrufst, wird der Kreis zu einem bestimmten Anteil gezeichnet.
+aufrufst, wird der Kreis zu einem bestimmten Anteil gezeichnet.
 
 ```
 (draw) ;=> #object[CanvasRenderingContext2D [object CanvasRenderingContext2D]]
@@ -3138,7 +3138,7 @@ ausrufst, wird der Kreis zu einem bestimmten Anteil gezeichnet.
 ```
 
 Nun möchten wir aber, dass die Funktion `draw` **automatisch immer wieder
-ausgeführt wird**. 
+ausgeführt wird**. Schließlich möchten wir ja eine Animation erstellen.
 
 > An dieser Stelle denken wir sofort an Schleifen. Leider funktioniert das in
 > diesem Fall nicht. Wir kommen noch dazu, warum das so ist.
@@ -3163,6 +3163,9 @@ Nun kannst du `(draw-loop)` aufrufen.
 
 **Et voilà -- du hast eine Animation!**
 
+> Oops! Das hört ja gar nicht wieder auf 😬  
+> Überlegt euch, wie ihr die Animation stoppen könnt.
+
 **Übungen**:
 
 * Besprich mit deinem Tischnachbarn, wie der *Trick* mit dem
@@ -3178,3 +3181,9 @@ Nun kannst du `(draw-loop)` aufrufen.
 * Anstatt die `resolution` als globalen Namen zu führen, nutze einen Parameter
   für `draw-loop` und `draw`, um die Anzahl der Teile als Argument beim Aufruf
   von `draw-loop` angeben zu können: `(draw-loop 5000)`
+
+* Ändere das Programm so, dass der Kreis wechselnd größer und kleiner wird. Er
+  könnte z.B. mit einem Radius von 0 beginnen und dann schrittweise bis zu einem
+  Radius von 90 zunehmen und dann wieder kleiner werden, bis der Radius wieder 0
+  ist. Dann beginnt diese Animation von vorne. Kannst du die Radius-Animation
+  und die Kreis-Anteil-Animation in einer Animation kombinieren?
