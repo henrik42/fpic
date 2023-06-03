@@ -2632,10 +2632,12 @@ meinen wir **wirklich verändern**: d.h., es wird nicht wie bei Clojure-Maps
 immer eine **neue Map** erzeugt, sondern es wird wirklich eine Map
 **manipuliert**.
 
-> Das nennen wir einen **Seiteneffekt**. Diese Art der Manipulation ist typisch
-> für imperative und viele Objekt-orientierten Sprachen. Der Browser
+> Das nennen wir einen **Seiteneffekt**. Diese Art der **Manipulation** ist
+> typisch für imperative und viele Objekt-orientierten Sprachen. Der Browser
 > funktioniert auch auf diese Weise. Und wir sprechen in diesem Fall nicht von
-> Maps sondern von (änderbaren) **Objekten**.
+> Maps sondern von (änderbaren) **Objekten**. Objekte können sich auch
+> gegenseitig **enthalten** und dadurch entstehen **Objekt-Bäume** oder auch
+> **Objekt-Geflechte** (bzw. **Objekt-Graphen**).
 
 ```
 js/document ;=> #object[HTMLDocument [object HTMLDocument]]
@@ -2785,20 +2787,20 @@ Du kannst aber auch direkt auf die Funktion als Property-Wert zugreifen
 
 Die `.`-Form sieht also so aus: `(. <object> <method-name> <args*>)`
 
-Um die Form auszuwerten, greift die REPL auf die Property `<method-name>` des
-Objects `<object>` zu und erwartet, dass dieser Wert eine **Funktion** ist.
+Um die `.`-Form auszuwerten, greift die REPL auf die Property `<method-name>`
+des Objects `<object>` zu und erwartet, dass dieser Wert eine **Funktion** ist.
 Diese Funktion wird nun mit den Argumenten `<args*>` aufgerufen. Der
 Rückgabewert dieses Funktionsaufrufs ist der Wert, zu dem die `.`-Form
 auswertet.
 
 Die `..`-Form sieht so aus: `(.. <object> <method-name-args-lists*>)`
 
-Um die Form auszuwerten, führt die REPL zuerst die erste Method mit den
-angegebenen Argumenten auf dem Object `<object>` aus (so wie es für die `.`-Form
-beschrieben wurde). Der Wert dieser Auswertung muss wiederum ein Objekt sein.
-Und auf diesem Objekt wird nun die zweite Methode mit den angegebenen Argumenten
-aufgerufen usw. Die `..`-Form wertet zu jenem Wert aus, der als Ergebnis der
-letzten Methodenanwendung geliefert wurde.
+Um die `..`-Form auszuwerten, führt die REPL zuerst die **erste Methode** mit
+den angegebenen Argumenten auf dem Object `<object>` aus (so wie es für die
+`.`-Form beschrieben wurde). Der Wert dieser Auswertung muss wiederum **ein
+Objekt** sein. Und auf diesem Objekt wird nun die **zweite Methode** mit den
+angegebenen Argumenten aufgerufen usw. Die `..`-Form wertet zu jenem Wert aus,
+der als Ergebnis der **letzten Methodenanwendung** geliefert wurde.
 
 **Beispiel**: wir rufen auf dem Objekt `js/document` die Funktion/Methode
 `getElementById` mit dem Argument `"app"` auf und erhalten ein Objekt (ein
@@ -2820,8 +2822,8 @@ erhalten wir ein
 
 ### Die Seite manipulieren
 
-Du kannst aber nicht nur *lesend* auf die Eigenschaften der Objekte im Browser
-zugreifen, sondern auch *schreibend* bzw. *ändernd*.
+Du kannst aber nicht nur **lesend** auf die Eigenschaften der Objekte im Browser
+zugreifen, sondern auch **schreibend** bzw. **ändernd**.
 
 Dazu kannst du zum einen ändernde Methoden der Objekte verwenden und zum anderen
 die ClojureScript-Funktion `set!`.
@@ -2850,11 +2852,12 @@ Und da `first` intern `seq` aufruft, können wir uns wie folgt via `def` das
 
 > Bitte bedenke, dass die folgenden Beispiele den Namen `bq` verwenden. Und das
 > funktioniert nur, wenn du **zuvor** den Namen via `(def bq ,,,)` `def`iniert
-> hast. Falls du also F5/Reload in deinem Browser drückst und dann **ohne** `bq`
-> erneut zu `def`inieren den Namen `bq` verwendest, wirst du die Fehlermeldung
-> `Could not resolve symbol: bq` erhalten. Unsere `tryclojure`-Sitzung ist also
-> **zustandsbehaftet**: wir müssen **erst** den Namen definieren, bevor wir ihn
-> **anschließend** verwenden können. Probiere es doch einfach mal aus!
+> hast. Falls du also F5/Reload in deinem Browser drückst und dann, **ohne**
+> `bq` erneut zu `def`inieren, den Namen `bq` verwendest, wirst du die
+> Fehlermeldung `Could not resolve symbol: bq` erhalten. Unsere
+> `tryclojure`-Sitzung ist also **zustandsbehaftet**: wir müssen **erst** den
+> Namen definieren, bevor wir ihn **anschließend** verwenden können. Probiere es
+> doch einfach mal aus!
 
 ```
 (def bq (first (js/document.getElementsByTagName "blockquote"))) ;=> #'user/bq
@@ -2862,11 +2865,11 @@ bq ;=> #object[HTMLQuoteElement [object HTMLQuoteElement]]
 ```
 
 Nun möchten wir die Hintergrundfarbe ändern. Die Hintergrundfarbe
-(`background-color`) eines Elements kann über das [Attribut
+(`background-color`) eines Elements kann über die [Property
 `style`](https://wiki.selfhtml.org/wiki/HTML/Attribute/style) gesteuert werden.
-Dieses Attribut können wir über die Methode
+Diese Property können wir über die **Methode**
 [`setAttribute`](https://wiki.selfhtml.org/wiki/JavaScript/DOM/Element/setAttribute)
-setzen. Mit Hilfe von `getAttribute` können wir auf den aktuellen Attribut-Wert
+setzen. Mit Hilfe von `getAttribute` können wir auf den aktuellen Property-Wert
 zugreifen (wir erhalten als Wert einen String!).
 
 ```
@@ -2874,8 +2877,8 @@ zugreifen (wir erhalten als Wert einen String!).
 (.getAttribute bq "style") ;=> "background-color: red"
 ```
 
-Anstatt der Methode `getAttribute` kannst du auch `.` verwenden, um auf das
-`style`-Attribute zuzugreifen. In diesem Fall erhalten wir jedoch ein
+Anstatt der Methode `getAttribute` kannst du auch `.` verwenden, um auf die
+`style`-Property zuzugreifen. In diesem Fall erhalten wir jedoch ein
 `CSS2Properties`-**Objekt** und nicht einen String! 
 
 ```
@@ -2888,8 +2891,8 @@ Mit der ClojureScript-Funktion `set!` kannst du diese Eigenschaft setzen:
 > Hinweis: die Form `(.. bq -style -background-color)` wird also auf **zwei ganz
 > unterschiedliche Weisen verwendet**. Zum einen wertet die Form zu dem
 > Property-**Wert** des Objekts aus (z.B. dem String `"red"`). Wenn die Form
-> allerdings als Argument zu `set!` verwendet wird, steuert sie, welche
-> Object-**Property** gesetzt werden soll. Das entspricht den [R-Werten und
+> allerdings als **Argument** zu `set!` verwendet wird, steuert sie, welche
+> Object-**Property** **gesetzt werden soll**. Das entspricht den [R-Werten und
 > L-Werten von
 > Variablen](https://de.wikipedia.org/wiki/Variable_(Programmierung)#L-Wert_und_R-Wert_von_Variablen),
 > die du vielleicht schon aus einer imperativen Programmiersprache kennst.
@@ -2915,11 +2918,11 @@ Dazu nutzen wir ein
 [`Canvas`](https://wiki.selfhtml.org/wiki/JavaScript/Canvas)-Element/Objekt, das
 wir via
 [`js/document.createElement`](https://wiki.selfhtml.org/wiki/JavaScript/DOM/Document/createElement)
-erzeugen und an den Namen `canvas` binden, damit wir anschließend auf das Objekt
-zugreifen können. Wir legen fest, wie
+erzeugen und an den Namen `canvas` binden, damit wir anschließend über diesen
+Namen auf das Objekt zugreifen können. Wir legen fest, wie
 [breit](https://wiki.selfhtml.org/wiki/HTML/Attribute/width) und wie
 [hoch](https://wiki.selfhtml.org/wiki/HTML/Attribute/height) der Zeichenbereich
-sein soll und fügen das Objekt dem
+sein soll und fügen das `Canvas`-Objekt dem
 [`body`](https://wiki.selfhtml.org/wiki/HTML/Tutorials/Grundger%C3%BCst#Der_body:_sichtbarer_und_strukturierter_Aufbau)
 der Seite zu.
 
@@ -2936,7 +2939,7 @@ der Seite zu.
 
 Um aber wirklich etwas auf dem Canvas malen zu können, benötigen wir den
 [`CanvasRenderingContext2D`](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D)
-zu dem Canvas. Wir binden den Kontext an `ctx` und setzen den
+zu dem Canvas. Wir binden den Kontext an den Namen `ctx` und setzen den
 [Füllstil](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/fillStyle),
 [starten](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/beginPath)
 einen
@@ -2966,15 +2969,15 @@ diesen.
 > Objekte** (und damit den Seiteninhalt). Als Rückgabewert erhalten wir häufig
 > `nil`. Wir erhalten also weder ein neues Objekt noch das jenige Objekt, auf
 > dem wir die Methode aufgerufen haben.  
-> Diese unterschiedliche Weise mit **Werten und (änderbaren) Objekten**
-> umzugehen ist charakteristisch für den Unterschied zwischen
-> objekt-orientierten Programmiersprachen (OO-Sprachen wie z.B. Java und C++)
-> und funktionalen Programmiersprachen (wie z.B. Clojure).  
+> Diese unterschiedliche Weise, mit **Werten und (änderbaren) Objekten**
+> umzugehen, ist charakteristisch für den Unterschied zwischen
+> **objekt-orientierten Programmiersprachen** (OO-Sprachen wie z.B. Java und
+> C++) und **funktionalen Programmiersprachen** (wie z.B. Clojure).  
 > Du solltest aber wissen, dass es in OO-Sprachen auch möglich ist, funktional
 > zu programmieren und in Clojure ist es auch möglich, objekt-orientiert zu
 > programmieren. Die Sprachen haben nur jeweils einen anderen Fokus/Schwerpunkt.
 
-Oben link auf der Seite, müsste nun ein grüner Kreis erschienen sein. OK, das
+Oben links auf der Seite, müsste nun ein grüner Kreis erschienen sein. OK, das
 sieht schon ganz gut aus.
 
 Wir können den Code aber noch etwas kompakter schreiben. Dazu nutzen wir das
@@ -2982,15 +2985,21 @@ Wir können den Code aber noch etwas kompakter schreiben. Dazu nutzen wir das
 
 
 `(doto <form-x> <forms*>)` erspart uns, immer wieder den Namen `canvas`
-schreiben zu müssen. Als erstes wird `<form-x>` ausgewertet. Anschließen werden
-die folgenden `<forms*>` der Reihe nach ausgewertet, jedoch wird jeweils an die
-**zweite** Stelle der Form der Wert (das **Objekt**!) von `<form-x>` gesetzt.
-Ganz am Ende liefert `doto` den **geänderten** Wert/Objekt von `<form-x>`.
+schreiben zu müssen.
+
+Die `doto`-Form wird wie folgt ausgewertet: als erstes wird `<form-x>`
+ausgewertet. Anschließen werden die folgenden `<forms*>` der Reihe nach
+ausgewertet, jedoch wird jeweils an die **zweite** Stelle der Form der Wert (das
+**Objekt**!) von `<form-x>` gesetzt. Ganz am Ende liefert `doto` den
+(möglicherweise **geänderten**) Wert/Objekt von `<form-x>`.
+
+> Zu was wertet `(doto "foo" (first) (last))` aus? Wieso? Zu was wertet `(last
+> (first "foo"))` aus? Wieso?
 
 Wir können damit also an Stelle von `<form-x>` das Canvas-Objekt via
-`(.createElement js/document "canvas")` erzeugen und anschließend via
+`(js/document.createElement "canvas")` erzeugen und anschließend via
 `setAttribute` die Eigenschaften des Canvas-Objekts ändern und erhalten
-schließlich das Canvas-Objekt.
+schließlich das geänderte Canvas-Objekt als Wert der `doto`-Form.
 
 **Übung**: besprich mit deiner Tischnachbarin, wieso wir in diesem Fall die
 Funktion/Methode `setAttribute` anstatt `set!` nutzen müssen. Lest euch nochmal
@@ -3000,7 +3009,7 @@ Das sieht kompakter aus.
 
 ```
 (def canvas 
-  (doto (.createElement js/document "canvas")
+  (doto (js/document.createElement "canvas")
     (.setAttribute 'width 800)
     (.setAttribute 'height 300)))
 (.prepend js/document.body canvas)
@@ -3011,7 +3020,7 @@ Fall den Namen `x` eben mehrmals wiederholen.
 
 ```
 (def canvas 
-  (let [x (.createElement js/document "canvas")]
+  (let [x (js/document.createElement "canvas")]
     (.setAttribute x 'width 800)
     (.setAttribute x 'height 300)
     x))
@@ -3029,7 +3038,10 @@ anstatt `set!` nutzen müssen. Gibt es eine Alternative?
 > zum Thema [`aset`](https://clojuredocs.org/clojure.core/aset) steht. Wir
 > sollten es nicht nutzen, da die Funktion für den Zugriff auf **Arrays**
 > gedacht ist und nicht, um auf **Objekt-Eigenschaften** zuzugreifen. Aber es
-> ist an dieser Stelle eben sehr praktisch.
+> ist an dieser Stelle eben sehr praktisch `¯\_(ツ)_/¯`.
+
+In diesem Fall nutzen wir die `doto`-Form nur, um uns Schreibarbeit zu ersparen.
+Wir brauchen noch nicht einmal einen Namen zu `def`inieren (vgl. oben).
 
 ```
 (doto (.getContext canvas "2d")
@@ -3083,6 +3095,10 @@ Division](https://de.wikipedia.org/wiki/Division_mit_Rest#Modulo) liefert.
 (mod (.getTime (js/Date.)) 100) ;=> 58
 ```
 
+> Zu was wertet `(mod 99 100)` aus? Zu was wertet `(mod 100 100)` aus? Welche
+> möglichen Werte erhalten wir also **ganz genau** durch `(mod (.getTime
+> (js/Date.)) 100)`?
+
 Damit haben wir einen Ausdruck, den wir nutzen können, um 0..100 Prozent vom
 Kreis zu zeichnen. Den ganzen Kreis zeichnen wir mit `(* 2.0 js/Math.PI)` (vgl.
 [Kreisumfang](https://de.wikipedia.org/wiki/Kreis#Umfang)). Nun teilen wir
@@ -3098,7 +3114,7 @@ fügen ihn in unsere Seite ein. Das `doto` schreiben wir nun in eine Funktion
 
 ```
 (def canvas 
-  (doto (.createElement js/document "canvas")
+  (doto (js/document.createElement "canvas")
     (.setAttribute 'width 800)
     (.setAttribute 'height 300)))
 (.prepend js/document.body canvas)
