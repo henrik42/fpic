@@ -2604,25 +2604,29 @@ kannst.
 > [ClojureScript](https://github.com/clojure/clojurescript)-[Compiler](https://de.wikipedia.org/wiki/Compiler)
 > sondern der
 > ClojureScript-[Interpreter](https://de.wikipedia.org/wiki/Interpreter)
-> [SCI](https://github.com/babashka/sci) verwendet. 
+> [SCI](https://github.com/babashka/sci) verwendet.   
 
-Du kannst aber nicht nur Formen auswerten, sondern du kannst durch ClojureScript
-**auf den Browser zugreifen**. D.h., du kannst **lesend** auf die Daten im
-Browser zugreifen, aber du kannst auch aktiv Dinge im Browser **tun**. Und genau
-das wollen wir jetzt machen.
+Du kannst aber nicht nur **Formen auswerten** (was ja eigentlich bedeutet,
+Funktionen auf Werten aufzurufen und sich dann über das richtige Ergebnis zu
+freuen), sondern du kannst durch ClojureScript **auf den Browser zugreifen**.
+D.h., du kannst **lesend** auf die Daten im Browser zugreifen, aber du kannst
+auch aktiv Dinge im Browser **tun** --- also Dinge im Browser **ändern**. Und
+genau das wollen wir jetzt machen.
 
-Mit `js/document` greifst du auf die aktuelle Seite zu: [das
-Dokument](https://wiki.selfhtml.org/wiki/JavaScript/DOM#Allgemeines). 
+Mit der Form `js/document` greifst du auf die aktuelle Seite zu: **[das
+Dokument](https://wiki.selfhtml.org/wiki/JavaScript/DOM#Allgemeines)**. 
 
 > Mit `js/` greifst du auf den [Namespace
 > `js`](https://cljs.github.io/api/syntax/js-namespace) zu. Über diesen
 > Namensraum kannst du auf alle globalen
 > JavaScript-[Objekte](https://wiki.selfhtml.org/wiki/JavaScript/Tutorials/OOP/Objekte_und_ihre_Eigenschaften)
 > zugreifen.  
-> Die Form `js/document` wertet zu dem Wert aus, der an den Namen (das Symbol)
-> `document` im Namespace `js` gebunden ist.
+> Die Form `js/document` wertet zu dem Wert aus, der an den **Namen** (das
+> Symbol) `document` im **Namespace** `js` gebunden ist. Das funktioniert also
+> genau so, wie bisher auch die Auswertung von Clojure-Symbolen (wie z.B. `inc`)
+> funktioniert hat.
 
-Dieses **Dokument** ist aus Sicht von ClojureScript eine verschachtelte Map.
+Dieses **Dokument** ist aus Sicht von ClojureScript eine **verschachtelte Map**.
 Allerdings handelt es sich um eine Map, die du **verändern** kannst. Und diesmal
 meinen wir **wirklich verändern**: d.h., es wird nicht wie bei Clojure-Maps
 immer eine **neue Map** erzeugt, sondern es wird wirklich eine Map
@@ -2666,12 +2670,14 @@ zuzugreifen, nutzen wir die Funktion `.` (Punkt). So greifst du auf die Property
 > Werkzeuge](https://de.wikipedia.org/wiki/Entwicklerwerkzeuge_in_Webbrowsern)
 > öffnen. Dort findest du auch die [Web
 > Console](https://firefox-source-docs.mozilla.org/devtools-user/web_console/).
-> Auf diese Konsole kannst du mit `(js/console.log js/document)` das Objekt
-> ausgeben. Anschließend kannst du dich durch das Objekt *klicken* und so sehen,
-> welche Eigenschaften und Werte das Objekt hat. Probiere es einfach mal aus.
+> Auf diese Konsole kannst du mit `(js/console.log js/document)` das **Objekt
+> ausgeben**. Anschließend kannst du dich **durch das Objekt "klicken"** und so
+> sehen, welche Eigenschaften und Werte das Objekt hat. Probiere es einfach mal
+> aus.
 
 Es gibt aber auch noch *syntaktischen Zucker*: du kannst den Punkt und den
-Property-Namen gemeinsam voranstellen:
+Property-Namen (hier also `.-title`) dem Objekt (hier `js/document`) gemeinsam
+voranstellen:
 
 ```
 (.-title js/document) ;=> "Try Clojure"
