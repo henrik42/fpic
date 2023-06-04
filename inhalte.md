@@ -749,6 +749,64 @@ Für den Zugriff auf Vektoren, Maps und Sets kannst du die Funktion `get` nutzen
   außen** der Lösung zu nähern.
 
 -------------------------------------------------------------------------------
+
+## Collections erzeugen und ändern
+
+Wir können Collections nicht nur als **Literal** hinschreiben, sondern sie auch
+**programmatisch konstruieren**. 
+
+> In diesen einfachen Beispielen gewinnen wir dadurch noch nicht so viel, weil
+> wir die Element hier noch explizit als Literal hinschreiben. Später werden wir
+> aber Collections mit Elementen füllen, die wir vorab nicht kennen und somit
+> auch nicht vorab hinschreiben können.
+ 
+```
+(vector "a" 42 "TOLL!" 42)       ;=> ["a" 42 "TOLL!" 42]
+(set (vector "a" 42 "TOLL!" 42)) ;=> #{"a" 42 "TOLL!"}
+(hash-map "a" 42 "TOLL!" 42)     ;=> {"TOLL!" 42, "a" 42}
+```
+
+Wir können einer **bestehenden Collection** mit Hilfe von `conj` (gesprochen
+*konsch*; von engl. *conjoin*) auch Elemente **hinzufügen**:
+
+> Beachte, dass `conj` einem Vektor die Elemente **am Ende** zufügt!
+
+```
+(conj ["a" 42 "TOLL!" 42] "foo" false)                 ;=> ["a" 42 "TOLL!" 42 "foo" false]
+(conj #{"a" 42 "TOLL!"} "foo" false)                   ;=> #{"a" 42 "TOLL!" "foo" false}
+(conj {"TOLL!" 42, "a" 42} ["foo" false] ["bar" true]) ;=> {"TOLL!" 42, "a" 42, "foo" false, "bar" true}
+```
+
+> In Clojure sind alle Datentypen **unveränderlich** (engl. *immutable*). D.h.,
+> wenn ich hier schreibe, dass einer Collection Elemente **hinzugefügt** werden,
+> dann meine ich damit, dass eine **neue Collection erzeugt wird**, die zu
+> Beginn die gleichen Werte enthält wie die Collection, der die Elemente
+> hinzugefügt werden sollen. Und dieser neuen Collection werden die Elemente
+> dann hinzugefügt. Die ursprüngliche Collection kann gar nicht geändert werden,
+> weil Clojure das eben **nicht zulässt**.
+
+Mit `assoc` können wir Elemente einer Collection **ändern**:
+
+> Vektoren sind auch **assoziativ** wie eine Map! Dabei ist der **Schlüssel 2**
+> die **dritte Stelle** im Vektor.
+
+```
+(assoc ["a" 42 "TOLL!" 42] 2 "foobar" 0 true) ;=> [true 42 "foobar" 42]
+(assoc {"TOLL!" 42, "a" 42} "a" 38 "b" 39)    ;=> {"TOLL!" 42, "a" 38, "b" 39}
+```
+
+Wir können auch Element aus einer Collection **entfernen**:
+
+> Es ist nicht einfach, Elemente an einer beliebigen Stelle eines Vektors zu
+> entfernen. Wir kommen später nochmal darauf zu sprechen.
+
+```
+(pop ["a" 42 "TOLL!" 42 "foo" false])                            ;=> ["a" 42 "TOLL!" 42 "foo"]
+(disj #{"a" 42 "TOLL!" "foo" false} "foo" 42)                    ;=> #{"a" "TOLL!" false}
+(dissoc {"TOLL!" 42, "a" 42, "foo" false, "bar" true} "foo" "a") ;=> {"TOLL!" 42, "bar" true}
+```
+
+-------------------------------------------------------------------------------
 ## `nth`
 
 Die Funktion `nth` liefert dir das __n__-te Element eines zusammengesetzten
@@ -888,14 +946,6 @@ kannst.
   Collection `<to-coll>` hinzu und liefert das Resultat als Ergebnis. Das
   Resultat ist vom **gleichen Datentyp** wie `<to-coll>`.
 
-> In Clojure sind alle Datentypen **unveränderlich** (engl. *immutable*). D.h.,
-> wenn ich hier schreibe, dass einer Collection Elemente **hinzugefügt** werden,
-> dann meine ich damit, dass eine **neue Collection erzeugt wird**, die zu
-> Beginn die gleichen Werte enthält wie `<to-coll>` und dass dann dieser **neuen
-> Collection** die Elemente von `<from-coll>` hinzugefügt werden. Weder
-> `<from-coll>` noch `<to-coll>` werden geändert --- sie können gar nicht
-> geändert werden, weil Clojure das eben **nicht zulässt**.
-
 * `(rest <coll>)` : liefert die Elemente aus `<coll>`, die **nach** dem ersten
   Element (also `(first <coll>)`) in `<coll>` vorhanden sind, als **Liste**.
   Falls es ein solches Element nicht gibt, wird die leere Liste `()` geliefert.
@@ -996,6 +1046,8 @@ Könnt ihr erklären, wieso die Auswertung jeweils genau so erfolgt?
 * Zu was wertet `(list inc 2)` aus?
 * Zu was wertet `(list inc 'inc 2)` aus?
 * Zu was wertet `(list a 2)` aus?
+* Zu was wertet `(conj '(1 2 3) 4 5)` aus? Wie unterscheidet sich das zu `(conj
+  [1 2 3] 4 5)`? Macht das Sinn? 
 
 -------------------------------------------------------------------------------
 ## Mathematische Operatoren
