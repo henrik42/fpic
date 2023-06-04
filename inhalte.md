@@ -244,21 +244,22 @@ und am Ende eingegeben.
 -------------------------------------------------------------------------------
 ## Formen und Werte
 
-Die Form `"hallo"` ist die __äußere Darstellung__ der Zeichenfolge `hallo`.
-`hallo` ist also der **Wert**, den wir über die Form `"hallo"` __eingeben__
+Die Form `"hallo"` ist die __äußere Darstellung__ der Zeichenfolge **hallo**.
+**hallo** ist also der **Wert**, den wir über die Form `"hallo"` __eingeben__
 können. 
 
-Wenn die REPL den Wert `hallo` __ausgibt__, nutzt sie __dieselbe Form__
+Wenn die REPL den Wert **hallo** __ausgibt__, nutzt sie __dieselbe Form__
 `"hallo"` dazu. 
 
 Wir müssen also unterscheiden zwischen den **Werten** (Daten), die in unserem
-Programm vorhanden sind und der äußeren **Form**, mit der wir diese Werte
-eingeben können und mit der diese Werte auch wieder ausgegeben werden.
+Programm vorhanden sind und der äußeren **Form** (Repräsentation, Darstellung),
+mit der wir diese Werte eingeben können und mit der diese Werte auch wieder
+ausgegeben werden.
 
 **Übungen**:
 
 * Welche Formen (unabhängig von Clojure) kennst du, mit denen du die Zahl (also
-  den Wert) 12 ausdrücken kannst? 
+  den Wert) **12** ausdrücken kannst? 
 
 > Denk nochmal über die REPL nach. Die REPL liest deine Eingabe ein (*read*).
 Deine Eingabe muss aus **Formen** bestehen. Nach dem Einlesen **wertet** die
@@ -287,22 +288,22 @@ Datentyp ausdrücken können (**Wertebereich**). Clojure erkennt beim Einlesen
 Form**, welches der **zugehörige Datentyp** des mit der Form beschriebenen
 Wertes ist.
 
-* die Form `12` beschreibt der Ganzzahl-Wert *12* (d.h. die Form `12` wertet zu
-  dem Ganzzahl-Wert *12* aus)
-* die Form `"TOLL!"` beschreibt den String-Wert *TOLL!*.
-* die Form `"12"` beschreibt den String-Wert *12*.
+* die Form `12` beschreibt der Ganzzahl-Wert **12** (d.h. die Form `12` wertet
+  zu dem Ganzzahl-Wert **12** aus)
+* die Form `"TOLL!"` beschreibt den String-Wert **TOLL!**.
+* die Form `"12"` beschreibt den String-Wert **12**.
 
 -------------------------------------------------------------------------------
 ## Boolean / Wahrheitswerte
 
 Der Datentyp [**Boolean**](https://de.wikipedia.org/wiki/Boolean) (siehe auch
   [Wahrheitswerte](https://de.wikipedia.org/wiki/Wahrheitswert)) umfasst nur
-  zwei mögliche Werte: *wahr* (`true`) und *falsch* (`false`).
+  zwei mögliche Werte: **wahr** (`true`) und **falsch** (`false`).
 
 **Übungen**:
 
-* Gibt den Boolean-**Wert** *wahr* ein? Welche **Form** musst du nutzen?
-* Welche Arten von Daten kennst du aus deinem Alltag? In welcher Form werden
+* Gibt den Boolean-**Wert** **wahr** ein? Welche **Form** musst du nutzen?
+* Welche Arten von Daten kennst du aus deinem Alltag? In welcher **Form** werden
   diese dargestellt? Tipp: schau mal in die Kontakte-App in deinem Smartphone -
   welche Dinge kannst du dort eingeben?
 
@@ -314,12 +315,12 @@ zugehörigen **Werte** und **Formen** kennen gelernt. Clojure kennt aber auch
 [*zusammengesetzte*](https://de.wikipedia.org/wiki/Datentyp#Zusammengesetzte_Datentypen)
 (*strukturierte*, *komplexe*) Datentypen.
 
-Ein zusammengesetzter Datentyp besitzt Werte, die als **Bestandteil** andere
-Werte enthalten. 
+Ein zusammengesetzter Datentyp besitzt **Werte**, die als **Bestandteil** andere
+**Werte** enthalten. 
 
-> Zusammengesetzte Datentypen kannst du also nutzen, um z.B. Informationen zu
-> einer Person auszudrücken (das Geburtsdatum der Person, den Namen der Person,
-> den Wohnort der Person).
+> Zusammengesetzte Datentypen kannst du also nutzen, um z.B. Eigenschaften einer
+> Person auszudrücken (das Geburtsdatum der Person, den Namen der Person, den
+> Wohnort der Person).
 
 Clojure kennt u.a. folgende zusammengesetzte Datentypen:
 
@@ -347,16 +348,16 @@ Clojure kennt u.a. folgende zusammengesetzte Datentypen:
 
 * [Menge](https://de.wikipedia.org/wiki/Menge_(Datenstruktur)) (engl. *set*):
   eine (ggf. leere) [ungeordnete Sammlung von
-  Werten](https://clojure.org/reference/data_structures#Sets), von denen jeweils
-  maximal ein Exemplar enthalten ist (kein Wert darf mehrfach in der Menge
-  enthalten sein).
+  Werten](https://clojure.org/reference/data_structures#Sets), von denen
+  **jeweils maximal ein Exemplar enthalten ist** (kein Wert darf mehrfach in der
+  Menge enthalten sein).
 
 * [Zuordnungstabelle](https://de.wikipedia.org/wiki/Zuordnungstabelle) (engl.
   *map*) : eine (ggf. leere) [Sammlung von
   Schlüssel-Wert-Paaren](https://clojure.org/reference/data_structures#Maps). Du
-  kannst dir eine Map wie eine zwei-spaltige Tabelle vorstellen: in der linken
-  Spalte steht jeweils der Schlüssel und in der rechten Spalte steht dann der
-  (dem Schlüssel zugeordnete) Wert.
+  kannst dir eine Map wie eine **zwei-spaltige Tabelle** vorstellen: in der
+  **linken Spalte** steht jeweils der **Schlüssel** und in der **rechten
+  Spalte** steht dann der (dem Schlüssel zugeordnete) **Wert**.
 
 > Die Bezeichnung *Vektor* kennst du vielleicht aus dem Mathematikunterricht. In
 > der Informatik wird auch von einem
@@ -423,6 +424,11 @@ Datenstrukturen zu erkennen ist.
 * Wie sieht der Vektor aus (also die Form), mit den Elementen 'dein Vorname',
   'dein Nachname', 'dein Geburtsdatum', 'deine Körpergröße in cm' und 'deine
   Schuhgröße'? Welche Datentypen nutzt du? Wieso?
+
+> Du kannst dir gerne irgendwelche Fantasie-Namen und Daten ausdenken. Du
+> brauchst nicht dein echtes Geburtsdatum zu verwenden. Das fällt eindeutig
+> unter den Datenschutz.
+
 * Überlege dir zusammen mit deiner Tischnachbarin, welche verschiedenen
   Möglichkeiten ihr habt, ein Geburtsdatum mit Hilfe von Clojure-Datentypen
   darzustellen.
@@ -475,7 +481,7 @@ Außerdem können die Schlüssel einer Map von verschiedenen Datentypen stammen.
 
 > Wichtig: wir sagen, dass es sich um Schlüssel-Wert-Paare handelt, aber die
 > Paare werden nicht gesondert *eingeklammert*. Du kannst die Paare zwar durch
-> Kommata trennen, so dass sie sich bei Lesen besser von einander abheben, aber
+> Kommata trennen, so dass sie sich beim Lesen besser von einander abheben, aber
 > das ist kein Muss. Man hätte die Paare auch explizit durch z.B. spitze
 > Klammern (`<` ... `>`) einklammern können, aber das wird in Clojure nicht
 > gemacht.
@@ -497,7 +503,7 @@ Beispiele für Maps:
 * Wie könntest du mit Hilfe einer Map ausdrücken, dass der Merkur der nächste
   Planet zur Sonne ist, die Venus der zweitnächste usw.? Überlege dir **zwei**
   mögliche Darstellungen als Map. Tipp: zeichne dir eine Zuordnungstabelle auf
-  ein Stück Papier. Kommst du drauf?
+  ein Stück Papier.
 
 -------------------------------------------------------------------------------
 ## Funktionen
