@@ -3,10 +3,14 @@
 Dies ist eine lose, ungeordnete Ansammlung von Informationen, die für die
 Programmier-AG hilfreich sein können.
 
+* https://4clojure.oxal.org/ : Übungen und Lösungen
+
 * [Github-Access-Token für das geclonte Repo einrichten](https://levelup.gitconnected.com/fix-password-authentication-github-3395e579ce74)
 
 * https://practical.li/clojure/
 
+* https://en.wikipedia.org/wiki/Referential_transparency
+ 
 * https://fachportal.lernnetz.de/sh/faecher/informatik.html
 
 * https://clojure-arcade.com/ : eine Web-Anwendung, die sich über eine
@@ -50,3 +54,81 @@ Programmier-AG hilfreich sein können.
 * https://cljs.info/cheatsheet/
 
 * https://www.learn-clojurescript.com/
+
+## Notizen zu SCI
+
+* https://borkdude.github.io/sci.web/
+
+* https://babashka.org/scittle/
+
+* https://codepen.io/Prestance/pen/PoOdZQw
+
+* https://babashka.org/scittle/bookmarklet.html: eine Seite, mit der du dir
+  Browser-Bookmarks erstellen kannst, die "etwas tun". Und das, was sie tun
+  sollen, kannst du in eben dieser Seite in ClojureScript programmieren.
+
+* Hier ein Gist: https://gist.github.com/henrik42/8ac2dcc80451e69d42859e21fbef38f1
+* Und hier die Einbindung in Bookmarklet:
+  https://babashka.org/scittle/bookmarklet.html?gist=henrik42/8ac2dcc80451e69d42859e21fbef38f1
+
+* https://www.educative.io/answers/how-to-dynamically-load-a-js-file-in-javascript:
+  wie lädt man JavaScript via JavaScript?
+  
+```
+(eval '(+ 1 2 3)) ;=> 6
+
+(defn speak [s]
+  (.speak js/speechSynthesis 
+    (doto (js/SpeechSynthesisUtterance. s)
+      (aset 'pitch 5))))
+
+(speak "Hallo. Guten Tag. Closchur ist eine tolle Programmiersprache.")
+
+(let [name (js/prompt "Wie ist dein Name?")]
+  (speak (str "Hallo " name "wie geht es dir?"))
+  (js/alert (str "Hello " name)))
+
+;; https://github.com/babashka/scittle/blob/main/src/scittle/core.cljs
+
+(js/document.body.append
+  (doto (js/document.createElement "script")
+    (aset 'src "https://babashka.org/scittle/js/scittle.js")
+    (aset 'async false)
+    (aset 'type "text/javascript")))
+
+(js/scittle.core.eval_string "(+ 1 2 3)")
+
+(js/scittle.core.eval_script_tags)
+
+(js/document.body.append
+  (doto (js/document.createElement "script")
+    (aset 'src "https://gist.githubusercontent.com/henrik42/8ac2dcc80451e69d42859e21fbef38f1/raw/")
+    (aset 'async false)
+    (aset 'type "application/x-scittle")))
+```
+
+
+```
+(js/document.body.append
+  (doto (js/document.createElement "script")
+    (aset 'src "https://babashka.org/scittle/js/scittle.js")
+    (aset 'async false)
+    (aset 'type "text/javascript")))
+
+(def script 
+  (let [s (doto (js/document.createElement "script")
+            (aset 'async false)
+            (aset 'type "application/x-scittle"))]
+    (js/document.body.append s)
+    s))
+
+(defn load-url [s]
+  (aset script 'src s)
+  (js/scittle.core.eval_script_tags))
+
+(load-url "https://gist.githubusercontent.com/henrik42/8ac2dcc80451e69d42859e21fbef38f1/raw/3951e9c8e010b97abc7078a32b26caed48628e6c/foo.clj")
+
+(load-url "https://gist.githubusercontent.com/henrik42/8ac2dcc80451e69d42859e21fbef38f1/raw/2491bf1995432469762eeab34ec4fb75e8d959cb/source-c.cljs")
+
+(js/scittle.core.eval_string "foobar/foo")
+```

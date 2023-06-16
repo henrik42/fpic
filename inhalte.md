@@ -710,7 +710,10 @@ Für diesen Zugriff bietet Clojure eine Reihe von **Funktionen**:
 
 > Im [Cheatsheet](https://clojure.org/api/cheatsheet) findest du viele
 > Funktionen, von denen wir einige im folgenden kennen lernen. In dem Cheatsheet
-> werden die zusammengesetzten Datentypen __*collections*__ genannt.
+> werden die zusammengesetzten Datentypen __*collections*__ genannt.  
+> Solange wir Clojure bzw. die REPL im Browser verwenden, nutzen wir nicht
+> Clojure sondern ClojureScript. Für ClojureScript gibt es ebenfalls ein
+> [Cheatsheet](https://cljs.info/cheatsheet/).
 
 * `first` liefert dir das erste Element einer Collection. 
 * `second` liefert dir das zweite Element einer Collection. 
@@ -805,6 +808,12 @@ Wir können auch Element aus einer Collection **entfernen**:
 (disj #{"a" 42 "TOLL!" "foo" false} "foo" 42)                    ;=> #{"a" "TOLL!" false}
 (dissoc {"TOLL!" 42, "a" 42, "foo" false, "bar" true} "foo" "a") ;=> {"TOLL!" 42, "bar" true}
 ```
+
+**Übungen**:
+
+* Benutze `assoc-in`, um im Vektor `[{"foo" 42} {"bar" 23}]` die `23` gegen
+  `4711` zu tauschen, so dass `[{"foo" 42} {"bar" 4711}]` entsteht.
+
 
 -------------------------------------------------------------------------------
 ## `nth`
@@ -1612,7 +1621,9 @@ man **Seiteneffekte** nennt.
 > Falls dich das Thema interessiert, findest du
 > [hier](https://de.wikipedia.org/wiki/Wirkung_(Informatik)) und
 > [hier](https://de.wikipedia.org/wiki/Funktionale_Programmierung) noch
-> weiterführende Information.
+> weiterführende Information. Seiteneffekte solltest du so weit wie möglich
+> vermeiden, weil sie dazu führen, dass deine Funktionen nicht [referenziell
+> transparent](https://en.wikipedia.org/wiki/Referential_transparency) sind.
 
 Die erste Art von Seiteneffekt ist die **Ausgabe** von Werten mit Hilfe der
 Funktion [`println`](https://clojuredocs.org/clojure.core/println). Wir haben
