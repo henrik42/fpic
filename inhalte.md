@@ -1810,12 +1810,16 @@ auf die gebundenen Namen (und damit auf die Argumentwerte) zugreifen. Der Wert
 der **letzten Form** ist jener Wert, der von deiner Funktion als
 **Rückgabewert** geliefert wird (genau so wie bei `let`).
 
+> Es gibt in Clojure keine `return`-Anweisung, einfach, weil wir sie nicht
+> brauchen. Die letzte Form einer `fn`-Form bestimmt, welches der Rückgabewert
+> ist.
+
 OK, jetzt haben wir zwar eine Funktion definiert, aber wie rufen wir sie auf?
 
 > Lies dir nochmal den Abschnitt mit der Auswertungsregel durch.
 
-Wir setzen sie an die **erste Stelle einer Form** --- so wie wir es die ganze
-Zeit schon getan haben.
+Wir setzen sie an die **erste Stelle einer Listen-Form** --- so wie wir es die
+ganze Zeit schon getan haben.
 
 > Schau dir die Form genau an: die Form `(fn ,,,)` **liefert eine Funktion** ---
 > sie wertet die Funktion **nicht** aus! Erst die **umschließend Form** (die
@@ -1833,12 +1837,14 @@ Diese Art der Parameterübergabe nennt man
 [**Positionsparameter**](https://de.wikipedia.org/wiki/Parameter_(Informatik)#Unterschiedliche_Parameter-Begriffe).
 
 > Positionsparameter haben den Nachteil, dass du an der Stelle, an der du die
-> Funktion aufrufst, nicht direkt erkennen kannst, an welchen Namen die von dir
-> übergebenen Werte in der Funktion gebunden werden. Z.B. kann es vorkommen,
-> dass du anstatt `(map inc [1 2 3])` zu schreiben, versehentlich `(map [1 2 3]
-> inc)` schreibst, weil du irrtümlich denkst, dass bei `map` erst die Collection
-> und dann die Funktion übergeben wird. Wir werden später sehen, dass es andere
-> Arten der Parameterübergabe gibt, die dieses Problem nicht haben.
+> Funktion aufrufst (engl. [call
+> site](https://en.wikipedia.org/wiki/Call_site)), nicht direkt erkennen kannst,
+> an welchen Namen die von dir übergebenen Werte in der Funktion gebunden
+> werden. Z.B. kann es vorkommen, dass du anstatt `(map inc [1 2 3])` zu
+> schreiben, versehentlich `(map [1 2 3] inc)` schreibst, weil du irrtümlich
+> denkst, dass bei `map` erst die Collection und dann die Funktion übergeben
+> wird. Wir werden später sehen, dass es andere Arten der Parameterübergabe
+> gibt, die dieses Problem nicht haben.
 
 ```
 ((fn [x y] (+ x y)) 5 3) ;=> 8
@@ -2074,7 +2080,10 @@ Falls du zu einem **truthy** oder **falsy** Wert den zugehörigen Boolean-Wert
   Ergebnisse?
 * Zu was wertet `(and false 2)` aus? Zu was wertet `(und false 2)`?
 * Zu was wertet `(and false (println "oops"))` aus? Zu was wertet `(und false
-  (println "oops"))`? Was passiert genau? Kannst du dir erklären?
+  (println "oops"))`? Was passiert genau? Kannst du dir das erklären? Lies dir
+  den Wikipedia-Artikel zu
+  [Kurzschlussauswertung](https://de.wikipedia.org/wiki/Kurzschlussauswertung)
+  durch.
 
 -------------------------------------------------------------------------------
 ## Keywords
@@ -2104,13 +2113,13 @@ Du kannst nun mit `get` und den Keywords auf den Wert in der Map zugreifen:
 ```
 
 Aber Keywords haben ein **spezielles Feature**: das Keyword `<keyword>`
-**verhält** sich (wenn es an der ersten Position einer Liste steht; also dort,
-wo normalerweise immer eine Funktion stehen muss) wie eine **Funktion mit einem
-Parameter**: `(fn [m] ,,,)`. Diese (gedachte) Funktion geht davon aus, dass das
-Argument, das du bei einem **Aufruf** übergibst, eine **Map** ist. Die Funktion
-zu `<keyword>` liefert dann den Wert `(get m <keyword>)`.
+**verhält** sich (wenn es an der **ersten Position einer Liste** steht; also
+dort, wo normalerweise immer eine **Funktion** stehen muss) wie eine **Funktion
+mit einem Parameter**: `(fn [m] ,,,)`. Diese (gedachte) Funktion geht davon aus,
+dass das Argument, das du bei einem **Aufruf** übergibst, eine **Map** ist. Die
+Funktion zu `<keyword>` liefert dann den Wert `(get m <keyword>)`.
 
-Die Funktion zum Keyword `:foo` sieht also etwa so aus:
+Die *gedachte* Funktion zum Keyword `:foo` sieht also etwa so aus:
 
 ```
 (fn [m]
@@ -2197,9 +2206,93 @@ higher-order-functions als **Funktions-Argument** verwenden:
   Ergebnis?
 
 -------------------------------------------------------------------------------
-## TBD: Bedingte Verzweigung (`if`, `when`, `cond`)
+## Bedingte Verzweigung (`if`, `when`, `cond`)
+
+Bisher wurden unsere Programme immer **der Reihe nach ausgeführt**. Die
+Auswertungsregel hat den
+[Kontrollfluss](https://de.wikipedia.org/wiki/Kontrollfluss) festgelegt:
+
+> Die logischen Operatoren `and` und `or` stellen eine Ausnahme zu dieser Regel
+> dar. Kannst du erklären, in welcher Weise es sich um eine Ausnahme handelt?
+
+**Listen-Formen** werden dadurch ausgewertet, dass die **Elemente der Liste**
+ausgewertet werden (dies ist eine rekursive Definition! Die Elemente können
+ihrerseits wieder Listen sein) und dann jene **Funktion** aufgerufen wird, die
+sich durch die Auswertung des ersten Listen-Elements ergibt. Die
+Auswertungs-Werte der übrigen Listen-Elemente werden dieser Funktion beim Aufruf
+als Argumente übergeben.
+
+Durch diese Regel ist es **unmöglich**, Fallunterscheidungen zu treffen: wir
+können bisher nicht ausdrücken, dass wir unsere Programm in bestimmten Fällen
+anders fortsetzen möchten, als in anderen, weil die Auswertungsregel dies nicht
+zulässt: **sie wertet immer alle Formen aus**. Um unser Programm
+situationsbedingt in **verschiedene** Richtungen weiter laufen zu lassen,
+brauchen wir [bedingte
+Anweisungen](https://de.wikipedia.org/wiki/Bedingte_Anweisung_und_Verzweigung).
+
+> In Clojure gibt es keine **Anweisungen**, sondern es handelt sich auch bei
+> [`if` und `cond` um **Ausdrücke**](https://clojure.org/guides/learn/flow) ---
+> also Dingen, die einen **Wert** haben.
+
+### `if`
+
+Mit `if` können wir eine **Fallunterscheidung** treffen. D.h., wir prüfen, ob
+ein bestimmter **Sachverhalt gilt oder nicht**. Und je nachdem, ob die Antwort
+*ja* oder *nein* ist, wird unser Programm in die eine Richtung oder die andere
+fortgesetzt.
+
+Die `if`-Form sieht wie folgt aus: `(if <cond> <then-form> <else-form>)` 
+
+Der **Sachverhalt**, den wir prüfen, wird als **Konditional** (Form) `<cond>`
+formuliert. Der Wert von `<cond>` wird als Ja-Nein-Wert interpretiert. D.h., wir
+sind nicht gezwungen, `true` oder `false` zu verwenden, sondern können auch
+`nil` oder `"TOLL!"` als *Bedingung* verwenden.
+
+Wenn die `if`-Form ausgewertet wird, wird als erstes `<cond>` ausgewertet. Die
+`<then-form>` und die `else-form` werden **noch nicht ausgewertet**.
+
+> Das ist eine Ausnahme, zu der oben beschriebenen Auswertungsregel. Kannst du
+> erklären, wieso?
+
+Falls `<cond>` zu **truthy** auswertet, wird anschließend die `then-form`
+ausgewertet und der Auswertungs-Wert wird als Wert der `if`-Form geliefert. Die
+`else-form` wird in diesem Fall also **gar nicht ausgewertet**.
+
+Andernfalls (also falls `<cond>` **nicht** zu **truthy** auswertet) wird
+anschließend die `else-form` ausgewertet und der Auswertungs-Wert wird als Wert
+der `if`-Form geliefert. Die `then-form` wird in diesem Fall also **gar nicht
+ausgewertet**.
+
+In der `if`-Form ist die `<else-form>` optional. Das schreibe ich so auf:  `(if
+<cond> <then-form> <else-form>?)` 
+
+Falls `<cond>` nicht **truthy** ist, wird `nil` geliefert, falls die `else-form`
+nicht angegeben ist.
+
+```
+(if :foo :bar :foobar)  ;=> :bar
+(if :foo :bar)          ;=> :bar
+(if false :bar :foobar) ;=> :foobar
+(if false :bar)         ;=> nil
+```
+
+**Übungen**:
+
+* Schreibe die Funktion `(falls [cond then else] ,,,)`. Sie soll den `then`-Wert
+  liefern, falls `cond` **truthy** ist, andernfalls soll sie den `else`-Wert
+  liefern. Du darfst dabei gerne `if` verwenden.
+
+* Was liefert `(if :foo :bar :foobar)`? Was liefert `(falls :foo :bar :foobar)`
+
+* Was liefert `(if :foo :bar (prn "oops"))`? Was liefert `(falls :foo :bar (prn
+  "oops"))`? Kannst du das Verhalten erklären? Wieso ist `falls` nicht das, was
+  wir eine bedingte Verzweigung nennen sollten?
+
+### `when`
 
 
+
+### `cond`
 
 
 -------------------------------------------------------------------------------
@@ -2374,11 +2467,11 @@ können wir die Collection/Liste auch mit Hilfe der Funktion `range` erzeugen
 > Achtung: es muss wirklich `(range 1 5)` und nicht `(range 1 4)` lauten. Kannst
 > du dir vorstellen, wieso das Sinn machen könnte?
 
-Der Operator `for` wird auch als *Listen-Erzeuger* (engl. *list comprehension*)
-bezeichnet. Du kannst sogar mehrere `name-collection`-Paare angeben. Das
-Ergebnis ist, dass `for` **alle Kombinationen** der angegebenen Bindungen
-erzeugt und den Rumpf mit diesen ausführt und die Ergebnisse in der Liste
-liefert:
+Der Operator `for` wird auch als *Listen-Erzeuger* (engl. [*list
+comprehension*](https://de.wikipedia.org/wiki/List_Comprehension)) bezeichnet.
+Du kannst sogar mehrere `name-collection`-Paare angeben. Das Ergebnis ist, dass
+`for` **alle Kombinationen** der angegebenen Bindungen erzeugt und den Rumpf mit
+diesen ausführt und die Ergebnisse in der Liste liefert:
 
 ```
 (for [x '[x y z] 
@@ -2391,9 +2484,10 @@ Es handelt sich dabei um zwei **ineinander geschachtelte Schleifen**, wobei die
 **äußere** Schleife über `'[x y z]` schleift und die **innere** Schleife über
 `(range 1 4)` schleift.
 
-> Achte darauf, dass erst *über* `y` hochgezählt/iteriert wird (innere Schleife)
-> und dann *über* `x` (äußere Schleife). Aus dem Mathematikunterricht kennst du
-> vielleicht das [**kartesische
+> Achte darauf, dass erst *über* `y`
+> hochgezählt/[**iteriert**](https://de.wikipedia.org/wiki/Iteration#Informatik)
+> wird (innere Schleife) und dann *über* `x` (äußere Schleife). Aus dem
+> Mathematikunterricht kennst du vielleicht das [**kartesische
 > Produkt**](https://de.wikipedia.org/wiki/Kartesisches_Produkt): `for` erzeugt
 > eben dieses kartesische Produkt.
 

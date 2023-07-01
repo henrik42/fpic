@@ -3,6 +3,9 @@
 Dies ist eine lose, ungeordnete Ansammlung von Informationen, die für die
 Programmier-AG hilfreich sein können.
 
+* https://ericnormand.me/guide/how-to-install-clojure#windows:
+  Installationsanleitung für Java und Leiningen (aber kein clj)
+
 * https://4clojure.oxal.org/ : Übungen und Lösungen
 
 * [Github-Access-Token für das geclonte Repo einrichten](https://levelup.gitconnected.com/fix-password-authentication-github-3395e579ce74)
