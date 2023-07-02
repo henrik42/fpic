@@ -1356,7 +1356,14 @@ wird die Funktion `<f>` mit `(<f> <e-1> <e-2> ,,, <e-n>)` aufgerufen. D.h., die
 **Stelligkeit** der Funktion `<f>` muss zu der Anzahl der Argumente passen, die
 wir beim Aufruf von `map` angeben.
 
-> Wir könnten die Funktion auch so schreiben: `(map <f> <coll> <colls*>)`.
+> Wir könnten die Funktion auch so schreiben: `(map <f> <coll> <colls*>)`. Das
+> `*`-Zeichen soll hier bedeuten, dass die betreffende Form optional ist und
+> beliebig häufig vorkommen kann. Also 0-mal, 1-mal oder eben viele Male.  
+> Wir werden später auch das `?`-Zeichen verwenden, um auszudrücken, dass eine
+> Form 0-mal oder 1-mal auftritt (z.B. `<coll?>`), also optional ist.  
+> Diese Schreibweise ist an die [Regulären
+> Ausdrücke](https://de.wikipedia.org/wiki/Regul%C3%A4rer_Ausdruck) angelehnt,
+> die wir uns später auch noch anschauen werden.
 
 Wir können z.B. `+` nutzen:
 
@@ -2243,10 +2250,10 @@ fortgesetzt.
 
 Die `if`-Form sieht wie folgt aus: `(if <cond> <then-form> <else-form>)` 
 
-Der **Sachverhalt**, den wir prüfen, wird als **Konditional** (Form) `<cond>`
-formuliert. Der Wert von `<cond>` wird als Ja-Nein-Wert interpretiert. D.h., wir
-sind nicht gezwungen, `true` oder `false` zu verwenden, sondern können auch
-`nil` oder `"TOLL!"` als *Bedingung* verwenden.
+Der **Sachverhalt**, den wir prüfen, wird als **Konditional** (Bedingung)
+`<cond>` formuliert. Der Wert von `<cond>` wird als Ja-Nein-Wert interpretiert.
+D.h., wir sind nicht gezwungen, `true` oder `false` zu verwenden, sondern können
+auch `nil` oder `"TOLL!"` als Bedingung verwenden.
 
 Wenn die `if`-Form ausgewertet wird, wird als erstes `<cond>` ausgewertet. Die
 `<then-form>` und die `else-form` werden **noch nicht ausgewertet**.
@@ -2264,7 +2271,10 @@ der `if`-Form geliefert. Die `then-form` wird in diesem Fall also **gar nicht
 ausgewertet**.
 
 In der `if`-Form ist die `<else-form>` optional. Das schreibe ich so auf:  `(if
-<cond> <then-form> <else-form>?)` 
+<cond> <then-form> <else-form?>)` 
+
+> Das `?` bedeutet, dass die Form **optional** ist. Wir hatten weiter oben schon
+> über diese Notation gesprochen.
 
 Falls `<cond>` nicht **truthy** ist, wird `nil` geliefert, falls die `else-form`
 nicht angegeben ist.
@@ -2602,6 +2612,10 @@ Schleifendurchlauf einen **Wert** zu liefern. **Dieser Wert** ist das
 
 TBD
 
+### `iterate`
+
+TBD
+
 ### `loop`/`recur`
 
 TBD
@@ -2723,6 +2737,9 @@ aufgerufen.
 ## TBD: Threading
 
 -------------------------------------------------------------------------------
+## TBD: Reguläre Ausdrücke
+
+-------------------------------------------------------------------------------
 ## TBD: Was ist der Unterschied zwischen einem Datentyp und einer Sequenz?
 
 -------------------------------------------------------------------------------
@@ -2735,6 +2752,72 @@ aufgerufen.
 
 -------------------------------------------------------------------------------
 ## TBD: Transducer
+
+-------------------------------------------------------------------------------
+## TBD: Lazy Evaluation
+
+* doseq
+* run!
+* doall
+* dorun
+* lazy-seq
+* lazy-cat
+
+Was gibt dieses Programm aus? Wieso?
+
+```
+(let [x (map prn [1 2 3])
+      y (map prn [:a :b :c])])
+```
+
+Und dieses?
+
+```
+(let [x (map prn [1 2 3])
+      y (map prn [:a :b :c])]
+  y)
+```
+
+Und dieses?
+
+```
+(let [x (map prn [1 2 3])
+      y (map prn [:a :b :c])]
+  x)
+```
+
+Und dieses?
+
+```
+(let [x (map prn [1 2 3])
+      y (map prn [:a :b :c])]
+  x
+  y)
+```
+
+Und dieses?
+
+```
+(let [x (map prn [1 2 3])
+      y (map prn [:a :b :c])]
+  x
+  y
+  [y x])
+```
+
+Und dieses?
+
+```
+(let [x (seq (map prn [1 2 3]))
+      y (map prn [:a :b :c])])
+```
+
+Und dieses?
+
+```
+(let [x (seq (map prn [1 2 3]))
+      y (vec (map prn [:a :b :c]))])
+```
 
 -------------------------------------------------------------------------------
 ## TBD: Nebenläufigkeit und Parallelität
