@@ -2229,7 +2229,7 @@ sich durch die Auswertung des ersten Listen-Elements ergibt. Die
 Auswertungs-Werte der übrigen Listen-Elemente werden dieser Funktion beim Aufruf
 als Argumente übergeben.
 
-Durch diese Regel ist es **unmöglich**, Fallunterscheidungen zu treffen: wir
+Durch diese Regel ist es **unmöglich**, **Fallunterscheidungen** zu treffen: wir
 können bisher nicht ausdrücken, dass wir unsere Programm in bestimmten Fällen
 anders fortsetzen möchten, als in anderen, weil die Auswertungsregel dies nicht
 zulässt: **sie wertet immer alle Formen aus**. Um unser Programm
@@ -2270,8 +2270,19 @@ anschließend die `else-form` ausgewertet und der Auswertungs-Wert wird als Wert
 der `if`-Form geliefert. Die `then-form` wird in diesem Fall also **gar nicht
 ausgewertet**.
 
-In der `if`-Form ist die `<else-form>` optional. Das schreibe ich so auf:  `(if
-<cond> <then-form> <else-form?>)` 
+**Beispiele**:
+
+```
+(if (even? 2) :gerade :ungerade) ;=> :gerade
+(if (even? 7) :gerade :ungerade) ;=> :ungerade
+(if false :ja :nein)             ;=> :nein
+(if nil :ja :nein)               ;=> :nein
+(if true :ja :nein)              ;=> :ja
+(if "TOLL!" :ja :nein)           ;=> :ja
+```
+
+In der `if`-Form ist die `<else-form>` **optional**. Das schreibe ich so auf:
+`(if <cond> <then-form> <else-form?>)` 
 
 > Das `?` bedeutet, dass die Form **optional** ist. Wir hatten weiter oben schon
 > über diese Notation gesprochen.
@@ -2288,19 +2299,61 @@ nicht angegeben ist.
 
 **Übungen**:
 
-* Schreibe die Funktion `(falls [cond then else] ,,,)`. Sie soll den `then`-Wert
-  liefern, falls `cond` **truthy** ist, andernfalls soll sie den `else`-Wert
-  liefern. Du darfst dabei gerne `if` verwenden.
+* Schreibe die Funktion `(falls <cond> <then-form> <else-form>)`. Sie soll den
+  `<then-form>`-Wert liefern, falls `<cond>` **truthy** ist, andernfalls soll
+  sie den `<else-form>`-Wert liefern. Du darfst dabei gerne `if` verwenden.
 
 * Was liefert `(if :foo :bar :foobar)`? Was liefert `(falls :foo :bar :foobar)`
 
 * Was liefert `(if :foo :bar (prn "oops"))`? Was liefert `(falls :foo :bar (prn
   "oops"))`? Kannst du das Verhalten erklären? Wieso ist `falls` nicht das, was
-  wir eine bedingte Verzweigung nennen sollten?
+  wir eine **bedingte Verzweigung** nennen sollten?
+
+* Versuche mit Hilfe von `and` und `or` (und ggf. weiteren Funktionen) **einen
+  Ausdruck/Form** zu schreiben, der sich wie `if` verhält. Oben haben wir schon
+  gesehen, dass es nicht möglich ist, eine Funktion `falls` zu definieren, die
+  sich wie `if` verhält, da die Argumente zu dieser Funktion immer schon
+  ausgewertet werden, bevor die Funktion überhaupt aufgerufen wird. Der
+  Ausdruck, den du finden sollst, nutzt die Kurzschluss-Semantik von `and` und
+  `or`, um eben diese *vorzeitige* Auswertung der `<then-form>` und der
+  `<else-form>` zu vermeiden. Teste deinen Ausdruck gründlich. Nutze dabei auch
+  `<then-form>` und `<else-form>`, die zu **falsy** auswerten. Fertige eine
+  Tabelle an, in der du die verschiedenen Kombinationen (bzgl. Wahrheit oder
+  nicht) von `<cond>`, `<then-form>` und `<else-form>` zusammen mit dem
+  Auswertungsergebnis deines Ausdrucks aufführst.
 
 ### `when`
 
+Manchmal möchtest du bei einer Fallunterscheidung nur im Ja-Fall weitere
+Berechnungen anstellen. Im Nein-Fall soll das Programm *nichts tun*.
 
+Für diesen Fall gibt es `(when <cond> <then-forms*>)`
+
+Die `when`-Form wertet erst `<cond>` aus und falls dies zu **truthy** auswertet,
+werden anschließend die `<then-forms*>` der Reihe nach ausgewertet und der Wert
+der letzten Form wird als Ergebnis der `when`-Form geliefert.
+
+Falls `<cond>` zu **falsy** auswertet, wertet die `when`-Form zu `nil` aus.
+
+```
+(defn teile-durch [x y]
+  (when (not= y 0) (/ x y)))
+
+(teile-durch 3 2)         ;=> 1.5
+(teile-durch 3 0)         ;=> nil
+
+(when :foo :bar)          ;=> :bar
+(when :foo :bar :foobar)  ;=> :foobar
+(when false :bar)         ;=> nil
+(when false :bar :foobar) ;=> nil
+```
+
+**Übungen:**
+
+* Schreibt die Funktion `teile-durch` so um, dass sie statt `when` die
+  Funktion/Makro `when-not` nutzt. Teste deine Funktion.
+* Zu was wertet `(when (prn 0) (prn 1) (prn 2))` aus? Wieso?
+* Zu was wertet `(when (or (prn 0) :yes!) (prn 1) (prn 2))` aus?
 
 ### `cond`
 
