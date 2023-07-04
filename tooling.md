@@ -19,13 +19,16 @@ du kaum noch kaufen. Viel wichtiger als die **Kapazität** ist aber die
 und von dort auch **starten** (ausführen) werden. Je höher die
 Lesegeschwindigkeit ist, desto schneller wird die Anwendung starten.
 
-Eine Lesegeschwindigkeit von 5 GB/s (Gigabyte pro Sekunde) ist schnell. Solche
-USB Sticks sind aber auch teurer als USB Sticks mit z.B. nur 350 MB/s. Wenn du
-einen USB kaufst, achte darauf, dass die
+Eine Lesegeschwindigkeit von 5 GB/s (Gigabyte pro Sekunde) ist extrem schnell.
+Solche USB Sticks sind aber auch teurer als USB Sticks mit z.B. nur 350 MB/s.
+Wenn du einen USB Stick kaufst, achte darauf, dass die
 [USB-Version](https://de.wikipedia.org/wiki/Universal_Serial_Bus#Geschichte_und_Entwicklung)
 auch von deinem Computer unterstützt wird. Es nutzt dir nichts, wenn du einen
 USB-Stick Version 3.2 kaufst, aber dein Computer/Windows diese Version noch gar
 nicht unterstützt.
+
+[Hier](https://www.conrad.de/de/ratgeber/technik-einfach-erklaert/usb.html)
+findest du weitere Infos zum Thema USB.
 
 Die Geschwindigkeit eines USB-Sticks kannst du z.B. mit [CrystalDiskMark
 Portable](https://portableapps.com/apps/utilities/crystaldiskmark_portable)
