@@ -42,7 +42,7 @@ Computern in der Schule und zu Hause bei dir ein Browser installiert sein wird.
 ## Visual Studio Code
 
 Als [Texteditor](https://de.wikipedia.org/wiki/Texteditor) nutzen wir
-[VSCode}(https://de.wikipedia.org/wiki/Visual_Studio_Code). Ich nutze derzeit
+[VSCode](https://de.wikipedia.org/wiki/Visual_Studio_Code). Ich nutze derzeit
 Version: 1.77.3.
 
 Falls auf den Computern (in der Schule oder zu Hause) kein VSCode installiert
