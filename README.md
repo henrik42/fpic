@@ -8,21 +8,6 @@ Die Programmier-AG wird erstmalig im Schuljahr 2023/2024 mit einer Doppelstunde
 pro Woche stattfinden. Die AG wird für Schülerinnen und Schüler der Klassenstufe
 7, 8 und 9 angeboten.
 
-Während der Sommerferien (Schleswig-Holstein) 2023 möchten wir ein einwöchiges
-Bootcamp durchführen (5x4h). Während dieser Woche wollen wir schon Clojure
-lernen, ausprobieren, die Technik prüfen, Spaß haben und den Schülerinnen die
-Möglichkeit geben, festzustellen, ob die Lust darauf haben, anschließend an der
-Programmier-AG teilzunehmen. 
-
-Vor den Sommerferien wird es einen Info-Abend am Kopernikus Gymnasium geben, zu
-dem noch durch Aushänge etc. eingeladen wird. Dieser Info-Abend soll dazu
-dienen, sich kennen zu lernen und Fragen stellen zu können und vielleicht wird
-auch schon etwas Programmcode gezeigt.
-
-Sowohl das Bootcamp als auch die Programmier-AG sind natürlich für alle
-Schülerinnen und Schüler offen. Wir möchten niemanden ausschließen und möchten
-besonders auch Mädchen ermutigen, an den Veranstaltungen teilzunehmen.
-
 ## Was wollen wir machen?
 
 Wir wollen den Schülerinnen und Schülern das Programmieren beibringen. Wir
