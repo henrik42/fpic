@@ -84,6 +84,6 @@ den Computer deiner Eltern nutzen möchtest.
 
 Auf einem PC/Laptop wird häufig [Docker
 Desktop](https://docs.docker.com/desktop/) verwendet. Das Programm ist für den
-privaten Gebraucht kostenlos.
+privaten Gebrauch kostenlos.
 
 Wir werden uns die Installation während der AG vielleicht anschauen. 
