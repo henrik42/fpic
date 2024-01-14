@@ -13,10 +13,13 @@
 * Was macht ein [Computer](https://de.wikipedia.org/wiki/Computer)?
 * Was ist [Software](https://de.wikipedia.org/wiki/Software)?
 * Was ist [Hardware](https://de.wikipedia.org/wiki/Hardware)?
+* Was ist ein [Betriebssystem](https://de.wikipedia.org/wiki/Betriebssystem)?
+* Was ist ein [BIOS](https://de.wikipedia.org/wiki/BIOS)?
 * Was sind [Daten](https://de.wikipedia.org/wiki/Daten#Informatik)? 
 * Welche Arten von Daten gibt es? Was ist ein
   [Datentyp](https://de.wikipedia.org/wiki/Datentyp#Elementare_Datentypen)?
 * Was ist [Information](https://de.wikipedia.org/wiki/Information)?
+* Was ist ein [Algorithmus](https://de.wikipedia.org/wiki/Algorithmus)?
 * Was ist ein
   [(Computer-)Programm](https://de.wikipedia.org/wiki/Computerprogramm)?
 * Was bedeutet es, ein Programm
@@ -36,7 +39,7 @@
 ## Clojure und die REPL
 
 [Clojure](https://de.wikipedia.org/wiki/Clojure) ist eine Programmiersprache,
-die u.a. einen [interaktiven
+die einen [interaktiven
 Programmierstil](https://en.wikipedia.org/wiki/Interactive_programming) erlaubt.
 D.h., dass du während des Programmierens schon mit deinem **laufenden Programm**
 **interagierst**: du schreibst es, du führst es aus, du änderst den Programmcode
@@ -212,7 +215,8 @@ Dies sind Beispiele für Zahlen in Clojure: `-5`, `0`, `1`, `2`, `42`, `1.56`,
 * Gib dort die Zahlen (*Formen*) `1`, `2` und `234` ein. Nach jeder Form musst
   du die *ENTER*-Taste drücken. Was passiert?
 * Was passiert, wenn du mehrere Formen hintereinander durch Leerzeichen getrennt
-  eingibst und erst dann *ENTER* drückst?
+  eingibst (z.B. `23 45 67`) und erst dann *ENTER* drückst? Was lernst du
+  daraus?
 * Was passiert, wenn du eine sehr große Zahl eingibst?
 * Gib nun eine negative Zahl ein. Nutze dazu das vorangestellte Minuszeichen
   (`-`).
@@ -236,8 +240,8 @@ und am Ende eingegeben.
 * Gib die Zeichenfolgen `"TOLL!"`, `"A_B_$"`, `"a$b/c:_|<>#~'"` ein.
 * Gib eine Zeichenfolge mit nur einem Leerzeichen ein.
 * Gib eine Zeichenfolge mit zwei Leerzeichen ein.
-* Gib eine leere Zeichenfolge ein (also eine, aus keinem Zeichen besteht). Diese
-  Zeichenfolge hat die Länge 0.
+* Gib eine leere Zeichenfolge ein (also eine, die aus keinem Zeichen besteht).
+  Diese Zeichenfolge hat die Länge 0.
 * Was passiert, wenn du am Ende die doppelten Anführungszeichen nicht angibst?
 * Was passiert, wenn du zu Beginn die doppelten Anführungszeichen nicht angibst?
 
@@ -535,9 +539,9 @@ Zahl-Wert. So liefert die Funktion **f** für den Wert **5** das Ergebnis **6**.
 f(5) = 6
 ```
 
-Du kannst dir eine Funktion als eine **Maschine** vorstellen, in die du Werte
-hinein gibst (*du **rufst** die **Funktion** mit einem **Wert** auf*) und aus
-der das **Ergebnis** der Funktion als **Rückgabewert** heraus kommt.
+In Clojure kannst dir eine Funktion als eine **Maschine** vorstellen, in die du
+Werte hinein gibst (*du **rufst** die **Funktion** mit einem **Wert** auf*) und
+aus der das **Ergebnis** der Funktion als **Rückgabewert** heraus kommt.
 
 In dem oben aufgeführten Beispiel ist `x` der (formale) **Parameter** der
 Funktion `f` und `5` ist das **Argument** bzw. der Argumentwert des
@@ -598,7 +602,7 @@ der Auswertung der Symbol-Form verwendet wird.
 In dieser Zuordnungstabelle können den Symbolen (Schlüssel) beliebige
 Werte/Datentypen zugeordnet sein --- nicht nur Funktionen.
 
-> Diese Zuordnungstabellen wird **Namespace** genannt und wir lernen später mehr
+> Diese Zuordnungstabelle wird **Namespace** genannt und wir lernen später mehr
 > darüber.
 
 Übung:
@@ -788,10 +792,12 @@ Wir können einer **bestehenden Collection** mit Hilfe von `conj` (gesprochen
 > dann hinzugefügt. Die ursprüngliche Collection kann gar nicht geändert werden,
 > weil Clojure das eben **nicht zulässt**.
 
-Mit `assoc` können wir Elemente einer Collection **ändern**:
+Mit `assoc` können wir Elemente einer assoziativen Collection (Maps, Vektoren)
+**ändern**:
 
-> Vektoren sind auch **assoziativ** wie eine Map! Dabei ist der **Schlüssel 2**
-> die **dritte Stelle** im Vektor.
+> Vektoren sind über ihre Indexposition auch **assoziativ** wie eine Map! Dabei
+> ist der **Schlüssel 2** die **dritte Stelle** im Vektor (0-based; vgl. `nth`
+> weiter unten).
 
 ```
 (assoc ["a" 42 "TOLL!" 42] 2 "foobar" 0 true) ;=> [true 42 "foobar" 42]
@@ -825,12 +831,13 @@ Wertes.
 > Buchstaben **n** bzw. **N** aus dem Mathematikunterricht? Welche Bedeutung hat
 > der Buchstabe dort?
 
-Dabei ist **n** der __Versatz__ (engl. *offset*) zum ersten Element. Somit
-liefert dir `(nth ,,, 0)` das __erste__ Element (da der __Versatz__ zum
-__ersten__ Element 0 ist), `(nth ,,, 1)` das zweite Element (da der __Versatz__
-zum __ersten__ Element 1 ist), `(nth ,,, 2)` das dritte Element usw. Häufig
-wirst du auch die Bezeichnung __Index__ anstatt Versatz hören/lesen. Und man
-spricht dann auch vom __*zero-based index*__ oder __[zero-based
+Dabei ist **n** der __Versatz__ (engl. *offset*; man könnte auch _Abstand_ oder
+_Differenz_ sagen) zum ersten Element. Somit liefert dir `(nth ,,, 0)` das
+__erste__ Element (da der __Versatz__ zum __ersten__ Element 0 ist), `(nth ,,,
+1)` das zweite Element (da der __Versatz__ zum __ersten__ Element 1 ist), `(nth
+,,, 2)` das dritte Element usw. Häufig wirst du auch die Bezeichnung __Index__
+anstatt Versatz hören/lesen. Und man spricht dann auch vom __*zero-based
+index*__ (oder _0-based index_) oder __[zero-based
 numbering](https://en.wikipedia.org/wiki/Zero-based_numbering)__.
 
 > In der Form `(nth ,,, 2)` nutze ich die drei Kommata (`,,,`) so, wie du es in
@@ -2357,6 +2364,11 @@ Falls `<cond>` zu **falsy** auswertet, wertet die `when`-Form zu `nil` aus.
 
 ### `cond`
 
+### `condp`
+
+### `case`
+
+### Ausführungsbäume
 
 -------------------------------------------------------------------------------
 ## Schleifen
@@ -2669,6 +2681,9 @@ TBD
 
 TBD
 
+### `dotimes`
+
+TBD
 ### `loop`/`recur`
 
 TBD

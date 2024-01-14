@@ -1,16 +1,48 @@
+ (require
+   '[clojure.string :as str]
+   '[reagent.core :as rcore]
+   '[reagent.dom :as rdom]
+   '[reagent.ratom :as ratom])
 
+;; -----------------------------------------------------------------------------------
+;; Datenmodell https://reagent-project.github.io/docs/master/reagent.ratom.html#var-atom
+;; -----------------------------------------------------------------------------------
 
-(def my-client-id (str (random-uuid)))
-(def topic "our-topic-2384623874623746238428376234")
-(def my-name (str "Henrik (chat-app) " my-client-id))
+(defonce data
+  (ratom/atom {}))
+
+(defn set-my-name! [evt]
+  (swap! data update-in [:my-name] (constantly (-> evt .-target .-value))))
+
+(defn set-message! [evt]
+  (swap! data update-in [:message] (constantly (-> evt .-target .-value))))
+
+(defn clear-message! []
+  (swap! data update-in [:message] (constantly "")))
+
+(defn append-to-messages! [text]
+  (swap! data update-in [:messages] str text "\n"))
+
+(defn clear-messages! []
+  (swap! data update-in [:messages] (constantly "")))
+
+;; -----------------------------------------------------------------------------------
+;; MQTT https://mqtt.org/ JavaScript Anbindung https://github.com/eclipse/paho.mqtt.javascript
+;; -----------------------------------------------------------------------------------
+
+(defonce load-script
+  (js/document.body.appendChild
+   (doto (js/document.createElement "script")
+     (.setAttribute "src"
+                    "https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js"))))
+
+;; https://iot.eclipse.org/projects/sandboxes/
 (def mqtt-uri "wss://mqtt.eclipseprojects.io/mqtt")
+(def my-client-id (str (random-uuid)))
+
+(def topic "our-topic-put-your-topic-here")
 
 (declare client)
-
-(defn append-message-to-html-body [text]
-  (let [el (js/document.createElement "div")]
-    (aset el "innerHTML" text)
-    (.appendChild js/document.body el)))
 
 (defn on-connect []
   (println "*** connected!")
@@ -18,8 +50,8 @@
   (println "*** subscibed!"))
 
 (defn on-message-arrived [msg]
-  (let [text (-> msg (aget "payloadString"))]
-    (append-message-to-html-body text)
+  (let [text (aget msg "payloadString")]
+    (append-to-messages! text)
     (println "*** received from" text)))
 
 (defonce client
@@ -27,15 +59,98 @@
     (.connect (clj->js {:onSuccess on-connect}))
     (aset "onMessageArrived" #(on-message-arrived %))))
 
-(defn publish [text]
-  (if-not (.isConnected client)
-    (do
-      (println (str "*** delay '" text "' because not connected yet!"))
-      (js/setTimeout #(publish text) 1000))
-    (let [msg (js/Paho.MQTT.Message. (str my-name ": " text))]
-      (aset msg "destinationName" topic)
-      (.send client msg))))
+(defn publish [my-name text]
+  (and (not (str/blank? my-name)) (not (str/blank? text))
+       (if-not (.isConnected client)
+         (do
+           (println (str "*** delay '" text "' because not connected yet!"))
+           (js/setTimeout #(publish my-name text) 1000))
+         (let [msg (js/Paho.MQTT.Message. (str my-name ": " text))]
+           (aset msg "destinationName" topic)
+           (.send client msg)))))
 
-(defonce grettings! (publish "Hallo hier bin ich!"))
+#_(publish my-client-id "JOINED!")
 
-(publish "Blablabla")
+;; -----------------------------------------------------------------------------------
+;; GUI Elemente
+;; -----------------------------------------------------------------------------------
+
+;; Tailwind CSS Styling https://tailwindcss.com/docs/installation
+(def button-class
+  (str " m-1 p-2 bg-violet-500"
+       " border rounded-full"
+       " focus:outline-none focus:ring focus:ring-violet-300"
+       " hover:bg-violet-600 active:bg-violet-700"))
+
+(def text-input-class
+  (str " m-1 p-2 bg-gray-200 text-gray-900 text-sm rounded-lg"
+       " border border-gray-500"
+       " focus:outline-none focus:ring focus:ring-violet-400 focus:border-violet-400"
+       #_" block w-full"))
+
+;; Reagent Komponenten https://reagent-project.github.io/
+(defn watch-data []
+  [:p
+   (str @data)])
+
+(defn text-area []
+  [:textarea#messages {:value (:messages @data)
+                       :placeholder "Nachrichten"
+                       :class (str " m-2 p-2 rounded-lg bg-gray-200 text-sm text-blue-gray-700"
+                                   " border border-blue-900"
+                                   " h-full resize-none")}])
+
+;; Auto-scroll 
+(add-watch data :text-area
+           (fn [a-key the-ref old-state new-state]
+             (when (not= (:messages old-state) (:messages new-state))
+               (when-let [e (.getElementById js/document "messages")]
+                 (set! (.-scrollTop e) (.-scrollHeight e))))))
+
+(defn set-focus! []
+  (-> js/document (.getElementById "message") .focus))
+
+(defn my-name-input []
+  [:input {:type :text
+           :class text-input-class
+           :placeholder "Dein Name"
+           :value (:my-name @data)
+           :on-change #(set-my-name! %)}])
+
+(defn message-input []
+  [:input#message {:type :text
+                   :class text-input-class
+                   :placeholder "Deine Nachricht"
+                   :value (:message @data)
+                   :on-change #(set-message! %)
+                   ;; Default-Button
+                   :on-key-press #(when (= (.-key %) "Enter")
+                                    (-> js/document (.getElementById "send") .click))}])
+
+(defn send-button []
+  [:button#send {:class button-class
+                 :on-click #(do (publish (:my-name @data) (:message @data))
+                                (clear-message!)
+                                (set-focus!))}
+   "Senden!"])
+
+(defn clear-button []
+  [:button {:class button-class
+            :on-click #(do (clear-messages!) (set-focus!))}
+   "Löschen!"])
+
+;; -----------------------------------------------------------------------------------
+;; Die "App"
+;; -----------------------------------------------------------------------------------
+
+(defn app []
+  [:div {:class "h-screen flex flex-col w-full bg-blue-200"}
+   [:div
+    #_[watch-data]
+    [my-name-input]
+    [message-input]
+    [send-button]
+    [clear-button]]
+   [text-area]])
+
+(rdom/render app (.getElementById js/document "app"))

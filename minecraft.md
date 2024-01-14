@@ -26,7 +26,7 @@ Du benötigst Git (z.B. [Git for Windows](https://gitforwindows.org/)).
 ## witchcraft-workshop
 
 Am besten legst du dir ein Verzeichnis `c:\clojure\witchcraft\` an. Dann clonst
-du dir Witch-Craft-Workshop Repo in das Verzeichnis.
+du dir das Witch-Craft-Workshop Repo in das Verzeichnis.
 
 ```
 cd c:\clojure\witchcraft\
@@ -34,6 +34,15 @@ git clone https://github.com/lambdaisland/witchcraft-workshop/
 ```
 
 ## Minecraft Server
+
+Du musst die beiden folgenden Zeilen in `bin/start-server` zufügen:
+
+```
+JAVA_CMD='C:\--dein-Pfad-zu-java\jdk-17.0.8+7\bin\java'
+MEMORY=1G
+```
+
+Nun kannst du den Server starten:
 
 ```
 bin/start-server

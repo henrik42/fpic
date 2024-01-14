@@ -110,7 +110,8 @@ programmieren.
 
 ## Clojure clj
 
-Das `clj` Programm ist das _offizielle_ Clojure CLI (Command Line Interface) für
+Das [`clj` Programm ist das _offizielle_ Clojure
+CLI](https://clojure.org/guides/deps_and_cli) (Command Line Interface) für
 Clojure. Es ist relativ neu. Mit `clj` kannst du (genau wie mit Leiningen)
 Clojure Programme ausführen und Bibliotheken, die du nutzen möchtest, herunter
 laden. Aber `clj` kann noch viel mehr (darauf gehen wir hier aber nicht ein).
@@ -121,11 +122,64 @@ solltest du dieses Tool auf alle Fälle installieren.
 
 ## deps.clj
 
-Das `clj` Tool unter Windows zu installieren, war in der Vergangenheit etwas
-sperrig. Daher wurde das Tool `deps.clj` geschaffen. Die Installation ist sehr
-einfach und der Erschaffer dieses Tools bemüht sich, das Tool so zur Verfügung
-zu stellen, dass es sich genau so verhält wie `clj`.
+Das `clj` Tool unter Windows zu installieren, war in der Vergangenheit [etwas
+sperrig](https://github.com/clojure/tools.deps.alpha/wiki/clj-on-Windows). Daher
+wurde das [Tool `deps.clj`](https://github.com/borkdude/deps.clj) geschaffen.
+Die Installation ist sehr einfach und der Erschaffer dieses Tools bemüht sich,
+das Tool so zur Verfügung zu stellen, dass es sich genau so verhält wie `clj`.
 
 Falls du also Probleme hast, `clj` zu installieren, kannst du als Alternative
 `deps.clj` nutzen.
 
+Nachdem du `deps.clj` installiert hast, solltest du prüfen, ob alles
+funktioniert, indem du folgendes in ein Windows-Terminal (CMD-Shell) eingibst.
+
+```
+deps -M -e "(println :hello-world!)"
+```
+
+Das sollte folgendes ausgeben:
+
+```
+:hello-world!
+```
+
+# Clojure nutzen mit clojure-1.8.0.jar
+
+# Clojure nutzen mit deps.clj
+
+Mit `deps.clj` bzw. der Clojure-CLI (`clj`) kannst du [viele Dinge
+tun](https://clojure.org/reference/deps_and_cli). Wir wollen uns hier ein paar
+anschauen.
+
+## Clojure-Code direkt ausführen
+
+Du kannst den Clojure-Code einfach direkt angeben. Das folgende Beispiel zeigt
+dir, wie du unter Windows die Clojure-Strings durch __gedoppelte
+Anführungszeichen__ eingeben kannst. 
+
+```
+deps -M -e "(print ""Deine Eingabe: "") (flush) (println ""Du hast "" (read-line) "" eingegeben"")"
+```
+
+Du kannst aber auch ein Clojure-Programm in eine Datei schreiben und dieses
+Programm ausführen. Nutze einen Editor (z.B. Windows notepad, VSCode oder
+Notepad++), um die folgenden drei Zeilen in die Datei `beispiel.clj` zu
+schreiben:
+
+```
+(print "Deine Eingabe: ")
+(flush)
+(println "Du hast " (read-line) " eingegeben")
+```
+
+```
+deps -M -i beispiel.clj
+```
+
+
+```
+deps -Sdeps "{:deps {com.bhauman/rebel-readline {:mvn/version \"0.1.4\"} org.clojure/tools.nrepl {:mvn/version ""0.2.12""}}}" -m rebel-readline.main
+deps -Sdeps "{:deps {com.bh auman/rebel-readline {:mvn/version \"0.1.4\"} org.clojure/tools.nrepl {:mvn/version ""0.2.12""}}}" -m rebel-readline.main
+deps -m rebel-readline.main
+```
