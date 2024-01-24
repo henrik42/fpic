@@ -12,6 +12,9 @@ Du benötigst mind. Java 17. Du kannst dir z.B. ein [Eclipse
 Temurin](https://adoptium.net/de/temurin/releases/?os=windows&arch=x86&package=jdk&version=17)
 installieren.
 
+Du kannst das JDK über die MSI-Datei installieren. Du kannst aber auch das ZIP
+runterladen und das Verzeichnis z.B. nach `C:\clojure\java` entpacken.
+
 ## Clojure CLI
 
 Du benötigst die Clojure CLI.
@@ -19,13 +22,29 @@ Du benötigst die Clojure CLI.
 Alternativ kannst du auch `deps.clj` nutzen. Das lässt sich [sehr leicht
 installieren](https://github.com/borkdude/deps.clj#quickstart).
 
+Am einfachsten ist es, wenn du dir die ZIP-Datei
+`https://github.com/borkdude/deps.clj/releases/download/v1.11.1.1435/deps.clj-1.11.1.1435-windows-amd64.zip`
+runterlädtst. Darin findest du eine Datei (`deps`). Diese kopierst du nach
+`C:\Users\<dein-name>\AppData\Local\Microsoft\WindowsApps`. Du solltest die
+Datei unter dem Namen `clojure` in dem Verzeichnis ablegen.
+
+Anschließend solltest du prüfen, ob das auch geklappt hat. Dazu öffnest du eine
+CMD-Shell (sog. "Eingabeaufforderung") und gibst `clojure -M -e "(+ 1 2)"` ein.
+Wenn alles richtig eingerichtet ist, wird das Programm gestartet und gibt das
+Ergebnis `3` aus.
+
+```
+clojure -M -e "(+ 1 2)"
+3
+```
+
 ## Git
 
 Du benötigst Git (z.B. [Git for Windows](https://gitforwindows.org/)).
 
 ## witchcraft-workshop
 
-Am besten legst du dir ein Verzeichnis `c:\clojure\witchcraft\` an. Dann clonst
+Am besten legst du dir ein Verzeichnis `c:\clojure\witchcraft\` an. Dann klonst
 du dir das Witch-Craft-Workshop Repo in das Verzeichnis.
 
 ```
@@ -64,25 +83,78 @@ Minecraft-Server zu interagieren. Dazu unten mehr.
 Du benötigst einen Minecraft Client.
 
 Normalerweise wirst du schon den Minecraft Launcher von Microsoft installiert
-haben. Über den Launcher installierst du den Minecraft Client Java Edition 1.18.
+haben. Über den Launcher installierst du den Minecraft Client Java Edition
+1.18.2.
 
-***ACHTUNG: Microsoft hat den Zugang auf die Minecraft-Ressourcen für den
-Download auf HTTPS beschränkt. Daher funktioniert der Download des Clients
-derzeit (26.12.2023; mclauncher-api 0.3.2) nicht. vgl.
-https://github.com/tomsik68/mclauncher-api/issues/76. Du kannst dir aber lokal
-das Repo https://github.com/LionZXY/mclauncher-api auschecken und lokal mit
-Maven bauen. Das führe ich hier aber nicht im Detail aus.***
+In diesem Fall brauchst du den Client nicht zu installieren.
 
-Falls du noch keinen Minecraft Client (und auch keinen Launcher) installiert
-hast, kannst du den Client mit dem Skript `bin/install-client` installieren. Das
-Skript wird eine Weile laufen und Dateien aus dem Internet herunter laden. In
-diesem Fall nutzt du keinen Minecraft Launcher -- der Launcher ist in dem Skript
-enthalten. Gestartet wird der Client in diesem Fall mit `bin/start-client`.
+Falls du aber noch keinen Minecraft Client (und auch keinen Launcher)
+installiert hast, kannst du den Client mit dem Skript `bin/install-client`
+installieren.
+
+Bevor du das Skript startest, musst du folgende Anpassung machen:
+
+* in `deps.edn` musst du die Version von `sk.tomsik68/mclauncher-api` auf
+  `0.3.7` setzen (`sk.tomsik68/mclauncher-api {:mvn/version "0.3.7"}`).
+
+Dann rufst du das Skript auf:
+
+```
+bin/install-client
+```
+
+Das Skript wird eine Weile laufen und Dateien aus dem Internet herunter laden.
+In diesem Fall nutzt du keinen Minecraft Launcher -- der Launcher ist in dem
+Skript enthalten.
+
+Nachdem das Skript den Client installiert hat, musst du das Start-Skript
+`bin/start-client` aufrufen.
+
+Bevor du das Skript startest, musst du folgende Anpassung machen:
+
+* in `bin\install-client` musst du die Zeile
+  `JAVA_CMD='C:\--dein-Pfad-zu-java\jdk-17.0.8+7\bin\java'` zu Beginn zufügen
+  (vgl. oben `bin/start-server`). Außerdem musst du am Ende das `sh` durch `tee
+  run-client` ersetzen.
+
+Nun rufst du das Skript auf:
+
+```
+bin/install-client hugo
+```
+
+Durch diesen Aufruf wird die Datei `run-client` erzeugt. In dieser Datei musst
+du folgende Anpassungen machen:
+
+* `-Djava.library.path` muss in Quotes (`'`) eingeschlossen werden.
+
+```
+'-Djava.library.path=C:\clojure\.......\client\versions\1.18.2\natives'
+```
+
+* Der Wert *hinter* `-cp` muss ebenfalls in Quotes (`'`) eingeschlossen werden.
+  Schau ganz genau hin! Der Wert ist seehhhhrrr lang. Insgesamt müsste es am
+  Ende etwa wie folgt aussehen. Hinter dem `-cp` fügst du das *öffnende* Quote
+  ein und vor `net.minecraft.client.main.Main` fügst du das *schließende* Quote
+  ein.
+
+```
+-cp 'C:\.......client\versions\1.18.2\1.18.2.jar' net.minecraft.client.main.Main...
+```
 
 Tipp: in `witchcraft-workshop\client\options.txt` solltest du
 `pauseOnLostFocus:false` setzen, damit du später mit `ALT-TAB` zwischen deinem
 Minecraft-Client-Fenster und VSCode umschalten kannst, ohne dass das Spiel
 automatisch pausiert.
+
+Nun kannst du den Client starten:
+
+```
+./run-client
+```
+
+Von nun an nutzt du nur `bin/start-server` und `./run-client`. Die anderen
+Sachen brauchst du nicht jedes Mal zu wiederholen.
 
 ## VSCode / Calva
 
