@@ -59,6 +59,36 @@ Du kannst dich dann über die Web-Konsole mit der EC2-Instanz verbinden und dami
 eine Bash-Shell öffnen. Beim Login musst du die Benutzerkennunf `ec2-user`
 angeben. In diese Shell gibst du dann die folgenden Befehle ein.
 
+## SWAP-Space einrichten
+
+Die `t4g.medium` Instanz hat 4 GB RAM. Allerdings steht dir dieser Speicher
+nicht vollständig für deinen Minecraft-Server-Prozess zur Verfügung, weil eine
+ganze Reihe weiterer laufender Prozesse ebenfalls RAM belegen. 
+
+Du kannst den Speicher aber um einen
+[SWAP-Space](https://de.wikipedia.org/wiki/Swapping) erweitern. Dadurch hast du
+mehr (virtuellen) Speicher für deine Prozesse zur Verfügung. Allerdings bremst
+dieser Speicher deine Prozess u.U. aus, weil das Betriebssystem bei Bedarf
+Speicherbereiche auf die Festplatte auslagert und/oder sie von der Festplatte in
+das RAM liest. Und das ist im Vergleich zu einem direkten Zugriff ins RAM
+erheblich langsamer.
+
+Am besten, du probierst es einfach aus uns justierst deine Einstellungen (vgl.
+unten).
+
+Den SWAP-Space richtest du [wie folgt in deiner EC2-Instanz
+ein](https://repost.aws/knowledge-center/ec2-memory-swap-file). Hier richte ich
+einen SWAP-Space mit 3 GB ein.
+
+```
+sudo bash
+fallocate -l 3G /swapfile
+chmod 600 /swapfile
+mkswap /swapfile
+swapon /swapfile
+echo '/swapfile swap swap defaults 0 0' >> /etc/fstab
+```
+
 ## Java installieren
 
 In [Install using the yum Package Manager on Amazon
@@ -114,10 +144,15 @@ ist einer, den ich gefunden habe. Weiter unten beschreibe ich, wie du deinen
 Server schützen kannst. __Vorerst solltest du den Zugriff aus dem Internet auf
 Port 25555 nicht erlauben/einrichten__.
 
-Nun kannst du den Server starten.
+Nun kannst du den Server starten. Hier starte ich den Server mit 3 GB
+Heap-Größe. Da wir 7 GB (4 GB RAM + 3 GB SWAP) insgesamt zur Verfügung haben,
+sollten 3 GB eine gute Wahl sein. Wenn wir den Heap zu groß wählen, laufen wir
+Gefahr, dass ständig geswappt wird und unser Server dadurch extrem ausgebremst
+wird. Aber probiere ruhig etwas rum mit verschiedenen Heap-Größen. Ein größerer
+Heap erlaubt dir, mehr Spieler gleichzeitig am Server angemeldet zu haben.
 
 ```
-MEMORY=2G ./bin/start-server
+MEMORY=3G ./bin/start-server
 ```
 
 Beim ersten Mal musst du noch der Lizenz zustimmen, indem du `y` und ENTER
@@ -137,14 +172,16 @@ folgendes sehen:
 nREPL server started on port 25555 on host localhost - nrepl://localhost:25555
 ```
 
-Du kannst den Server durch `strg-c` (bzw. `ctrl-c`) runterfahren.
+Du kannst den Server durch `strg-c` (bzw. `ctrl-c`) oder das Kommando `stop`
+runterfahren. Der Server sichert dann noch die Spielinformationen und beendet
+sich.
 
 ## Zugriff via SSH-Tunnel
 
 Wir wollen unseren Minecraft-Server und den nREPL-Server über das Internet
 ansprechen können. Wir möchten aber nicht, dass jeder, der zufällig die
 IP-Adresse unserer EC2-Instanz errät und dann auf Port 25555 den
-Minecraft-Server kontaktiert, auch auf unserem Server mitspielt.
+Minecraft-Server kontaktiert, auch auf unserem Server mitspielt (vgl. oben).
 
 ### SSH
 
@@ -192,7 +229,8 @@ deine EC2-Instanz, falls du das noch nicht gemacht hast und öffnest eine Shell.
 
 Als erstes erstellen wir das Verzeichnis `/home/ec2-user/ssh-keys` und erzeugen
 darin den digitalen Schlüssel. Das Programm fragt dich nach einem Passwort. Das
-solltest du unbedingt vergeben.
+solltest du unbedingt vergeben. Dieses Passwort musst du deinen Freunden
+ebenfalls mitteilen.
 
 ```
 mkdir /home/ec2-user/ssh-keys
@@ -253,7 +291,7 @@ sudo chown -R minecraft:minecraft ~minecraft/.ssh
 sudo chmod go-rwx ~minecraft/.ssh
 ```
 
-Ab diesem Zeitpunkt kann jeder, der über den passenden __privaten Schlüssel__
+Ab diesem Zeitpunkt kann jeder, der über den __privaten Schlüssel__
 `/home/ec2-user/ssh-keys/minecraft_rsa` zu dem soeben installierten öffentlichen
 Schlüssel verfügt, einen SSH-Tunnel aufbauen.
 
@@ -284,6 +322,35 @@ aussieht. Du musst noch die `<ec2-ip-adresse>` deiner EC2-Instanz eintragen.
 ssh -v -i c:\clojure\minecraft_rsa minecraft@<ec2-ip-adresse> -L 35555:localhost:25555 -L 35565:localhost:25565 -N
 ```
 
+Auf einigen Windows-Rechnern kann es zu folgender Fehlermeldung kommen:
+
+```
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@         WARNING: UNPROTECTED PRIVATE KEY FILE!          @
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+Permissions for 'minecraft_rsa' are too open.
+It is required that your private key files are NOT accessible by others.
+```
+
+Das ssh-Programm macht dich darauf aufmerksam, dass der Zugriff auf die Datei
+`minecraft_rsa` nicht genügend eingeschränkt ist und damit könnten u.U. andere
+Benutzer, die ebenfalls an deinem Rechner arbeiten können, diese Datei lesen.
+Das stellt aber ein Sicherheitsrisiko dar, weil die Datei ja ein __privater__
+Schlüssel ist.
+
+Du musst den Zugriff auf die Datei also erst einmal einschränken, bevor du sie
+nutzen kannst.
+
+Das machst du unter Windows-CMD wie folgt:
+
+```
+Set Key="minecraft_rsa"
+Icacls %Key% /Inheritance:d
+TakeOwn /F %Key%
+Icacls %Key% /Grant:r %UserName%:F
+Icacls %Key% /Remove:g "Authenticated Users" BUILTIN\Administrators BUILTIN Everyone System Users
+```
+
 ### Minecraft spielen
 
 Nun startest du über deinen Windows-Minecaft-Launcher die Java Edition 1.18.2,
@@ -291,3 +358,21 @@ wählst den Multiplayer Modus und fügst einen Server mit der Server-Adresse
 `localhost:35565` zu.
 
 Und los geht's!
+
+Falls alles funktioniert, kannst du nun den __privaten__ Schlüssel
+`minecraft_rsa` an deine Freunde weitergeben und ihnen das Passwort verraten.
+Deine Freunde können nun ebenfalls einen SSH-Tunnel öffenen und ihr könnte auf
+deinem Minecraft-Server zusammen spielen.
+
+Viel Spaß dabei!
+
+### nREPL testen
+
+Von das CMD-Shell aus kannst du auch prüfen, ob deine nREPL-Verbindung zum
+Minecraft-Server funktioniert. Wenn du die folgenden beiden Zeilen eingibst,
+müsstest du auf einem Server die Ausgabe `Hello, world!` sehen.
+
+```
+deps -Sdeps "{:deps {nrepl/nrepl {:mvn/version ""1.0.0""}}}" -M -m nrepl.cmdline -c --host 127.0.0.1 --port 35555
+(.println System/out "Hello, world!")
+```
