@@ -2268,14 +2268,14 @@ Wenn die `if`-Form ausgewertet wird, wird als erstes `<cond>` ausgewertet. Die
 > Das ist eine Ausnahme, zu der oben beschriebenen Auswertungsregel. Kannst du
 > erklären, wieso?
 
-Falls `<cond>` zu **truthy** auswertet, wird anschließend die `then-form`
+Falls `<cond>` zu **truthy** auswertet, wird anschließend die `<then-form>`
 ausgewertet und der Auswertungs-Wert wird als Wert der `if`-Form geliefert. Die
-`else-form` wird in diesem Fall also **gar nicht ausgewertet**.
+`<else-form>` wird in diesem Fall also **gar nicht ausgewertet**.
 
 Andernfalls (also falls `<cond>` **nicht** zu **truthy** auswertet) wird
-anschließend die `else-form` ausgewertet und der Auswertungs-Wert wird als Wert
-der `if`-Form geliefert. Die `then-form` wird in diesem Fall also **gar nicht
-ausgewertet**.
+anschließend die `<else-form>` ausgewertet und der Auswertungs-Wert wird als
+Wert der `if`-Form geliefert. Die `<then-form>` wird in diesem Fall also **gar
+nicht ausgewertet**.
 
 **Beispiele**:
 
@@ -2294,8 +2294,8 @@ In der `if`-Form ist die `<else-form>` **optional**. Das schreibe ich so auf:
 > Das `?` bedeutet, dass die Form **optional** ist. Wir hatten weiter oben schon
 > über diese Notation gesprochen.
 
-Falls `<cond>` nicht **truthy** ist, wird `nil` geliefert, falls die `else-form`
-nicht angegeben ist.
+Falls `<cond>` nicht **truthy** ist, wird `nil` geliefert, falls die
+`<else-form>` nicht angegeben ist.
 
 ```
 (if :foo :bar :foobar)  ;=> :bar
@@ -2440,14 +2440,15 @@ Folge sondern nur ein Wert.
 > Ein sehr wichtiger Unterschied zwischen Clojures Schleifen-Konstrukten und
 > jenen aus den **[imperativen
 > Programmiersprachen](https://de.wikipedia.org/wiki/Imperative_Programmierung)**
-> ist, dass Clojures Schleifen **Ausdrücke/Expressions** sind --- sie also
-> **einen Wert haben**. In den imperativen Programmiersprachen sind Schleifen
-> i.d.R. **Anweisungen/Statements** --- diese beeinflussen zwar den
+> ist, dass viele von Clojures Schleifen **Ausdrücke/Expressions** sind --- sie
+> also **einen Wert haben**. In den imperativen Programmiersprachen sind
+> Schleifen i.d.R. **Anweisungen/Statements** --- diese beeinflussen zwar den
 > Programmfluss (d.h., die steuern, welche Codezeile als nächstes ausgeführt
 > wird und wie häufig die Schleife durchlaufen wird), aber sie **haben keinen
 > Wert**. Ihre *Wirkung* entfalten sie ausschließlich durch **Seiteneffekte**
 > (vgl. oben) --- d.h., sie setzen eine **Variable** (um z.B. eine Summe zu
-> bilden) oder geben etwas aus etc. 
+> bilden) oder geben etwas aus oder sorgen dafür, dass die Methode verlassen
+> wird etc. 
 
 In vielen Fällen, in denen du in einer imperativen Programmiersprache eine
 Schleife nutzen würdest, kannst du in Clojure einfach HOFs verwenden (z.B. `map`
@@ -2458,13 +2459,54 @@ eigenständiges/explizites Schleifen-Konstrukt**.
 > Abbruchkriterien falsch, [so dass die Schleife einen Durchlauf zu viel oder zu
 > wenig macht](https://de.wikipedia.org/wiki/Off-by-one-Error#Beispiele).
 
-Bevor wir uns Beispiele zu Schleifen anschauen, lernen wir einige neue Clojure
-Schleifen-artige-Funktionen/Makros kennen, die wir anschließend verwenden
-werden.
+Wir schauen uns nun einige von Clojures Schleifen-artigen Funktionen/Makros an:
 
+* `map`, `filter`, `remove`, `keep`
+* `dotimes`
 * `for`
 * `reduce`
+* `iterate`
 * `loop`/`recur`
+
+> Ich nutze hier den Bezeichner _Schleife_ und spreche von
+> _Schleifendurchläufen_. Eigentlich wäre es besser, wenn ich stattdessen von
+> _Iterationen_ und _iterieren_ sprechen würde. Denn beim _Wiederholen_ von
+> Dingen ist es nicht entscheidend, dass ein Schleifenkonstrukt verwendet wird,
+> sondern dass eine gewisse Funktionalität wiederholt ausgeführt wird. Und für
+> diesen Sachverhalt nutzt man den Bezeichner _Iteration_. Später werden wir
+> auch sehen, dass man durch _Rekursion_ ein _iteratives_ Verfahren (einen
+> iterativen Prozess) implementieren kann und das ist dann eben auch keine
+> Schleife. Aber ich werde einfach weiterhin von _Schleifen_ sprechen und hoffe,
+> dass du verstehst, was gemeint ist. 
+
+### `map`, `filter`, `remove`, `keep`
+
+Diese HOFs haben wir schon kennen gelernt und ich führe sie hier nur auf, weil
+sie es dir erlauben, _etwas_ wiederholt auf den Elementen einer Collection zu
+tun. Sie alle nehmen eine Collection als Eingabe und liefern eine Liste/Sequence
+von Funktionsauswertungen als Ergebnis, die ggf. weniger (aber niemals mehr)
+Elemente hat als die Eingabe. 
+
+Diese Formen sehen nicht aus wie _typische_ Schleifen. Sie haben und brauchen
+kein explizites Abbruchkriterium, weil sie immer alle Elemente der
+Eingabe-Collection verarbeiten.
+
+### `dotimes`
+
+`(dotimes [<name> <n>] <body>)` ist eine Funktion, die _etwas_ (den `<body>`)
+`<n>`-mal ausführt und `nil` liefert.
+
+Die Funktion verhält sich so ähnlich wie eine imperative Schleife: sie
+liefert/hat __keinen Wert__ und ihr Nutzen besteht darin, dass du im `<body>`
+Dinge tun kannst, die einen Seiteneffekt haben.
+
+> Alle Clojure-Funktionen, die mit `do` beginnen, sind _imperative_ Konstrukte.
+> Diese `do***` Formen, haben keinen Wert.
+
+```
+(dotimes [a 5]
+  (println a))
+```
 
 ### `for`
 
@@ -2539,8 +2581,9 @@ können wir die Collection/Liste auch mit Hilfe der Funktion `range` erzeugen
 ;=> ("<1>" "<2>" "<3>" "<4>")
 ```
 
-> Achtung: es muss wirklich `(range 1 5)` und nicht `(range 1 4)` lauten. Kannst
-> du dir vorstellen, wieso das Sinn machen könnte?
+> Achtung: um die Werte 1, 2, 3 und 4 zu erhalten, es muss wirklich `(range 1
+> 5)` und nicht `(range 1 4)` lauten. Kannst du dir vorstellen, wieso das Sinn
+> machen könnte?
 
 Der Operator `for` wird auch als *Listen-Erzeuger* (engl. [*list
 comprehension*](https://de.wikipedia.org/wiki/List_Comprehension)) bezeichnet.
@@ -2549,14 +2592,13 @@ Du kannst sogar mehrere `name-collection`-Paare angeben. Das Ergebnis ist, dass
 diesen ausführt und die Ergebnisse in der Liste liefert:
 
 ```
-(for [x '[x y z] 
+(for [x [:a :b :c]
       y (range 1 4)]
-  [x  y])
-;=> ([x 1] [x 2] [x 3] [y 1] [y 2] [y 3] [z 1] [z 2] [z 3])
+  [x  y]) ;=> ([:a 1] [:a 2] [:a 3] [:b 1] [:b 2] [:b 3] [:c 1] [:c 2] [:c 3])
 ```
 
 Es handelt sich dabei um zwei **ineinander geschachtelte Schleifen**, wobei die
-**äußere** Schleife über `'[x y z]` schleift und die **innere** Schleife über
+**äußere** Schleife über `[:a :b :c]` schleift und die **innere** Schleife über
 `(range 1 4)` schleift.
 
 > Achte darauf, dass erst *über* `y`
@@ -2568,8 +2610,10 @@ Es handelt sich dabei um zwei **ineinander geschachtelte Schleifen**, wobei die
 
 Aber `for` hat noch weitere *coole* Features: du kannst `:when <condition>`
 (ggf. auch mehrfach) benutzen, um zu steuern, welche Elemente (nicht) durch den
-Rumpf verarbeitet und der Ergebnisliste hinzugefügt werden sollen. Im folgenden
-Beispiel wird der Body nur ausgewertet, falls `x` gerade ist.
+Rumpf verarbeitet und der Ergebnisliste hinzugefügt werden sollen (also so
+ähnlich wie bei `filter`).
+
+Im folgenden Beispiel wird der Body nur ausgewertet, falls `x` gerade ist.
 
 ```
 (for [x (range 0 3)
@@ -2580,7 +2624,7 @@ Beispiel wird der Body nur ausgewertet, falls `x` gerade ist.
 ```
 
 > Wir hatten oben erwähnt, dass wir bei Schleifen vielleicht nicht zu jedem
-> Eingabe-Element (die die 2-Tupel des kartesischen Produkts) auch ein
+> Eingabe-Element (die 2-Tupel des kartesischen Produkts) auch ein
 > Ausgabe-Element liefern möchten. Mit `:when` kannst du genau dies umsetzen.
 > Beachte, wo wir das `:when` hingeschrieben haben.
 
@@ -2661,7 +2705,7 @@ einem bestimmten Element **beenden**.
   [x y])
 ```
 
-### `reduce`/`reduced`
+### `reduce`/`reduced`/`reductions`
 
 Falls du die Elemente während der Schleifendurchläufe nicht einzeln/isoliert
 betrachten möchtest sondern sie auf ein bestimmte Weise **zusammenfassen**
@@ -2672,21 +2716,73 @@ möchtest, benötigst du eine Möglichkeit, dir etwas zu **merken**.
 
 Die Funktion `(reduce <f> <val> <coll>)` erlaubt dir, über eine Collection/Folge
 zu **schleifen** und dabei von einem Schleifendurchlauf zum jeweils nächsten
-Schleifendurchlauf einen **Wert** zu liefern. **Dieser Wert** ist das
-*Gedächtnis*, das uns z.B. Erlaubt, Zahlen zu summieren.
+Schleifendurchlauf einen **Wert** zu liefern. **Dieser (Zwischen-)Wert** ist das
+*Gedächtnis*, das uns z.B. erlaubt, Zahlen zu summieren.
 
-TBD
+Im ersten Durchlauf wird die Funktion `<f>` auf den Wert `<val>` und das erste
+Element `<e_1>` der Collection `<coll>` anwendet. Dies liefert den Wert `<f_1>`.
+Im zweiten Durchlauf wird die Funktion `<f>` auf dem Ergebnis `<f_1>` des ersten
+Durchlaufs und dem zweiten Element `<e_2>` der Collection angewendet, dies
+liefert `<f_2>` u.s.w. Als Ergebnis der `reduce`-Form/Schleife wird der letzte
+Wert von `<f_x>` geliefert.
+
+```
+(reduce str :a [:b :c])  ;=> ":a:b:c"
+(reduce + 0 (range 10))  ;=> 45
+```
+
+Mit `(reduced <x>)` kann die `reduce`-Schleife vorzeitig beendet werden. In
+diesem Fall wertet die `reduce`-Form zum Wert `<x>` aus.
+
+```
+(reduce #(let [s (+ %1 %2)]
+           (if (> s 10)
+             (reduced s) ;; vorzeitiges Schleifenende
+             s))
+        (range 10))      ;=> 15
+```
+
+Mit `reductions` erhältst du die Liste aller Zwischenergebnisse anstatt nur das
+Endergebnis:
+
+```
+(reductions #(let [s (+ %1 %2)]
+               (if (> s 10)
+                 (reduced s)
+                 s))
+            (range 10))  ;=> (0 1 3 6 10 15)
+```
 
 ### `iterate`
 
-TBD
+`(iterate <f> <x>)` liefert die __unendliche__ Liste/Sequenz `((<f> <x>) (<f>
+(<f> <x>)) (<f> (<f> (<f> <x>))) ,,,)`. 
 
-### `dotimes`
+> Du solltest vorsichtig sein, wenn du diese Funktion benutzt, da das Ergebnis
+> nicht ausgegeben werden kann, weil es ja .... unendlich ist :-) Daher nutzen
+> wir hier `(take <n> <coll>)`, um nur die ersten `<n>` Element auszugeben.
 
-TBD
+```
+(take 6 (iterate inc 5)) ;=> (5 6 7 8 9 10)
+```
+
 ### `loop`/`recur`
 
-TBD
+`(loop <bindings> <body>)` ist eine Schleife, die im ersten Durchlauf in
+`<bindings>` lokale Namen an die angegebenen Werte bindet und damit den `<body>`
+auswertet. Über `recur` im `<body>` kann ein weiterer Schleifendurchlauf inkl.
+Angabe von neuen Werten für die `<bindings>` erfolgen. Als Ergebnis der
+`loop`-Form wird der Wert der letzten `<body>`-Auswertung geliefert. 
+
+```
+(loop [x 0                       ; Initial-Zustand: x ist "Zähler"
+       y []]                     ;                  y als "Aggregation" ist zu Beginn leer.
+  (if (< x 5)                    ; Abbruch- bzw. Fortsetzungs-Kriterium
+    (recur                       ; weiterer Schleifendurchlauf inkl. Ergebnis-Aggregation
+      (inc x)                    ; Wert für x für den neuen Schleifendurchlauf
+      (conj y (str "<" x ">")))  ; Wert für y für den neuen Schleifendurchlauf
+    [x y]))                      ;=> [5 ["<0>" "<1>" "<2>" "<3>" "<4>"]] ;; Ergebnis der Schleife.
+```
 
 -------------------------------------------------------------------------------
 ## TBD: Rekursion, der Stack, Endrekursion
