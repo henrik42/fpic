@@ -2913,7 +2913,119 @@ aufgerufen.
 ## TBD: Datentypen als Funktion
 
 -------------------------------------------------------------------------------
-## TBD: Destructuring
+## Destructuring
+
+Wir haben schon einige __zusammengesetzte (bzw. komplexe) Datentypen
+(Collections)__ kennen gelernt:
+
+* Vektoren: `["a" :b 'c]`
+* Listen: `("a" :b 'c)`
+* Sets: `#{"a" :b 'c}`
+* Maps: `{"a" 1 :b 2 'c 3}`
+
+Um auf die __Elemente__ dieser Collections zuzugreifen, haben wir verschiedene
+Funktionen verwendet:
+
+* `(first ["a" :b 'c]) ;=> "a"`
+* `(second '("a" :b 'c)) ;=> :b`
+* `(contains? #{"a" :b 'c} "a")`
+* `(get {"a" 1 :b 2 'c 3} 'c) ;=> 3`
+
+Und wir haben gelernt, dass einige dieser Collections selber sich wie eine
+Zugriffsfunktion __verhalten__:
+
+* `(["a" :b 'c] 0) ;=> "a"`
+* `(#{"a" :b 'c} "a") ;=> "a"`
+* `({"a" 1 :b 2 'c 3} 'c) ;=> 3`
+
+Es kommt häufig vor, dass wir in unserem Programm solche Collection erhalten.
+Zum einen als Parameterwert, wenn unsere Funktion aufgerufen wird und als
+Rückgabewert, wenn wir selber andere Funktionen aufrufen.
+
+__Beispiel:__ Wir schreiben eine Funktion mit __einem Parameter__. Dieser
+Parameter (`x` in dem folgenden Quelltext) ist eine Map mit den Schlüsseln
+`:höhe` und `:breite`. Unsere Funktion soll als Ergebnis eine Map mit den
+Schlüsseln `:umfang` und `:fläche` liefern.
+
+Wir nutzen eine `let`-Form, um die Werte aus der Map zu extrahieren (Keywords
+können sich auch wie Zugriffsfunktionen verhalten!) und an lokale Namen zu
+binden.
+
+```
+(defn umfang-und-fläche [x]
+  (let [höhe (:höhe x)
+        breite (:breite x)]
+    {:umfang (* 2 (+ höhe breite))
+     :fläche (* höhe breite)}))
+```
+
+Da in Clojure diese Verwendung von Maps allgegenwärtig ist, gibt den
+__Destructuring__-Mechanismus. Dieser wird häufig auch __Pattern Matching__
+genannt.
+
+Dieser Mechanismus erlaubt es, an jener Stelle, wo der __Parameter definiert__
+wird, anstatt eines __Namen__ (hier `x`) ein __Muster__ zu verwenden. Mit diesem
+Muster beschreibst du, wie der __Parameterwert__ (die Map) __zerlegt__ werden
+soll.
+
+### Map-Destrukturierung
+
+Um Maps zu destrukturieren, nutzt du anstatt eines Namen eine __Map__. Diese
+kann den Schlüssel `:keys` nutzen. Der Wert ist in diesem Fall ein __Vektor__
+mit __Namen__. Diese Namen geben an, welches __Keys__ aus der Map zu extrahieren
+sind (hier `:höhe` und `:breite`) __und__ sie geben an, an welche __lokale
+Namen__ die Werte dieser Schlüssel zu binden sind.
+
+Damit entfällt die Notwendigkeit, die Werte explizit über Zugriffe aus der Map
+zu extrahieren und via `let` an lokale Namen zu binden.
+
+```
+(defn umfang-und-fläche [{:keys [höhe breite]}]
+  {:umfang (* 2 (+ höhe breite))
+   :fläche (* höhe breite)})
+```
+
+Manchmal möchtest du die Werte der Schlüssel an Namen binden, die __nicht__ den
+__Schlüsseln__ entsprechen. In diesem Fall gibt du ebenfalls eine Map an, aber
+diesmal musst du die __Schlüssel__ und die __lokalen Namen__ beide explizit
+nennen. In dem folgenden Beispiel sind `b` und `h` die lokalen Namen.
+
+__ACHTUNG:__ beachte, dass in der Map die __Namen__ (`h` und `b`) an der
+__Schlüsselposition__ stehen und die __Schlüssel__ (`:höhe` und `:breite`), auf
+die zugegriffen werden soll, stehen an der __Wertposition__!
+
+```
+(defn umfang-und-fläche [{h :höhe b :breite}]
+  {:umfang (* 2 (+ h b))
+   :fläche (* h b)})
+```
+
+Häufig kommt es vor, dass du nicht nur auf die Elemente des Parameterwerts
+zugreifen möchtest, sondern du möchtest __zusätzlich__ auf den __Parameterwert
+als ganzes__ zugreifen, z.B. um ihn selber als Argumentwert für einen
+Funktionsaufruf zu verwenden.
+
+In diesem Fall fügst du der Map den Schlüssel `:as` und einen Namen zu
+(`eine-map` im folgenden Beispiel). Dadurch wird der Parameterwert an diesen
+lokalen Namen gebunden.
+
+Das Beispiel habe ich so erweitert, dass nun zusätzlich der Parameterwert als
+`:arg`-Wert mit im Ergebnis geliefert wird.
+
+```
+(defn umfang-und-fläche [{h :höhe b :breite :as eine-map}]
+  {:umfang (* 2 (+ h b))
+   :fläche (* h b)
+   :arg eine-map})
+```
+
+__Anmerkung:__ Du kannst nicht nur Maps auf diese Weise destrukturieren sondern
+alle assoziativen Datentypen. Mehr dazu findest du
+[hier](https://clojure.org/guides/destructuring#_associative_destructuring).
+
+### Vektor-Destrukturierung
+
+TBD
 
 -------------------------------------------------------------------------------
 ## TBD: Threading

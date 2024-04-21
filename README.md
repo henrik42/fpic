@@ -77,15 +77,16 @@ gesamten Java-Ökosystem, so dass Clojure keine Nischensprache ist, sondern
 *überall* läuft.
 
 > Es gibt sogar [eine Bank, die Clojure
-> einsetzen](https://www.finextra.com/newsarticle/36297/nubank-buys-firm-behind-clojure-programming-language).
+> einsetzt](https://www.finextra.com/newsarticle/36297/nubank-buys-firm-behind-clojure-programming-language).
 > Aber es gibt [weitere Firmen](https://clojure.org/community/companies).
 
 Außerdem bietet Clojure durch die
 [REPL](https://clojure.org/guides/repl/basic_usage) einen sehr niedrig
 schwelligen Zugang zum interaktiven Programmieren. Die Schülerinnen können
 während des Programmierens ständig mit dem laufenden Programm interagieren.
-Dadurch ergeben sich sehr kurze Think-Code-Run-Feedback-Zyklen, die dabei
-helfen, verschiedene Lösungen zu einem Problem auszuprobieren und eigene
-Programmierfehler frühzeitig zu finden.
+Dadurch ergeben sich sehr kurze
+[Think-Code-Run-Feedback-Zyklen](https://practical.li/clojure/introduction/repl-workflow/),
+die dabei helfen, verschiedene Lösungen zu einem Problem auszuprobieren und
+eigene Programmierfehler frühzeitig zu finden.
 
 Programmieren in Clojure macht einfach Spaß!
