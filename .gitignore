@@ -1,5 +1,6 @@
-.calva/output-window/output.calva-repl
-.clj-kondo/.cache/v1/lock
-.clj-kondo/.cache/v1/clj/mac-back-api.core.transit.json
-.clj-kondo/.cache/v1/clj/mac-back-api.server.transit.json
-.lsp/.cache/db.transit.json
+.calva/
+.clj-kondo/
+.lsp/
+.cpcache
+.nrepl-port
+.rebel_readline_history

@@ -2366,9 +2366,27 @@ Falls `<cond>` zu **falsy** auswertet, wertet die `when`-Form zu `nil` aus.
 
 ### `condp`
 
+### `cond->`
+
 ### `case`
 
-### Ausführungsbäume
+
+### Ausführungsbäume vs. Ausführungsfolgen
+
+> TBD: In diesem Abschnitt möchte ich darauf hinweisen, dass imperative
+> Programme vor allem aus __Folgen von Anweisungen__ bestehen. Der Programmfluss
+> ergibt sich aus dieser Folge. Natürlich gibt es auch die Ausdrücke und
+> Funktionsaufrufe, die am ehesten den Formen von Clojure entsprechen.  
+> 
+> In Clojure gibt es bis auf wenige Ausnahmen (u.a. `do`, `let`, `when`) keine
+> __Folgen von Formen__. Stattdessen ergibt sich der Programmfluss durch die
+> __Auswertung von rekursiven/ineinander geschachtelten Formen__. Dies kann man
+> sich als einen __(Ausführungs-)Baum__ vorstellen, bei dem während der
+> Auswertung beginnend an der Wurzel durch die Astgabelungen (rekursiver Abstieg
+> in die geschachtelten Formen) hin zu den Blättern aufgestiegen wird. Die
+> (terminalen) Werte stehen an den __Blättern__ und werden durch Auswertung (von
+> Formen/Funktionen) als Wert wieder hinab zur Wurzel _reduziert_. Der _Wert des
+> Programms_ ist schließlich jener, der am Ende hin zur Wurzel reduziert wurde.
 
 -------------------------------------------------------------------------------
 ## Schleifen
