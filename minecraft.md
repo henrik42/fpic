@@ -49,22 +49,20 @@ du dir das Witch-Craft-Workshop Repo in das Verzeichnis.
 
 ```
 cd c:\clojure\witchcraft\
-git clone https://github.com/lambdaisland/witchcraft-workshop/
+git clone https://github.com/henrik42/witchcraft-workshop
 ```
 
 ## Minecraft Server
 
-Du musst die beiden folgenden Zeilen in `bin/start-server` zufügen:
+Den Server startest du wie folgt. Die Angabe
+`<dein-java-installations-verzeichnis>` musst du mit dem
+Installationsverzeichnis ersetzen, unter dem du Java installiert hast (vgl.
+oben). Achte dabei auf die richtigen Slahes. Du musst hier die Forward-Slashses
+(`/`) verwenden --- nicht die Backward-Slashses (`\`), die unter Windows
+verwendet werden.
 
 ```
-JAVA_CMD='C:\--dein-Pfad-zu-java\jdk-17.0.8+7\bin\java'
-MEMORY=1G
-```
-
-Nun kannst du den Server starten:
-
-```
-bin/start-server
+JAVA_CMD=/c/<dein-java-installations-verzeichnis>/bin/java ./bin/start-server
 ```
 
 Das Skript lädt das
@@ -89,72 +87,24 @@ haben. Über den Launcher installierst du den Minecraft Client Java Edition
 In diesem Fall brauchst du den Client nicht zu installieren.
 
 Falls du aber noch keinen Minecraft Client (und auch keinen Launcher)
-installiert hast, kannst du den Client mit dem Skript `bin/install-client`
+installiert hast, kannst du den Client mit dem Skript `./bin/install-client`
 installieren.
 
-Bevor du das Skript startest, musst du folgende Anpassung machen:
-
-* in `deps.edn` musst du die Version von `sk.tomsik68/mclauncher-api` auf
-  `0.3.7` setzen (`sk.tomsik68/mclauncher-api {:mvn/version "0.3.7"}`).
-
-Dann rufst du das Skript auf:
+Das Skript rufst du wie folgt auf. Die Angabe `<dein-spitzname>` ersetzt du mit
+einem Namen. Mit diesem Namen sehen dich später die anderen Spieler.
 
 ```
-bin/install-client
+JAVA_CMD=/c/<dein-java-installations-verzeichnis>/bin/java ./bin/start-client <dein-spitzname>
 ```
 
 Das Skript wird eine Weile laufen und Dateien aus dem Internet herunter laden.
 In diesem Fall nutzt du keinen Minecraft Launcher -- der Launcher ist in dem
 Skript enthalten.
 
-Nachdem das Skript den Client installiert hat, musst du das Start-Skript
-`bin/start-client` aufrufen.
-
-Bevor du das Skript startest, musst du folgende Anpassung machen:
-
-* in `bin\install-client` musst du die Zeile
-  `JAVA_CMD='C:\--dein-Pfad-zu-java\jdk-17.0.8+7\bin\java'` zu Beginn zufügen
-  (vgl. oben `bin/start-server`). Außerdem musst du am Ende das `sh` durch `tee
-  run-client` ersetzen.
-
-Nun rufst du das Skript auf:
-
-```
-bin/install-client hugo
-```
-
-Durch diesen Aufruf wird die Datei `run-client` erzeugt. In dieser Datei musst
-du folgende Anpassungen machen:
-
-* `-Djava.library.path` muss in Quotes (`'`) eingeschlossen werden.
-
-```
-'-Djava.library.path=C:\clojure\.......\client\versions\1.18.2\natives'
-```
-
-* Der Wert *hinter* `-cp` muss ebenfalls in Quotes (`'`) eingeschlossen werden.
-  Schau ganz genau hin! Der Wert ist seehhhhrrr lang. Insgesamt müsste es am
-  Ende etwa wie folgt aussehen. Hinter dem `-cp` fügst du das *öffnende* Quote
-  ein und vor `net.minecraft.client.main.Main` fügst du das *schließende* Quote
-  ein.
-
-```
--cp 'C:\.......client\versions\1.18.2\1.18.2.jar' net.minecraft.client.main.Main...
-```
-
 Tipp: in `witchcraft-workshop\client\options.txt` solltest du
 `pauseOnLostFocus:false` setzen, damit du später mit `ALT-TAB` zwischen deinem
 Minecraft-Client-Fenster und VSCode umschalten kannst, ohne dass das Spiel
 automatisch pausiert.
-
-Nun kannst du den Client starten:
-
-```
-./run-client
-```
-
-Von nun an nutzt du nur `bin/start-server` und `./run-client`. Die anderen
-Sachen brauchst du nicht jedes Mal zu wiederholen.
 
 ## VSCode / Calva
 
