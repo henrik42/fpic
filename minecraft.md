@@ -57,8 +57,8 @@ git clone https://github.com/henrik42/witchcraft-workshop
 Den Server startest du wie folgt. Die Angabe
 `<dein-java-installations-verzeichnis>` musst du mit dem
 Installationsverzeichnis ersetzen, unter dem du Java installiert hast (vgl.
-oben). Achte dabei auf die richtigen Slahes. Du musst hier die Forward-Slashses
-(`/`) verwenden --- nicht die Backward-Slashses (`\`), die unter Windows
+oben). Achte dabei auf die richtigen Slashes. Du musst hier die Forward-Slashes
+(`/`) verwenden --- nicht die Backward-Slashes (`\`), die unter Windows
 verwendet werden.
 
 ```
