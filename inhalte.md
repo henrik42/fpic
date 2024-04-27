@@ -2957,20 +2957,24 @@ binden.
         breite (:breite x)]
     {:umfang (* 2 (+ höhe breite))
      :fläche (* höhe breite)}))
+
+(umfang-und-fläche {:höhe 3 :breite 2}) ;=> {:umfang 10, :fläche 6}     
 ```
 
 Da in Clojure diese Verwendung von Maps allgegenwärtig ist, gibt den
-__Destructuring__-Mechanismus. Dieser wird häufig auch __Pattern Matching__
+[__Destructuring__-Mechanismus](https://clojure.org/guides/destructuring).
+Dieser wird häufig auch [__Pattern Matching__
+(Musterabgleich)](https://de.wikipedia.org/wiki/Pattern_Matching#Programmierung)
 genannt.
 
 Dieser Mechanismus erlaubt es, an jener Stelle, wo der __Parameter definiert__
 wird, anstatt eines __Namen__ (hier `x`) ein __Muster__ zu verwenden. Mit diesem
-Muster beschreibst du, wie der __Parameterwert__ (die Map) __zerlegt__ werden
-soll.
+Muster beschreibst du, wie der __Parameterwert__ (in diesem Fall die Map)
+__zerlegt__ werden soll.
 
 ### Map-Destrukturierung
 
-Um Maps zu destrukturieren, nutzt du anstatt eines Namen eine __Map__. Diese
+Um Maps zu destrukturieren, nutzt du anstatt eines __Namen__ eine __Map__. Diese
 kann den Schlüssel `:keys` nutzen. Der Wert ist in diesem Fall ein __Vektor__
 mit __Namen__. Diese Namen geben an, welches __Keys__ aus der Map zu extrahieren
 sind (hier `:höhe` und `:breite`) __und__ sie geben an, an welche __lokale
@@ -2983,11 +2987,13 @@ zu extrahieren und via `let` an lokale Namen zu binden.
 (defn umfang-und-fläche [{:keys [höhe breite]}]
   {:umfang (* 2 (+ höhe breite))
    :fläche (* höhe breite)})
+
+(umfang-und-fläche {:höhe 3 :breite 2}) ;=> {:umfang 10, :fläche 6}     
 ```
 
 Manchmal möchtest du die Werte der Schlüssel an Namen binden, die __nicht__ den
 __Schlüsseln__ entsprechen. In diesem Fall gibt du ebenfalls eine Map an, aber
-diesmal musst du die __Schlüssel__ und die __lokalen Namen__ beide explizit
+diesmal musst du die __Schlüssel__ und die __lokalen Namen__ beide __explizit__
 nennen. In dem folgenden Beispiel sind `b` und `h` die lokalen Namen.
 
 __ACHTUNG:__ beachte, dass in der Map die __Namen__ (`h` und `b`) an der
@@ -2998,9 +3004,11 @@ die zugegriffen werden soll, stehen an der __Wertposition__!
 (defn umfang-und-fläche [{h :höhe b :breite}]
   {:umfang (* 2 (+ h b))
    :fläche (* h b)})
+
+(umfang-und-fläche {:höhe 3 :breite 2}) ;=> {:umfang 10, :fläche 6}     
 ```
 
-Häufig kommt es vor, dass du nicht nur auf die Elemente des Parameterwerts
+Häufig kommt es vor, dass du nicht nur auf die __Elemente__ des Parameterwerts
 zugreifen möchtest, sondern du möchtest __zusätzlich__ auf den __Parameterwert
 als ganzes__ zugreifen, z.B. um ihn selber als Argumentwert für einen
 Funktionsaufruf zu verwenden.
@@ -3017,10 +3025,43 @@ Das Beispiel habe ich so erweitert, dass nun zusätzlich der Parameterwert als
   {:umfang (* 2 (+ h b))
    :fläche (* h b)
    :arg eine-map})
+
+(umfang-und-fläche {:höhe 3 :breite 2}) ;=> {:umfang 10, :fläche 6, :arg {:höhe 3, :breite 2}}
+```
+
+__Anmerkung:__ Durch das Map-Destructuring wird nicht festgelegt, welche
+Schlüssel/Wert-Paare in dem Argumentwert vorhanden sein dürfen! Es erfolgt keine
+Einschränkung auf die aufgeführten Schlüssel. Die obige Funktion liefert für
+`(umfang-und-fläche {:höhe 3 :breite 2 :foo "bar"})` das Ergebnis `{:umfang 10,
+:fläche 6, :arg {:höhe 3, :breite 2, :foo "bar"}}`. Das zusätzliche
+Schlüssel-/Wert-Paar `[:foo "bar]` führt also nicht zu einem Fehler.
+
+Manchmal möchtest du dem Aufrufer deiner Funktion ersparen, alle Werte angeben
+zu müssen. Stattdessen soll ein voreingestellter
+__[Standardwert-Wert](https://de.wikipedia.org/wiki/Voreinstellung)__ (engl.
+_**default**_) verwendet werden, falls beim Aufruf eine bestimmte Angabe nicht
+gemacht wird.
+
+Solche Default-Werte kannst du mit Hilfe von `:or` angeben. In dem folgenden
+Beispiel nutzen wir den Wert __1__ für die `höhe`, falls keine Angabe beim
+Aufruf erfolgt. Und wir nutzen den Wert __3__ für die `breite`.
+
+Beachte, dass wir den lokalen Namen für die `:or`-Defaults angeben.
+
+```
+(defn umfang-und-fläche [{h :höhe 
+                          b :breite 
+                          :or {h 1 b 3} 
+                          :as eine-map}]
+  {:umfang (* 2 (+ h b))
+   :fläche (* h b)
+   :arg eine-map})
+
+(umfang-und-fläche {:breite 2 :foo "bar"}) ;=> {:umfang 6, :fläche 2, :arg {:breite 2, :foo "bar"}}
 ```
 
 __Anmerkung:__ Du kannst nicht nur Maps auf diese Weise destrukturieren sondern
-alle assoziativen Datentypen. Mehr dazu findest du
+alle __assoziativen__ Datentypen. Mehr dazu findest du
 [hier](https://clojure.org/guides/destructuring#_associative_destructuring).
 
 ### Vektor-Destrukturierung
