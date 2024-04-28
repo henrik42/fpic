@@ -133,10 +133,12 @@ Du hast nun:
 * den Server gestartet
 * den Client gestartet und dich mit dem Server verbunden
 * VSCode gestartet
+* und dich mit dem nREPL-Server verbunden
 
 Nun kannst du mit VSCode die Datei
 `witchcraft-workshop\repl_sessions\s01_warmup.clj` öffnen und anfangen, einzelne
-Formen auszuwerten.
+Formen auszuwerten (`alt-enter`; siehe auch [Calvas
+Keyboard-Shortcuts](https://calva.io/commands-top10/)).
 
 Als erstes solltest du die `ns`-Form auswerten, damit die Witchcraft-Namespaces
 geladen werden.
