@@ -17,7 +17,7 @@ runterladen und das Verzeichnis z.B. nach `C:\clojure\java` entpacken.
 
 ## Clojure CLI
 
-Du benötigst die Clojure CLI.
+Du benötigst die [Clojure CLI](https://clojure.org/reference/clojure_cli).
 
 Alternativ kannst du auch `deps.clj` nutzen. Das lässt sich [sehr leicht
 installieren](https://github.com/borkdude/deps.clj#quickstart).
@@ -139,7 +139,7 @@ Als erstes solltest du die `ns`-Form auswerten, damit die Witchcraft-Namespaces
 geladen werden.
 
 Anschließend kannst du beliebige Formen auswerten. Du kannst z.B. ein Huhn über
-die spawnen. Schau am besten mal nach oben, bevor du diese Form auswertest.
+dir spawnen. Schau am besten mal nach oben, bevor du diese Form auswertest.
 
 ```
 (wc/spawn (wc/add (wc/player) [0 20 0]) :chicken)
