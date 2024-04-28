@@ -3,7 +3,7 @@
 Wir wollen Clojure nutzen, um mit einem Minecraft-Server zu interagieren. 
 
 Ausgangspunkt ist das Github-Repo
-https://github.com/lambdaisland/witchcraft-workshop/. Du musst einige Dinge auf
+https://github.com/henrik42/witchcraft-workshop. Du musst einige Dinge auf
 deinem Computer vorbereiten, bevor wir richtig loslegen können.
 
 ## Java 17
@@ -44,11 +44,11 @@ Du benötigst Git (z.B. [Git for Windows](https://gitforwindows.org/)).
 
 ## witchcraft-workshop
 
-Am besten legst du dir ein Verzeichnis `c:\clojure\witchcraft\` an. Dann klonst
-du dir das Witch-Craft-Workshop Repo in das Verzeichnis.
+Am besten legst du dir ein Verzeichnis `c:\clojure\` an. Dann klonst du dir das
+Witch-Craft-Workshop Repo in das Verzeichnis.
 
 ```
-cd c:\clojure\witchcraft\
+cd c:\clojure\
 git clone https://github.com/henrik42/witchcraft-workshop
 ```
 
@@ -62,6 +62,7 @@ oben). Achte dabei auf die richtigen Slashes. Du musst hier die Forward-Slashes
 verwendet werden.
 
 ```
+cd 'c:\clojure\witchcraft-workshop'
 JAVA_CMD=/c/<dein-java-installations-verzeichnis>/bin/java ./bin/start-server
 ```
 
@@ -94,6 +95,7 @@ Das Skript rufst du wie folgt auf. Die Angabe `<dein-spitzname>` ersetzt du mit
 einem Namen. Mit diesem Namen sehen dich später die anderen Spieler.
 
 ```
+cd 'c:\clojure\witchcraft-workshop'
 JAVA_CMD=/c/<dein-java-installations-verzeichnis>/bin/java ./bin/start-client <dein-spitzname>
 ```
 
@@ -111,8 +113,12 @@ automatisch pausiert.
 Du benötigst [VSCode](https://code.visualstudio.com/download) mit der [Calva
 Erweiterung](https://calva.io/getting-started/).
 
-Anschließend kannst du dich mit dem nREPL-Server verbinden, der in dem Minecraft
-Server läuft.
+Anschließend kannst du dich mit dem [nREPL](https://nrepl.org/nrepl/)-Server
+verbinden, der in dem Minecraft Server läuft.
+
+Dazu drückst du in VSCode `ctrl+alt+c` `ctrl+alt+c` (also zweimal
+hintereinander) und wählst den Eintrag `Generic`. Als **_location_** gibst du
+`localhost:25555` ein.
 
 ## Coding
 

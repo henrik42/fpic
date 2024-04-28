@@ -1,0 +1,10 @@
+{:deps
+ {com.bhauman/rebel-readline {:mvn/version "0.1.4"}
+  org.clojure/tools.nrepl {:mvn/version "0.2.12"}
+  com.github.almasb/fxgl {:mvn/version "11.17"}}
+ :aliases 
+ {:dev {:main-opts ["-e" "(println \"Starte nrepl server...\")"
+                    "-e" "(require '[clojure.tools.nrepl.server :as nrepl])"
+                    "-e" "(defonce nrepl-server (nrepl/start-server))"
+                    "-e" "(spit \"./.nrepl-port\" (:port nrepl-server))"
+                    "-m" "rebel-readline.main"]}}}
