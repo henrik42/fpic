@@ -368,7 +368,7 @@ Viel Spaß dabei!
 
 ### nREPL testen
 
-Von das CMD-Shell aus kannst du auch prüfen, ob deine nREPL-Verbindung zum
+Von der CMD-Shell aus kannst du auch prüfen, ob deine nREPL-Verbindung zum
 Minecraft-Server funktioniert. Wenn du die folgenden beiden Zeilen eingibst,
 müsstest du auf einem Server die Ausgabe `Hello, world!` sehen.
 
