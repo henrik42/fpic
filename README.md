@@ -29,9 +29,10 @@ Internet benötigen. Im Prinzip reicht ein Smartphone inkl. Browser für die
 zusätzliche Software installieren zu müssen) und damit Eltern, Geschwister und
 Freunde an ihren Erfolgen teilhaben lassen. 
 
-Wir werden dann Schritt für Schritt die Programmiersprache
+Wir werden dann [Schritt für Schritt](inhalte.md) die Programmiersprache
 [Clojure](https://de.wikipedia.org/wiki/Clojure) erlernen. Falls alles gut
-läuft, wollen wir am Ende des Schuljahres in der Lage sein, mit Hilfe von
+läuft, wollen wir am Ende des Schuljahres in der Lage sein, eine
+[Online-Chatanwendung](mqtt-example/README.md) zu schreiben und mit Hilfe von
 Clojure einen [Minecraft-Server zu
 steuern](https://github.com/henrik42/witchcraft-workshop), so dass wir in der
 Lage sind, interaktiv das [Minecraft-Spiel während des Spielens zu
