@@ -120,6 +120,9 @@ Dazu drückst du in VSCode `ctrl+alt+c` `ctrl+alt+c` (also zweimal
 hintereinander) und wählst den Eintrag `Generic`. Als **_location_** gibst du
 `localhost:25555` ein.
 
+Weitere Infos findest du
+[hier](https://calva.io/connect/#connecting-without-jack-in) (Englisch).
+
 ## Coding
 
 Du hast nun:
