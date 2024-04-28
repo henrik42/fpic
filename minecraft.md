@@ -40,7 +40,10 @@ clojure -M -e "(+ 1 2)"
 
 ## Git
 
-Du benötigst Git (z.B. [Git for Windows](https://gitforwindows.org/)).
+Du benötigst [Git](https://de.wikipedia.org/wiki/Git) (z.B. [Git for
+Windows](https://gitforwindows.org/)). Wir brauchen Git nicht zwingend, um mit
+Git-Repos zu arbeiten, sondern wir wollen vor allem die [Git
+BASH](https://gitforwindows.org/) nutzen.
 
 ## witchcraft-workshop
 
