@@ -74,22 +74,22 @@
 
 ;; build-wall-4 berechnet erst die Liste von (x,y)-Positionen und wendet darauf
 ;; max-indexed an. Diese ruft unsere anonyme Funktion mit *zwei* Argumenten auf:
-;; einer fortlaufenen Zahl 0,1,2,3... (dem "Index") und dazu nacheinander die
-;; (x,y)-Postionen.
+;; einer fortlaufenden Zahl 0,1,2,3... (dem "Index") und dazu nacheinander den
+;; (x,y)-Positionen.
 ;;
 ;; Die Funktion, die die eigentliche Arbeit macht, nutzt wc/run-task-later, um
 ;; einem "Scheduler" zeitverzögerte Arbeitsaufträge (Tasks) zu übergeben. Der
 ;; Zeitversatz ergibt sich aus dem Index-Wert. Der Task ist wiederum eine
-;; anonyme Funktio, die wc/set-block aufruft.
+;; anonyme Funktion, die wc/set-block aufruft.
 ;;
 ;; Durch diesen Ansatz, wartet die Funktion build-wall-4 nicht darauf, dass die
 ;; Tasks ausgeführt werden: nur das Einstellen dieser Tasks wird in der Funktion
-;; erledigt. Die Tasks werden anschließend vom Scheduler mit der eingestellten
-;; Verzögerung ausgeführt.
+;; erledigt bevor sie sich beendet. Die Tasks werden anschließend vom Scheduler
+;; mit der eingestellten Verzögerung ausgeführt.
 (defn build-wall-4 [at & {:keys [xs ys]       ;; &-Rest -- dadurch optionale Angabe
                           :or {xs 2 ys 2}}]   ;; Default-Werte durch :or
-  (let [at (wc/loc at)]                       ;; Da sich `at` (die Spielerposition) über die Zeit ändert, machen wir eine Map raus, die sich nicht ändert!
-    (->>                                      ;; Threading-Last-Operator: Ergebnisse werden nacheinander "durchgereicht"
+  (let [at (wc/loc at)]                       ;; Da sich `at` (die Spielerposition) über die Zeit ändert, machen wir eine Map daraus, die sich nicht ändert!
+    (->>                                      ;; Thread-Last-Operator: Ergebnisse werden nacheinander "durchgereicht"
      (wall-positions xs ys)                   ;; Positionen berechnen
      (map-indexed                             ;; map mit Index
       (fn [i {:keys [x y]}]                   ;; wird von map-indexed mit (<index> <position>) aufgerufen (<position> wird destructured).
