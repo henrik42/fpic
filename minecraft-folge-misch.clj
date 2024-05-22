@@ -24,8 +24,6 @@
   (wc/fly! (wc/player))
   )
 
-
-
 (comment 
   (position-von (wc/loc (wc/player)))
   )
@@ -49,10 +47,11 @@
 (comment 
   (def e [3 3 3])
   (def m [0 0 0])
-  (bewegungs-richtung e m)
+  (bewegungsrichtung e m)
+  (bewegungsrichtung e e)
   )
 
-(defn bewegungs-richtung 
+(defn bewegungsrichtung 
   "Bewegungsrichtung `{:x <x> :y <y> :z <z>}` des Minion `m`, so dass er sich in Richtung der Entity `e` bewegt."
   [e m]
   (let [e-pos (position-von e)
@@ -61,24 +60,34 @@
         ;; Wir normieren/skalieren den Vektor so, dass er Länge 1 hat.  
         ;; https://de.wikipedia.org/wiki/Einheitsvektor
         q-p-length (mx/vlength q-p)
-        q-p-skaliert (mx/v* q-p (/ 1 q-p-length))]
+        ;; Falls der Vektor sehr klein ist, liefern wir als Ergebnis den Vektor.
+        ;; Damit vermeiden wir einen "Division durch 0"-Fehler.
+        q-p-skaliert (if (< q-p-length 0.001) 
+                       q-p
+                       (mx/v* q-p (/ 1.0 q-p-length)))]
     q-p-skaliert))
 
-(defn setzte-bewegungs-richtung!
+(defn setzte-bewegungsrichtung!
   "Setzt die Bewegungsrichtung der des Minion `m`, so dass er sich in Richtung der Entity `e` bewegt."
   [m e]
-  (let [{:keys [x y z]} (mx/v* (bewegungs-richtung e m) 0.2 #_ 1.0 #_ 0.1)]
+  ;; Durch den Faktor steuern wir, wie schnell sich die Entität bewegt.
+  (let [{:keys [x y z]} (mx/v* (bewegungsrichtung e m) 0.15)]
     (.setVelocity m (wc/vec3 x y z))))
 
 (comment
 
-  (def cow (wc/spawn (wc/player) :cow))
+  ;; Wir spawnen eine Kuh an der Spieler-Postion und geben ihr einen Namen
+  (def cow (doto (wc/spawn (wc/player) :cow)
+             (.setCustomName "MUUUHHHH!!!")
+             (.setCustomNameVisible true)))
+
+  ;; Als "Minion" nutzen wir einfach unseren Spieler.
   (def minion (wc/player))
 
   ;; Nun können wir die Kuh auf uns zubewegen lassen oder uns auf die Kuh
   ;; zubewegen.
-  (setzte-bewegungs-richtung! cow minion)
-  (setzte-bewegungs-richtung! minion cow)
+  (setzte-bewegungsrichtung! cow minion)
+  (setzte-bewegungsrichtung! minion cow)
 
   ;; Wir stellen fest:
   ;; 
@@ -91,26 +100,39 @@
   ;; Mögliche Verbesserungen:
   ;; 
   ;; 1) Wir müssen die Geschwindigkeit immer wieder setzen -- in einer Schleife!
-  ;;    Dabei haben wir aber das gleiche Problem wie bei den Mauern: dort hatten
-  ;;    wir festgestellt, dass wir die Schleife "verlassen" müssen, damit das
-  ;;    Spiel fortgesetzt wird. Wir könnten also z.B. Tasks benutzen, durch die
-  ;;    wir immer wieder die Geschwindigkeit setzen.
+  ;;    (vgl. wiederhole-setzte-bewegungsrichtung!) Dabei haben wir aber das
+  ;;    gleiche Problem wie bei den Mauern: dort hatten wir festgestellt, dass
+  ;;    wir die Schleife "verlassen" müssen, damit das Spiel fortgesetzt wird.
+  ;;    Wir könnten also z.B. Tasks benutzen, durch die wir immer wieder die
+  ;;    Geschwindigkeit setzen.
 
-  (def cow (wc/spawn (wc/player) :cow))
-  (def minion (wc/player))
+  (wiederhole-setzte-bewegungsrichtung! cow minion)
 
-  (wiederhole-setzte-bewegungs-richtung! cow minion)
-
-  (defn wiederhole-setzte-bewegungs-richtung! [& _]
+  ;; Wenn du die Funktion "umdefinierst", hört die Kuh bzw. die Kühe auf,
+  ;; unserem Spieler zu folgen.
+  (defn wiederhole-setzte-bewegungsrichtung! [& _]
     (println "Habe fertig"))
 
-  ;; Ruft einmalig `(setzte-bewegungs-richtung! m e)` auf und stellt einen Task
-  ;; ein, der dann erneut `(wiederhole-setzte-bewegungs-richtung! m e)` aufruft.
-  ;; Dadurch haben wir eine Schleife. Es ist "fast" eine Rekursion.
-  (defn wiederhole-setzte-bewegungs-richtung! [m e]
-    (#'setzte-bewegungs-richtung! m e)
-    (wc/run-task-later
-     #(#'wiederhole-setzte-bewegungs-richtung! m e)
-     3))
+  ;; Wie können das Ganz auch machen, ohne dass wir die Kuh an einen Namen
+  ;; binden. Dadurch können wir das z.B. auch machen, während der Spieler
+  ;; fliegt. Ansonsten würde unsere Kuh ja sofort abstürzen.
+  (wiederhole-setzte-bewegungsrichtung!
+   (doto (wc/spawn (wc/player) :cow)
+     (.setCustomName "MUUUHHHH!!!")
+     (.setCustomNameVisible true))
+   (wc/player))
 
   )
+
+;; Ruft einmalig `(setzte-bewegungsrichtung! m e)` auf und stellt einen Task
+;; ein, der dann erneut `(wiederhole-setzte-bewegungsrichtung! m e)` aufruft.
+;; Dadurch haben wir eine Schleife.  
+;; Dieser Schleife fehlt das Abbruchkriterium! Es ist "fast" eine
+;; (Endlos-)Rekursion. Durch die Re-definition der Funktion (vgl. oben) kannst
+;; du aber während deiner REPL-Sitzung die Schleife bzw. das wiederholte
+;; Aufrufen beenden.
+(defn wiederhole-setzte-bewegungsrichtung! [m e]
+  (#'setzte-bewegungsrichtung! m e)
+  (wc/run-task-later
+   #(#'wiederhole-setzte-bewegungsrichtung! m e)
+   3))
