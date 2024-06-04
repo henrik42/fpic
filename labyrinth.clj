@@ -5,14 +5,14 @@
 ;; 
 ;; Matrizen können in Clojure mit Hilfe von Vektoren dargestellt werden. Der
 ;; "äußere" Vektor enthält als Elemente die __Zeilen__ der Matrix, die wiederum
-;; Vektoren sind. Diese Vektoren enthalten dann pro __Spalte__ die Elemente der
-;; Matrix.
+;; Vektoren sind. Diese Vektoren enthalten dann pro __Spalte__ die Elemente
+;; (eine __Zelle__) der Matrix.
 ;; 
-;; In unserem Fall werden wir Mengen als Elemente der Matrix verwenden. Diese
-;; Mengen enthalten später die __Verbindungen__ zwischen den __Zellen__ des
-;; Labyrinths.
+;; In unserem Fall werden wir __Mengen__ als Elemente/Zellen der Matrix
+;; verwenden. Diese Mengen/Zellen enthalten später die __Verbindungen__ zwischen
+;; den __Zellen__ des Labyrinths.
 
-(comment 
+(comment
   (mache-leeres-labyrinth 2 3)) ;=> [[#{} #{} #{}] [#{} #{} #{}]]
 
 ;; Ein __leeres__ Labyrinth besteht aus Zellen, die __keine Verbindungen__
@@ -39,16 +39,20 @@
 ;; Die Funktion liefert eine Sequenz/Liste mit den Index-Vektoren der Nachbarn.
 (defn nachbarn-von
   "Liefert alle Nachbarn der angegebenen Zelle."
-  [labyrinth [m n]]
+  [labyrinth [zeile spalte]]
   (->> (map vector
-            ((juxt inc identity dec identity) m)
-            ((juxt identity inc identity dec) n))
+            ((juxt inc identity dec identity) zeile)
+            ((juxt identity inc identity dec) spalte))
        ;; Wir liefern nur solche Index-Vektoren, die auf eine __vorhandene__
        ;; Zelle im Labyrinth verweisen.
        (filter #(get-in labyrinth %))))
 
 (comment
-  (hinzufügen-verbindung (mache-leeres-labyrinth 2 3) [1 2] [0 2]) ;=> [[#{} #{} #{[1 2]}] [#{} #{} #{[0 2]}]]
+  (hinzufügen-verbindung
+   (mache-leeres-labyrinth 2 3)
+   [1 2]   ;; von Zelle
+   [0 2])  ;; nach Zelle
+   ;=> [[#{} #{} #{[1 2]}] [#{} #{} #{[0 2]}]]
   )
 
 ;; Ein Labyrinth besteht aus Zellen, die teilweise mit ihren Nachbarn
@@ -140,14 +144,134 @@
 (defn mache-labyrinth
   "Liefert ein Labyrinth."
   [leeres-labyrinth start ziel]
-  (loop [labyrinth (update-in leeres-labyrinth start conj :start)                 #_1
-         grenze    (into #{} (nachbarn-von labyrinth start))]                     #_2
-    (if (empty? grenze)                                                           #_3
-      (update-in labyrinth ziel conj :ziel)                                       #_4
-      (let [nächste-zelle (rand-nth (vec grenze))                                 #_5
-            nachbarn (nachbarn-von labyrinth nächste-zelle)                       #_6
-            {besucht false nicht-besucht true}                                    #_7
-            (group-by #(empty? (get-in labyrinth %)) nachbarn)]                   #_8
-        (recur (hinzufügen-verbindung labyrinth (rand-nth besucht) nächste-zelle) #_9
-               (into (disj grenze nächste-zelle) nicht-besucht))))))              #_10
+  (loop [labyrinth (update-in leeres-labyrinth start conj :start)                    #_1
+         grenze    (into #{} (nachbarn-von labyrinth start))]                        #_2
+    (if (empty? grenze)                                                              #_3
+      (update-in labyrinth ziel conj :ziel)                                          #_4
+      (let [nächste-zelle (rand-nth (vec grenze))                                    #_5
+            nachbarn (nachbarn-von labyrinth nächste-zelle)                          #_6
+            {besucht false nicht-besucht true}                                       #_7
+            (group-by #(empty? (get-in labyrinth %)) nachbarn)]                      #_8
+           (recur (hinzufügen-verbindung labyrinth (rand-nth besucht) nächste-zelle) #_9
+                  (into (disj grenze nächste-zelle) nicht-besucht))))))              #_10
 
+;; +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+;; Die folgenden Funktionen dienen dazu, ein Labyrinth in Minecraft zu bauen.
+;; Zuerst wird eine "Bodenplatte" aus Blöcken gebaut. Auf dieser wird eine
+;; Schicht aus Blöcken der Höhe 3 gebaut. Aus dieser Schicht werden dann jene
+;; Blöcke "entfernt", die die Zellen darstellen. Zwischen diesen Zellen
+;; verbleiben Blöcke für die "Mauen", die die Zellen umschließen. Schließlich
+;; werden jene Mauen entfernt, die zwischen den "verbundenen" Zellen stehen.
+
+;; Zellen werden als Quadrat von n x n Blöcken dargstellt.
+(def zell-größe 2)
+
+;; Damit rechnen wir aus den Zell-Indexen die Block-Offsets aus, die wir
+;; brauchen, um die Blöcke setzen zu können.
+(defn ->offset 
+  "Liefert den Block-Offset für einen Zell-Index."
+  [x]
+  (inc (* (inc zell-größe) x)))
+
+(comment
+  (boden-blöcke 1 1 1)
+  (boden-blöcke 2 2 1)
+  )
+
+(defn boden-blöcke
+  "Liefert die Block-Offsets für die Blöcke der 'Bodenplatte'."
+  [zeilen spalten höhe]
+  (for [x (range (->offset zeilen))
+        y (range höhe)
+        z (range (->offset spalten))]
+    [x y z]))
+
+(comment
+  (zell-blöcke [0 0] 1)
+  (zell-blöcke [2 1] 1)
+  )
+
+(defn zell-blöcke
+  "Liefert die Block-Offsets für die Zell-Blöcke der angegebenen Zelle."
+  [[zeile spalte] höhe]
+  (let [x0 (->offset zeile)
+        z0 (->offset spalte)]
+    (for [x (range zell-größe)
+          y (range höhe)
+          z (range zell-größe)]
+      [(+ x0 x) y (+ z0 z)])))
+
+(comment
+  (mauer-blöcke [0 0] [1 0] 1)
+  (mauer-blöcke [0 0] [0 1] 1)
+  )
+
+(defn mauer-blöcke
+  "Liefert die Block-Offsets für die Mauer-Blöcke zwischen den angegebenen Zelle."
+  [[von-zeile von-spalte] [nach-zeile nach-spalte] höhe]
+  (let [x0 (->offset von-zeile)
+        z0 (->offset von-spalte)
+        dx (- nach-zeile von-zeile)
+        dz (- nach-spalte von-spalte)
+        x-start (* dx zell-größe)
+        x-end (+ dx x-start (* dz zell-größe))
+        z-start (* dz zell-größe)
+        z-end (+ dz z-start (* dx zell-größe))]
+    (for [x (range x-start x-end)
+          y (range höhe)
+          z (range z-start z-end)]
+      [(+ x0 x) y (+ z0 z)]))
+  )
+
+(comment
+  (require '[lambdaisland.witchcraft :as wc])
+
+  (wc/set-time 1000)
+  (wc/set-game-rule :do-daylight-cycle false)
+  (wc/set-game-rule :do-weather-cycle false)
+  (wc/fly! (wc/player))
+
+  ;; Dies ist der __Ursprung__, an dem wir das Labyrinth mit Blöcken aufbauen werden.
+  (def ursprung (wc/loc (wc/player)))
+
+  ;; Die Höhe der Mauen, die das gebaute Labyrinth haben wird. 
+  (def mauer-höhe 3)
+
+  ;; Die Größe des Labyrinths (zeilen x spalten Zellen)
+  (def labyrinth-zeilen 3)
+  (def labyrinth-spalten 4)
+
+  (def labyrinth (mache-labyrinth
+                  (mache-leeres-labyrinth labyrinth-zeilen labyrinth-spalten)
+                  [0 0]
+                  [2 2]))
+
+  (defn set-blocks [anchor blocks material]
+    (wc/set-blocks
+     blocks
+     {:anchor anchor
+      :material material}))
+
+  ;; Die Bodenplatte bauen
+  (set-blocks 
+   ursprung 
+   (boden-blöcke labyrinth-zeilen labyrinth-spalten 1)
+   :orange-concrete)
+  
+  ;; Den Labyrinth-Block bauen.
+  (set-blocks
+   (wc/add ursprung [0 1 0])
+   (boden-blöcke labyrinth-zeilen labyrinth-spalten 3)
+   :gold-block)
+  
+  ;; Alle Zellen "aushöhlen""
+  (for [x (range labyrinth-zeilen)
+        y (range labyrinth-spalten)]
+    (set-blocks
+     (wc/add ursprung [0 1 0])
+     (zell-blöcke [x y] 3)
+     :air))
+
+  ;; Alle Mauern zwischen verbundenen Zellen entfernen
+  
+  )
