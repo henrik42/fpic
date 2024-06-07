@@ -226,52 +226,73 @@
 (comment
   (require '[lambdaisland.witchcraft :as wc])
 
-  (wc/set-time 1000)
-  (wc/set-game-rule :do-daylight-cycle false)
-  (wc/set-game-rule :do-weather-cycle false)
-  (wc/fly! (wc/player))
+  (do 
+    (wc/set-time 1000)
+    (wc/set-game-rule :do-daylight-cycle false)
+    (wc/set-game-rule :do-weather-cycle false)
+    (wc/fly! (wc/player)))
 
   ;; Dies ist der __Ursprung__, an dem wir das Labyrinth mit Blöcken aufbauen werden.
-  (def ursprung (wc/loc (wc/player)))
+  (def ursprung (wc/xyz-round (wc/loc (wc/player))))
 
   ;; Die Höhe der Mauen, die das gebaute Labyrinth haben wird. 
   (def mauer-höhe 3)
 
   ;; Die Größe des Labyrinths (zeilen x spalten Zellen)
-  (def labyrinth-zeilen 3)
-  (def labyrinth-spalten 4)
+  (def labyrinth-zeilen 10)
+  (def labyrinth-spalten 10)
 
   (def labyrinth (mache-labyrinth
                   (mache-leeres-labyrinth labyrinth-zeilen labyrinth-spalten)
                   [0 0]
-                  [2 2]))
+                  [(dec labyrinth-zeilen) (dec labyrinth-spalten)]))
 
-  (defn set-blocks [anchor blocks material]
+  (defn set-blocks 
+    "Setzt die Blöcke (Offset zu anchor)."
+    [anchor blocks material]
     (wc/set-blocks
      blocks
      {:anchor anchor
       :material material}))
 
-  ;; Die Bodenplatte bauen
-  (set-blocks 
-   ursprung 
+  ;; ---------------------------------------------------------------------------------
+  ;; Nun bauen wir das Labyrinth.
+  ;; ---------------------------------------------------------------------------------
+  
+  ;; (1) Die Bodenplatte bauen
+  (set-blocks
+   ursprung
    (boden-blöcke labyrinth-zeilen labyrinth-spalten 1)
    :orange-concrete)
-  
-  ;; Den Labyrinth-Block bauen.
+
+  ;; (2) Den Labyrinth-Block bauen. Aus diesem werden anschließend die Gänge
+  ;; "herausgeschnitten"
   (set-blocks
    (wc/add ursprung [0 1 0])
    (boden-blöcke labyrinth-zeilen labyrinth-spalten 3)
    :gold-block)
-  
-  ;; Alle Zellen "aushöhlen""
-  (for [x (range labyrinth-zeilen)
-        y (range labyrinth-spalten)]
+
+  ;; (3) Alle Zellen "herausschneiden"
+  (doseq [x (range labyrinth-zeilen)
+          y (range labyrinth-spalten)]
     (set-blocks
      (wc/add ursprung [0 1 0])
      (zell-blöcke [x y] 3)
      :air))
 
-  ;; Alle Mauern zwischen verbundenen Zellen entfernen
+  ;; (4) Alle Mauern zwischen verbundenen Zellen entfernen und am Start und am
+  ;; Ziel eine Kuh erscheinen lassen.
+  (doseq [zeile (range labyrinth-zeilen)
+          spalte (range labyrinth-spalten)
+          :let [verbindungen (get-in labyrinth [zeile spalte])]]
+    (doseq [nachbar verbindungen]
+      (condp = nachbar
+        :start (wc/spawn (wc/add ursprung [1 0 1] [(->offset zeile) 1 (->offset spalte)]) :cow)
+        :ziel (wc/spawn (wc/add ursprung [1 0 1] [(->offset zeile) 1 (->offset spalte)]) :cow)
+        (set-blocks
+         (wc/add ursprung [0 1 0])
+         (mauer-blöcke [zeile spalte] nachbar 3)
+         :air))))
+  
   
   )
