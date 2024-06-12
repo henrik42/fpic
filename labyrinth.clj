@@ -13,17 +13,75 @@
 ;; den __Zellen__ des Labyrinths.
 
 (comment
-  (mache-leeres-labyrinth 2 3)) ;=> [[#{} #{} #{}] [#{} #{} #{}]]
+  (mache-leeres-labyrinth 2 3) ;=> [[#{} #{} #{}] [#{} #{} #{}]]
+  
+  ;; ACHTUNG: `repeat` (ohne Anzahl der Elemente) erzeugt eine "endlos lange"
+  ;; Sequenz. Daher darst du den Ausdruck niemals direkt auswerten, sondern du
+  ;; musst immer die Anzahl der Elemente begrenzen, die du aus der Sequenz liest
+  ;; (z.B. mit `take`). Oder du gibst die Anzahl direkt bei `repeat` mit an.
+  ;;
+  ;; `repeat` kannst du also dafür nutzen, um einen Wert "beliebig häufig" zu
+  ;; wiederholen.
+  
+  (take 5 (repeat :a)) ;=> (:a :a :a :a :a)
+  (repeat 5 :a)        ;=> (:a :a :a :a :a)
+  
+  )
 
 ;; Ein __leeres__ Labyrinth besteht aus Zellen, die __keine Verbindungen__
 ;; haben.
 (defn mache-leeres-labyrinth
   "Liefert ein leeres Labyrinth."
   [zeilen spalten]
-  (vec (take zeilen (repeat (vec (take spalten (repeat #{})))))))
+  (vec (repeat zeilen (vec (repeat spalten #{})))))
+
+;; +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 (comment
   (nachbarn-von (mache-leeres-labyrinth 2 3) [1 2]) ;=> ([0 2] [1 1])
+  
+  ;; `juxt` erzeugt eine Funktion(!!!), die zu einem Argument x einen Vektor v
+  ;; liefert. Dieser Vektor enthält die Ergebnisse der Funktions-Auswertungen
+  ;; auf x.
+  ;;
+  ;; `juxt` kannst du also nutzen, wenn du mehrere verschiedene Funktionen auf
+  ;; denselben Wert anwenden möchtest.
+  
+  (juxt inc dec)              ;=> #function[clojure.core/juxt/fn--5895]
+  ((juxt inc dec) 5)          ;=> [6 4]
+  ((juxt inc dec #(/ % 2)) 6) ;=> [7 5 3]
+  
+  ;; Manchmal möchtest du den Vektor vielleicht noch "auseinander nehmen". Dafür
+  ;; eignet sich let mit Vektor-Destrukturierung.
+  
+  (let [[erster zweiter dritter] ((juxt inc dec #(/ % 2)) 6)]
+    {:erster erster
+     :zweiter zweiter
+     :dritter dritter}) ;=> {:erster 7, :zweiter 5, :dritter 3}
+  
+  ;; Mit `map` kannst du "paar-weise" über mehrere Sequenzen schleifen. 
+  
+  (map vector [1 2 3] [:a :b :c]) ;=> ([1 :a] [2 :b] [3 :c])
+  
+  (map vector
+       ((juxt inc identity dec identity) 3)
+       ((juxt identity inc identity dec) 8)) ;=> ([4 8] [3 9] [2 8] [3 7])
+  
+  ;; Mit `get-in` greifst du auf geschachtelte Strukturen zu. Für Vektoren nutzt
+  ;; du den Index/Offset, für Maps nutzt du die Schlüssel.
+  
+  (get-in [:a [:A :B] :b [:C :D]] [0])     ;=> :a
+  (get-in [:a [:A :B] :b [:C :D]] [1])     ;=> [:A :B]
+  (get-in [:a [:A :B] :b [:C :D]] [1 0])   ;=> :A
+  (get-in [:a [:A :B] :b [:C :D]] [1 1])   ;=> :B
+  
+  (get-in {:a [:A :B] :b [:C :D]} [:a 0])  ;=> :A
+  (get-in {:a {:A :B} :b {:C :D}} [:a :A]) ;=> :B
+  
+  ;; Falls ein Element einmal nicht vorhanden ist, passiert nichts Schlimmes. Es
+  ;; wird einfach `nil` geliefert.
+  
+  (get-in [:a [:A :B] :b [:C :D]] [5 0])   ;=> nil
   ) 
 
 ;; Die Nachbarn einer Zelle in dem Labyrinth sind jene Zellen (in dem
