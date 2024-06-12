@@ -39,51 +39,124 @@
 
 (comment
   (nachbarn-von (mache-leeres-labyrinth 2 3) [1 2]) ;=> ([0 2] [1 1])
-  
+
   ;; `juxt` erzeugt eine Funktion(!!!), die zu einem Argument x einen Vektor v
   ;; liefert. Dieser Vektor enthält die Ergebnisse der Funktions-Auswertungen
   ;; auf x.
   ;;
   ;; `juxt` kannst du also nutzen, wenn du mehrere verschiedene Funktionen auf
   ;; denselben Wert anwenden möchtest.
-  
+
   (juxt inc dec)              ;=> #function[clojure.core/juxt/fn--5895]
   ((juxt inc dec) 5)          ;=> [6 4]
   ((juxt inc dec #(/ % 2)) 6) ;=> [7 5 3]
-  
+
   ;; Manchmal möchtest du den Vektor vielleicht noch "auseinander nehmen". Dafür
   ;; eignet sich let mit Vektor-Destrukturierung.
-  
+
   (let [[erster zweiter dritter] ((juxt inc dec #(/ % 2)) 6)]
     {:erster erster
      :zweiter zweiter
      :dritter dritter}) ;=> {:erster 7, :zweiter 5, :dritter 3}
-  
+
   ;; Mit `map` kannst du "paar-weise" über mehrere Sequenzen schleifen. 
-  
+
   (map vector [1 2 3] [:a :b :c]) ;=> ([1 :a] [2 :b] [3 :c])
-  
+
   (map vector
        ((juxt inc identity dec identity) 3)
        ((juxt identity inc identity dec) 8)) ;=> ([4 8] [3 9] [2 8] [3 7])
-  
+
   ;; Mit `get-in` greifst du auf geschachtelte Strukturen zu. Für Vektoren nutzt
   ;; du den Index/Offset, für Maps nutzt du die Schlüssel.
-  
+
   (get-in [:a [:A :B] :b [:C :D]] [0])     ;=> :a
   (get-in [:a [:A :B] :b [:C :D]] [1])     ;=> [:A :B]
   (get-in [:a [:A :B] :b [:C :D]] [1 0])   ;=> :A
   (get-in [:a [:A :B] :b [:C :D]] [1 1])   ;=> :B
-  
+
   (get-in {:a [:A :B] :b [:C :D]} [:a 0])  ;=> :A
   (get-in {:a {:A :B} :b {:C :D}} [:a :A]) ;=> :B
-  
+
   ;; Falls ein Element einmal nicht vorhanden ist, passiert nichts Schlimmes. Es
   ;; wird einfach `nil` geliefert.
-  
+
   (get-in [:a [:A :B] :b [:C :D]] [5 0])   ;=> nil
+
+  ;; `filter` liefert nur jene Elemente einer Collection, zu denen die
+  ;; angegebene Funktion "falsy" liefert. In diesem Beispiel nutzen wir die
+  ;; Elemente, um via `get-in` "in" die Daten zu greifen.
+
+  (let [daten [:a [:A :B] :b [:C :D]]]
+    (filter
+     #(get-in daten %)
+     [[0] [1] [5 0] [1 0] [1 1]])) ;=> ([0] [1] [1 0] [1 1])
+
+  ;; Wenn du statt `filter` die Funktion `keep` verwendest, erhälst du nicht die
+  ;; Elemente der Collection sondern die Werte, die aus der Funktion als
+  ;; Ergebnis kommen. `keep` liefert jedoch nur non-nil Werte. Daher benutzen
+  ;; wir hier `get-in` mit einem Not-Found-Wert, um so besser erkennen zu
+  ;; können, was passiert.
+  (let [daten [:a [:A :B] :b [:C :D]]]
+    (keep
+     #(get-in daten % :nicht-enthalten)
+     [[0] [1] [5 0] [1 0] [1 1]])) ;=> (:a [:A :B] :nicht-enthalten :A :B)
+
+  ;; `->>` (thread-last) ist ein Makro, das die angegebenen Formen/Argumente
+  ;; "umformt", bevor sie ausgewertet werden.
+  ;;
+  ;; Im ersten Beispiel ist die `map`-Form das __letzte__ Argument der
+  ;; `filter`-Form.
+
+  (let [zeile 2
+        spalte 3
+        labyrinth (mache-leeres-labyrinth 4 4)]
+    (filter
+     #(get-in labyrinth %)
+     (map vector
+          ((juxt inc identity dec identity) zeile)
+          ((juxt identity inc identity dec) spalte)))) ;=> ([3 3] [1 3] [2 2])
+
+  ;; Im zweiten Beispiel setzt das `->>` die `map`-Form "hinter" das letzte
+  ;; Argument der `filter`-Form an die "letzte" Stelle (daher "thread-last").
+  ;;
+  ;; Durch die Verwendung von `->>` kannst du den Code "von oben nach unten
+  ;; lesen", um zu verstehen, was in welcher Reihenfolge passiert. 
+  ;;
+  ;; Um das erste Beispiel zu verstehen, musst du doie Formen ja von "innen nach
+  ;; außen lesen", um zu verstehen, was in welcher Reihenfolge passiert.
+
+  (let [zeile 2
+        spalte 3
+        labyrinth (mache-leeres-labyrinth 4 4)]
+    (->> (map vector
+              ((juxt inc identity dec identity) zeile)
+              ((juxt identity inc identity dec) spalte))
+         (filter #(get-in labyrinth %)))) ;=> ([3 3] [1 3] [2 2])
+
+  ;; Fragen:
+  ;;
+  ;; * Kannst du die Funktion auch ohne map, vector und juxt schreiben?
+  ;; * Wieso benötigt man überhaupt die `filter`-Form? 
+  ;;
+  ;; Das `->>` erlaubt es, einzelne "Verarbeitungsschritte" gezielt
+  ;; auszukommentieren. So kannst du erkennen, welche Zwischenergebnisse die
+  ;; Verarbeitung liefert.
+  ;;
+  ;; Probiere es einfach aus!
+  (let [zeile 0
+        spalte 0
+        labyrinth (mache-leeres-labyrinth 4 4)]
+    (->> (map vector
+              ((juxt inc identity dec identity) zeile)
+              ((juxt identity inc identity dec) spalte))
+         #_(filter #(get-in labyrinth %))))
+
   ) 
 
+;; Die Funktion liefert eine Sequenz/Liste mit den __Index-Vektoren__ der
+;; Nachbarn.
+;;
 ;; Die Nachbarn einer Zelle in dem Labyrinth sind jene Zellen (in dem
 ;; Labyrinth), die __direkt__ oberhalb, unterhalb und seitlich zu der
 ;; angegebenen Zelle liegen.
@@ -93,17 +166,15 @@
 ;; 
 ;; Also ist `[0 0]` die Zelle der ersten Zeile und ersten Spalte. Mit `[1 2]`
 ;; beziehen wir uns auf die Zelle der zweiten Zeile und dritten Spalte.
-;;
-;; Die Funktion liefert eine Sequenz/Liste mit den Index-Vektoren der Nachbarn.
 (defn nachbarn-von
   "Liefert alle Nachbarn der angegebenen Zelle."
   [labyrinth [zeile spalte]]
   (->> (map vector
             ((juxt inc identity dec identity) zeile)
             ((juxt identity inc identity dec) spalte))
-       ;; Wir liefern nur solche Index-Vektoren, die auf eine __vorhandene__
-       ;; Zelle im Labyrinth verweisen.
        (filter #(get-in labyrinth %))))
+
+;; +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 (comment
   (hinzufügen-verbindung
@@ -128,6 +199,8 @@
   (-> labyrinth
       (update-in von conj nach)
       (update-in nach conj von)))
+
+;; +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 (comment
   (mache-labyrinth (mache-leeres-labyrinth 3 3) [0 0] [2 2])
