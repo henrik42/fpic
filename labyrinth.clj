@@ -52,7 +52,7 @@
   ((juxt inc dec #(/ % 2)) 6) ;=> [7 5 3]
 
   ;; Manchmal möchtest du den Vektor vielleicht noch "auseinander nehmen". Dafür
-  ;; eignet sich let mit Vektor-Destrukturierung.
+  ;; eignet sich `let` mit Vektor-Destrukturierung.
 
   (let [[erster zweiter dritter] ((juxt inc dec #(/ % 2)) 6)]
     {:erster erster
@@ -61,11 +61,13 @@
 
   ;; Mit `map` kannst du "paar-weise" über mehrere Sequenzen schleifen. 
 
+  (map vector [1 2 3])            ;=> ([1] [2] [3])
   (map vector [1 2 3] [:a :b :c]) ;=> ([1 :a] [2 :b] [3 :c])
 
   (map vector
-       ((juxt inc identity dec identity) 3)
-       ((juxt identity inc identity dec) 8)) ;=> ([4 8] [3 9] [2 8] [3 7])
+       ((juxt inc identity dec identity) 3) ;=> [4 3 2 3]
+       ((juxt identity inc identity dec) 8) ;=> [8 9 8 7]
+       ) ;=> ([4 8] [3 9] [2 8] [3 7])
 
   ;; Mit `get-in` greifst du auf geschachtelte Strukturen zu. Für Vektoren nutzt
   ;; du den Index/Offset, für Maps nutzt du die Schlüssel.
@@ -84,8 +86,9 @@
   (get-in [:a [:A :B] :b [:C :D]] [5 0])   ;=> nil
 
   ;; `filter` liefert nur jene Elemente einer Collection, zu denen die
-  ;; angegebene Funktion "falsy" liefert. In diesem Beispiel nutzen wir die
-  ;; Elemente, um via `get-in` "in" die Daten zu greifen.
+  ;; angegebene Funktion "falsy" (also `nil` oder `false`) liefert. In diesem
+  ;; Beispiel nutzen wir die Elemente, um via `get-in` "in" die Daten zu
+  ;; greifen.
 
   (let [daten [:a [:A :B] :b [:C :D]]]
     (filter
@@ -94,9 +97,9 @@
 
   ;; Wenn du statt `filter` die Funktion `keep` verwendest, erhälst du nicht die
   ;; Elemente der Collection sondern die Werte, die aus der Funktion als
-  ;; Ergebnis kommen. `keep` liefert jedoch nur non-nil Werte. Daher benutzen
-  ;; wir hier `get-in` mit einem Not-Found-Wert, um so besser erkennen zu
-  ;; können, was passiert.
+  ;; Ergebnis kommen. `keep` liefert jedoch alle non-nil Werte --- also auch
+  ;; `false`. Daher benutzen wir hier `get-in` mit einem Not-Found-Wert, um so
+  ;; besser erkennen zu können, was passiert.
   (let [daten [:a [:A :B] :b [:C :D]]]
     (keep
      #(get-in daten % :nicht-enthalten)
@@ -104,9 +107,13 @@
 
   ;; `->>` (thread-last) ist ein Makro, das die angegebenen Formen/Argumente
   ;; "umformt", bevor sie ausgewertet werden.
-  ;;
-  ;; Im ersten Beispiel ist die `map`-Form das __letzte__ Argument der
-  ;; `filter`-Form.
+  ;; 
+  ;; Makros sind Funktionen, die auf die Formen angewendet werden, **bevor** die
+  ;; (durch die Makros umgeformten) Formen ausgewertet werden. Das nennt man
+  ;; Meta-Programmierung. Man könnte es auch Code-Generierung nennen.
+  ;; 
+  ;; Im ersten Beispiel (ohne `->>`) ist die `map`-Form das __letzte__ Argument
+  ;; der `filter`-Form.
 
   (let [zeile 2
         spalte 3
@@ -121,10 +128,12 @@
   ;; Argument der `filter`-Form an die "letzte" Stelle (daher "thread-last").
   ;;
   ;; Durch die Verwendung von `->>` kannst du den Code "von oben nach unten
-  ;; lesen", um zu verstehen, was in welcher Reihenfolge passiert. 
+  ;; lesen", um zu verstehen, was in welcher Reihenfolge passiert (erst `map`,
+  ;; dann `filter`). 
   ;;
-  ;; Um das erste Beispiel zu verstehen, musst du doie Formen ja von "innen nach
-  ;; außen lesen", um zu verstehen, was in welcher Reihenfolge passiert.
+  ;; Um das obige Beispiel zu verstehen, musst du die Formen ja von "innen nach
+  ;; außen lesen", um zu verstehen, was in welcher Reihenfolge passiert (erst
+  ;; `map`, dann `filter`)
 
   (let [zeile 2
         spalte 3
@@ -182,6 +191,38 @@
    [1 2]   ;; von Zelle
    [0 2])  ;; nach Zelle
    ;=> [[#{} #{} #{[1 2]}] [#{} #{} #{[0 2]}]]
+  
+  ;; Mit `(update-in <coll> <keys> <fn> <arg>*)` greiftst du wie mit `get-in` in
+  ;; eine verschachtelte Collection-Struktur `<coll>`. Anstatt jedoch nur den
+  ;; Wert `x` an dieser "Stelle" zu liefern, wird eine neue Struktur geliefert,
+  ;; deren Wert an der "Stelle" durch `(<fn> <x> <arg>*)` berechnet/ersetzte
+  ;; wird.
+  (update-in [:a :b :c] [1] str "++")                      ;=> [:a ":b++" :c]
+  (update-in [:a {:x 1 :y 2} :c] [1 :y] str "++")          ;=> [:a {:x 1, :y "2++"} :c]
+  (update-in [:a {:x 1 :y 2} :c] [1 :y] (constantly "jo")) ;=> [:a {:x 1, :y "jo"} :c]
+  
+  ;; Mit `->` (thread-first) wird eine Form an die zweite Position der folgenden
+  ;; Form gesetzt --- also direkt hinter die Operator-Stelle.
+  ;;
+  
+  (-> [:a {:x 1 :y 2} :c]
+      (update-in [1 :y] str "++")        ;=> [:a {:x 1, :y "2++"} :c]
+      (update-in [2] #(str "**" % "**")) ;=> [:a {:x 1, :y "2++"} "**:c**"]
+      (update-in [0] (constantly "jo"))  ;=> ["jo" {:x 1, :y "2++"} "**:c**"]
+      )
+
+  ;; Diese Form liefert das gleiche Ergebnis wie die vorherige. Wir haben nur
+  ;; die "erste Ersetzung" selber schon vorgenommen. Ist aber nicht mehr so gut
+  ;; lesbar.
+  (-> (update-in [:a {:x 1 :y 2} :c] [1 :y] str "++")
+      (update-in [2] #(str "**" % "**"))
+      (update-in [0] (constantly "jo")))
+
+  ;; Auch diese Form liefert das gleiche Ergebnis. Aber verstehst du das noch?
+  ;; Deswegen sind `->` und `->>` so hilfreich.
+  (-> (update-in (update-in [:a {:x 1 :y 2} :c] [1 :y] str "++") [2] #(str "**" % "**"))
+      (update-in [0] (constantly "jo")))
+
   )
 
 ;; Ein Labyrinth besteht aus Zellen, die teilweise mit ihren Nachbarn
@@ -194,7 +235,8 @@
 ;; müssen wir also zu der Verbindungs-Menge jeder der beiden Zellen den
 ;; Index-Vektor der jeweils anderen Zelle hinzufügen.
 (defn hinzufügen-verbindung
-  "Liefert ein Labyrinth, das eine __Verbindung__ zwischen den angegebenen Zellen hat."
+  "Liefert ein Labyrinth, das eine __Verbindung__ zwischen den angegebenen Zellen 
+   (Index-Vektoren) hat."
   [labyrinth von nach]
   (-> labyrinth
       (update-in von conj nach)
@@ -209,14 +251,14 @@
 ;; Erzeugt ein Labyrinth.
 ;;
 ;; Die Größe des Labyrinths wird durch die Größe des __leeren__ Labyrinths
-;; bestimmt, das als Argument zu übergeben wird.
+;; bestimmt, das als Argument übergeben wird.
 ;;
-;; In dem Labyrinth ist jede Zelle mit jeder anderen Zelle über Verbindungen zu
-;; erreichen. Es gibt also keine "abgeschnittenen" Zellen. Daher ist es auch
-;; egal, welche Zellen als `start` und `ziel` ausgewählt werden --- es gibt
-;; immer einen Weg von `start` zu `ziel`. Natürlich ist es schwerer einen Weg
-;; von `start` zu `ziel` zu finden, wenn diese weit von einander entfernt
-;; liegen.
+;; In dem Labyrinth ist jede Zelle mit jeder anderen Zelle über
+;; Verbindungen/Pfade zu erreichen. Es gibt also keine "abgeschnittenen" Zellen.
+;; Daher ist es auch egal, welche Zellen als `start` und `ziel` ausgewählt
+;; werden --- es gibt immer einen Weg von `start` zu `ziel`. Natürlich ist es
+;; schwerer einen Weg von `start` zu `ziel` zu finden, wenn diese weit von
+;; einander entfernt liegen.
 ;; 
 ;; `start` und `ziel` sind die Index-Vektoren der betreffenden Zellen.
 ;;
