@@ -25,11 +25,11 @@
 ;; y = 0
 ;; Wiederhole bis y > x
 ;;     Pixel (x, y) sowie symmetrische Pixel einfärben
-;;     d = d + 2×y + 1
+;;     d = d + 2 * y + 1
 ;;     y = y + 1
 ;;     Wenn d > 0
-;;         d = d - 2×x + 2
 ;;         x = x - 1
+;;         d = d - 2 * x
 ;; ------------------------------------------------------------------------------ 
 
 ;; Aufgabe 1: schreibe eine Funktion `(defn kreis-print-loop [r] ,,,)`, die die
